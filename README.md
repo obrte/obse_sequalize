@@ -1,1 +1,0 @@
-# obse_sequalize
