@@ -2,7 +2,7 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const catOrganizacionesRoutes = require('./routes/Catalogo_Organizaciones')
+const catOrganizacionesRoutes = require('./routes/catalogos/Organizaciones')
 const http = require('http').Server(app)
 app.http = http
 const PORT = process.env.PORT || 3000
@@ -33,18 +33,19 @@ app.set('port', PORT)
 /*
  ! MIDDLEWARES
 */
-var corsOptions = {
-    origin: 'http://localhost:8080',
-    optionsSuccessStatus: 200,
-    credentials: true
-}
-app.use(cors(corsOptions))
+// var corsOptions = {
+//     origin: 'http://localhost:8080',
+//     optionsSuccessStatus: 200,
+//     credentials: true
+// }
+//app.use(cors(corsOptions))
+app.use(cors())
 app.use(bodyParser.json())
 
 
 /*
  ! RUTAS
 */
-app.use('/catalogo_organizaciones', catOrganizacionesRoutes)
+app.use('/organizaciones', catOrganizacionesRoutes)
 
 module.exports = app

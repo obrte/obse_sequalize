@@ -23,7 +23,7 @@ db.Sequelize = Sequelize
 db.sequelize = sequelize
 
 //modelos
-db.catalogo_organizaciones = require('../models/Catalogo_Organizaciones')(sequelize, Sequelize)
+db.catOrganizaciones = require('../models/catalogos/Organizaciones')(sequelize, Sequelize)
 
 
 //Relaciones
