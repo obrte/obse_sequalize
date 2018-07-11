@@ -2,6 +2,8 @@ const Joi = require('joi')
 const db = require('../../config/db')
 const Op = db.Sequelize.Op
 
+
+//validar que los campos no esten vacios
 exports.registro = (req, res, next) => {
     const schema = {
         nombre: Joi.string().required(),
@@ -38,6 +40,7 @@ exports.registro = (req, res, next) => {
                 break
         }
     } else {
+        //verificar que no exista ya una organizacion con el mismo nombre(largo y corto)
         db.catOrganizaciones.findOne({
                 where: {
                     [Op.or]: [{
@@ -62,6 +65,7 @@ exports.registro = (req, res, next) => {
     }
 }
 
+//validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
     const schema = {
         nombre: Joi.string().required(),
