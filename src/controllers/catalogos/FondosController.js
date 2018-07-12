@@ -2,17 +2,17 @@ const db = require('../../config/db')
 
 //POST single Catalogo/Organizaciones
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catFondos.create(req.nuevoFondo)
+        .then(nuevoFondo => {
+            res.status(200).json(nuevoFondo)
         })
 }
 
 // GET all Catalogo/Organizaciones
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.json(organizaciones)
+    db.catFondos.findAll()
+        .then(fondos => {
+            res.json(fondos)
         })
         .catch(function (err) {
             // print the error details
@@ -22,14 +22,14 @@ exports.verTodos = (req, res) => {
 
 // GET one Catalogo/Organizaciones por id
 exports.verID = (req, res) => {
-    db.catOrganizaciones.find({
+    db.catFondos.find({
             where: {
-                id_organizacion: req.params.id
+                id_fondo: req.params.id
             }
         })
-        .then(organizaciones => {
-            if (organizaciones != null) {
-                res.json(organizaciones)
+        .then(fondo => {
+            if (fondo != null) {
+                res.json(fondo)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -41,21 +41,21 @@ exports.verID = (req, res) => {
 
 // PATCH single Catalogo/Organizaciones
 exports.actualizar = (req, res) => {
-    req.editarOrganizacion.updateAttributes(req.actualizarOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.editarFondo.updateAttributes(req.actualizarFondo)
+        .then(fondoActualizado => {
+            res.json(fondoActualizado)
         })
 }
 
 // DELETE single Catalogo/Organizaciones
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catFondos.destroy({
             where: {
-                id_organizacion: req.params.id
+                id_fondo: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(fondoEliminado => {
+            if (fondoEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

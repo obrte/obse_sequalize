@@ -3,6 +3,7 @@ const app = express()
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const catOrganizacionesRoutes = require('./routes/catalogos/Organizaciones')
+const catFondosRoutes = require('./routes/catalogos/Fondos')
 const http = require('http').Server(app)
 app.http = http
 const PORT = process.env.PORT || 3000
@@ -46,5 +47,6 @@ app.use(bodyParser.json())
  ! RUTAS
 */
 app.use('/organizaciones', catOrganizacionesRoutes)
+app.use('/fondos', catFondosRoutes)
 
 module.exports = app

@@ -6,34 +6,43 @@ const Op = db.Sequelize.Op
 //validar que los campos no esten vacios
 exports.registro = (req, res, next) => {
     const schema = {
+        id_organizacion: Joi.string().required(),
         nombre: Joi.string().required(),
-        nombre_corto: Joi.string().required(),
+        origen: Joi.number().integer().required(),
         activo: Joi.number().integer().required()
     }
-    const nombre = req.body.nombre,
-        nombre_corto = req.body.nombre_corto,
+    const id_organizacion = req.body.id_organizacion,
+        nombre = req.body.nombre,
+        origen = req.body.origen,
         activo = req.body.activo
-    const nuevaOrganizacion = {
+    const nuevoFondo = {
+        id_organizacion: id_organizacion,
         nombre: nombre,
-        nombre_corto: nombre_corto,
+        origen: origen,
         activo: activo
     }
     const {
         error
-    } = Joi.validate(nuevaOrganizacion, schema)
+    } = Joi.validate(nuevoFondo, schema)
 
     if (error) {
         switch (error.details[0].context.key) {
+            case 'id_organizacion':
+                res.status(400).json({
+                    status: 'error',
+                    msg: 'Debe introducir la organizacion.'
+                })
+                break
             case 'nombre':
                 res.status(400).json({
                     status: 'error',
-                    msg: 'Debe introducir el nombre.'
+                    msg: 'Debe introducir un nombre.'
                 })
                 break
-            case 'nombre_corto':
+            case 'origen':
                 res.status(400).json({
                     status: 'error',
-                    msg: 'Debe introducir un nombre corto.'
+                    msg: 'Debe proporcionar el origen.'
                 })
                 break
             case 'activo':
@@ -44,27 +53,20 @@ exports.registro = (req, res, next) => {
                 break
         }
     } else {
-        //verificar que no exista ya una organizacion con el mismo nombre(largo y corto)
-        db.catOrganizaciones.findOne({
+        db.catOrganizaciones.find({
                 where: {
-                    [Op.or]: [{
-                            nombre: nombre
-                        },
-                        {
-                            nombre_corto: nombre_corto
-                        }
-                    ]
+                    id_organizacion: id_organizacion
                 }
             })
             .then(organizacion => {
                 if (organizacion != null) {
+                    req.nuevoFondo = nuevoFondo
+                    next()
+                } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'El nombre o nombre corto ya existe.'
+                        msg: 'Organización no encontrada'
                     })
-                } else {
-                    req.nuevaOrganizacion = nuevaOrganizacion
-                    next()
                 }
             })
     }
@@ -73,34 +75,43 @@ exports.registro = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
     const schema = {
+        id_organizacion: Joi.string().required(),
         nombre: Joi.string().required(),
-        nombre_corto: Joi.string().required(),
+        origen: Joi.number().integer().required(),
         activo: Joi.number().integer().required()
     }
-    const nombre = req.body.nombre,
-        nombre_corto = req.body.nombre_corto,
+    const id_organizacion = req.body.id_organizacion,
+        nombre = req.body.nombre,
+        origen = req.body.origen,
         activo = req.body.activo
-    const actualizarOrganizacion = {
+    const actualizarFondo = {
+        id_organizacion: id_organizacion,
         nombre: nombre,
-        nombre_corto: nombre_corto,
+        origen: origen,
         activo: activo
     }
     const {
         error
-    } = Joi.validate(actualizarOrganizacion, schema)
+    } = Joi.validate(actualizarFondo, schema)
 
     if (error) {
         switch (error.details[0].context.key) {
+            case 'id_organizacion':
+                res.status(400).json({
+                    status: 'error',
+                    msg: 'Debe introducir la organizacion.'
+                })
+                break
             case 'nombre':
                 res.status(400).json({
                     status: 'error',
-                    msg: 'Debe introducir el nombre.'
+                    msg: 'Debe introducir un nombre.'
                 })
                 break
-            case 'nombre_corto':
+            case 'origen':
                 res.status(400).json({
                     status: 'error',
-                    msg: 'Debe introducir un nombre corto.'
+                    msg: 'Debe proporcionar el origen.'
                 })
                 break
             case 'activo':
@@ -112,44 +123,36 @@ exports.actualizar = (req, res, next) => {
         }
     } else {
         const id = req.params.id
-        db.catOrganizaciones.find({
+        db.catFondos.find({
                 where: {
-                    id_organizacion: id
+                    id_fondo: id
                 }
             })
-            .then(editarOrganizacion => {
-                if (editarOrganizacion != null) {
-                    //compara que los valores que se quieren actualizar, no existen en otro registro
-                    db.catOrganizaciones.findOne({
+            .then(editarFondo => {
+                if (editarFondo != null) {
+                    db.catOrganizaciones.find({
                             where: {
-                                [Op.or]: [{
-                                        nombre: nombre
-                                    },
-                                    {
-                                        nombre_corto: nombre_corto
-                                    }
-                                ],
-                                id_organizacion: {
-                                    [Op.ne]: id
-                                }
+                                id_organizacion: id_organizacion
                             }
                         })
-                        .then(errorOrganizacion => {
-                            if (errorOrganizacion != null) {
+                        .then(organizacion => {
+                            if (organizacion != null) {
+                                //editarFondo contiene todos los datos actualmente guardados en la tabla de catalogo_fondos
+                                //actualizarFondo contiene los nuevos datos que se actualizarán
+                                req.actualizarFondo = actualizarFondo
+                                req.editarFondo = editarFondo
+                                next()
+                            } else {
                                 res.status(400).json({
                                     status: 'error',
-                                    msg: 'El nombre o nombre corto ya existe.'
+                                    msg: 'Organización no encontrada'
                                 })
-                            } else {
-                                req.actualizarOrganizacion = actualizarOrganizacion
-                                req.editarOrganizacion = editarOrganizacion
-                                next()
                             }
                         })
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'No encontrado'
+                        msg: 'Fondo no encontrado'
                     })
                 }
             })

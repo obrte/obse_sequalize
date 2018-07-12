@@ -8,7 +8,7 @@ const OrganizacionesController = require('../../controllers/catalogos/Organizaci
 // POST single catalogo/Organizaciones
 router.post('/', OrganizacionPolices.registro, OrganizacionesController.crear)
 
-// GET all catalogo_Organizaciones
+// GET all catalogo/Organizaciones
 router.get('/', OrganizacionesController.verTodos)
 
 // GET one catalogo/Organizaciones by id
@@ -17,7 +17,7 @@ router.get('/:id', OrganizacionesController.verID)
 // PATCH single catalogo/Organizaciones
 router.patch('/:id', OrganizacionPolices.actualizar, OrganizacionesController.actualizar)
 
-// DELETE single Catalogo_Organizaciones
+// DELETE single catalogo/Organizaciones
 router.delete('/:id', OrganizacionesController.eliminar)
 
 module.exports = router

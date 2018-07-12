@@ -16,6 +16,7 @@ const sequelize = new Sequelize('observaciones_bd', 'root', null, {
     }
 })
 
+
 //Objeto db que contendrá todos los modelos/tablas de la Base de Datos
 const db = {}
 
@@ -24,8 +25,13 @@ db.sequelize = sequelize
 
 //modelos
 db.catOrganizaciones = require('../models/catalogos/Organizaciones')(sequelize, Sequelize)
-
+db.catFondos = require('../models/catalogos/Fondos')(sequelize, Sequelize)
 
 //Relaciones
+db.catFondos.belongsTo(db.catOrganizaciones, {
+    foreignKey: 'id_organizacion'
+})
+//db.catOrganizaciones.hasMany(db.catFondos) <--- hace lo mismo que la linea de arriba
+
 
 module.exports = db
