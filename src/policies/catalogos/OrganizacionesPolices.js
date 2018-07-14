@@ -1,63 +1,43 @@
 const Joi = require('joi')
 const db = require('../../config/db')
 const Op = db.Sequelize.Op
+const buscar = require('../../customFunction/Buscar')
+const mensajes = require('../../customFunction/Mensajes')
 
+const schema = {
+    nombre: Joi.string().required(),
+    nombre_corto: Joi.string().required(),
+    activo: Joi.number().integer().required()
+}
 
-//validar que los campos no esten vacios
+/*
+esta funcion valida que los campos que se van a registrar no esten vacios 
+y que la organizacion no esté capturada
+*/
 exports.registro = (req, res, next) => {
-    const schema = {
-        nombre: Joi.string().required(),
-        nombre_corto: Joi.string().required(),
-        activo: Joi.number().integer().required()
-    }
-    const nombre = req.body.nombre,
-        nombre_corto = req.body.nombre_corto,
-        activo = req.body.activo
-    const nuevaOrganizacion = {
-        nombre: nombre,
-        nombre_corto: nombre_corto,
-        activo: activo
-    }
+    //! la funcion datosCuerpo se encuentra al final del archivo
+    const nuevaOrganizacion = datosCuerpo(req)
     const {
         error
     } = Joi.validate(nuevaOrganizacion, schema)
 
     if (error) {
-        switch (error.details[0].context.key) {
-            case 'nombre':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe introducir el nombre.'
-                })
-                break
-            case 'nombre_corto':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe introducir un nombre corto.'
-                })
-                break
-            case 'activo':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe proporcionar el campo activo.'
-                })
-                break
-        }
+        mensajes.switchError(error, res)
     } else {
         //verificar que no exista ya una organizacion con el mismo nombre(largo y corto)
         db.catOrganizaciones.findOne({
                 where: {
                     [Op.or]: [{
-                            nombre: nombre
+                            nombre: nuevaOrganizacion.nombre
                         },
                         {
-                            nombre_corto: nombre_corto
+                            nombre_corto: nuevaOrganizacion.nombre_corto
                         }
                     ]
                 }
             })
             .then(organizacion => {
-                if (organizacion != null) {
+                if (organizacion) {
                     res.status(400).json({
                         status: 'error',
                         msg: 'El nombre o nombre corto ya existe.'
@@ -70,63 +50,31 @@ exports.registro = (req, res, next) => {
     }
 }
 
-//validar que los campos no esten vacios
+/*
+esta funcion valida que los campos que se van a actualizar no esten vacios 
+y que la organizacion no esté capturada
+*/
 exports.actualizar = (req, res, next) => {
-    const schema = {
-        nombre: Joi.string().required(),
-        nombre_corto: Joi.string().required(),
-        activo: Joi.number().integer().required()
-    }
-    const nombre = req.body.nombre,
-        nombre_corto = req.body.nombre_corto,
-        activo = req.body.activo
-    const actualizarOrganizacion = {
-        nombre: nombre,
-        nombre_corto: nombre_corto,
-        activo: activo
-    }
+    //! la funcion datosCuerpo se encuentra al final del archivo    
+    const actualizarOrganizacion = datosCuerpo(req)
     const {
         error
     } = Joi.validate(actualizarOrganizacion, schema)
 
     if (error) {
-        switch (error.details[0].context.key) {
-            case 'nombre':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe introducir el nombre.'
-                })
-                break
-            case 'nombre_corto':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe introducir un nombre corto.'
-                })
-                break
-            case 'activo':
-                res.status(400).json({
-                    status: 'error',
-                    msg: 'Debe proporcionar el campo activo.'
-                })
-                break
-        }
+        mensajes.switchError(error, res)
     } else {
         const id = req.params.id
-        db.catOrganizaciones.find({
-                where: {
-                    id_organizacion: id
-                }
-            })
-            .then(editarOrganizacion => {
-                if (editarOrganizacion != null) {
-                    //compara que los valores que se quieren actualizar, no existen en otro registro
+        buscar.IdOrganizacion(id)
+            .then(existe => {
+                if (existe) {
                     db.catOrganizaciones.findOne({
                             where: {
                                 [Op.or]: [{
-                                        nombre: nombre
+                                        nombre: actualizarOrganizacion.nombre
                                     },
                                     {
-                                        nombre_corto: nombre_corto
+                                        nombre_corto: actualizarOrganizacion.nombre_corto
                                     }
                                 ],
                                 id_organizacion: {
@@ -135,23 +83,43 @@ exports.actualizar = (req, res, next) => {
                             }
                         })
                         .then(errorOrganizacion => {
-                            if (errorOrganizacion != null) {
+                            console.log('errorOrganizacion')
+                            if (errorOrganizacion) {
                                 res.status(400).json({
                                     status: 'error',
                                     msg: 'El nombre o nombre corto ya existe.'
                                 })
                             } else {
                                 req.actualizarOrganizacion = actualizarOrganizacion
-                                req.editarOrganizacion = editarOrganizacion
+                                req.organizacionExistente = existe
                                 next()
                             }
                         })
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'No encontrado'
+                        msg: 'No se pudo actualizar'
                     })
                 }
             })
+            .catch(err =>
+                res.status(400).json({
+                    status: 'error',
+                    msg: 'No se pudo actualizar',
+                    error: err
+                })
+            )
     }
+}
+
+const datosCuerpo = (req) => {
+    const nombre = req.body.nombre,
+        nombre_corto = req.body.nombre_corto,
+        activo = req.body.activo
+    const datosOrganizacion = {
+        nombre: nombre,
+        nombre_corto: nombre_corto,
+        activo: activo
+    }
+    return datosOrganizacion
 }

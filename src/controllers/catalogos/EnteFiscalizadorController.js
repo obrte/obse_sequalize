@@ -2,17 +2,17 @@ const db = require('../../config/db')
 
 //POST single Catalogo/Organizaciones
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catEntesFiscalizadores.create(req.nuevoEnteFiscalizador)
+        .then(nuevoEnteFiscalizador => {
+            res.status(200).json(nuevoEnteFiscalizador)
         })
 }
 
 // GET all Catalogo/Organizaciones
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.json(organizaciones)
+    db.catEntesFiscalizadores.findAll()
+        .then(entesFiscalizadores => {
+            res.json(entesFiscalizadores)
         })
         .catch(function (err) {
             // print the error details
@@ -22,14 +22,14 @@ exports.verTodos = (req, res) => {
 
 // GET one Catalogo/Organizaciones por id
 exports.verID = (req, res) => {
-    db.catOrganizaciones.find({
+    db.catEntesFiscalizadores.find({
             where: {
-                id_organizacion: req.params.id
+                id_ente: req.params.id
             }
         })
-        .then(organizaciones => {
-            if (organizaciones) {
-                res.json(organizaciones)
+        .then(enteFiscalizador => {
+            if (enteFiscalizador != null) {
+                res.json(enteFiscalizador)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -41,21 +41,21 @@ exports.verID = (req, res) => {
 
 // PATCH single Catalogo/Organizaciones
 exports.actualizar = (req, res) => {
-    req.organizacionExistente.updateAttributes(req.actualizarOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.editarEnteFiscalizador.updateAttributes(req.actualizarEnteFiscalizador)
+        .then(enteFiscalizadorActualizado => {
+            res.json(enteFiscalizadorActualizado)
         })
 }
 
 // DELETE single Catalogo/Organizaciones
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catEntesFiscalizadores.destroy({
             where: {
-                id_organizacion: req.params.id
+                id_ente: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(enteFiscalizadorEliminado => {
+            if (enteFiscalizadorEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'
