@@ -24,6 +24,12 @@ const switchError = (error, res) => {
                 msg: 'Debe introducir un nombre corto.'
             })
             break
+            case 'origen':
+                res.status(400).json({
+                    status: 'error',
+                    msg: 'Debe proporcionar el origen.'
+                })
+                break
         default:
             res.status(400).json({
                 status: 'error',

@@ -5,6 +5,8 @@ const cors = require('cors')
 const catOrganizacionesRoutes = require('./routes/catalogos/Organizaciones')
 const catFondosRoutes = require('./routes/catalogos/Fondos')
 const catEntesFiscalizadoresRoutes = require('./routes/catalogos/EntesFiscalizadores')
+const catInstanciasRoutes = require('./routes/catalogos/Instancias')
+const catInstanciaFondosRoutes = require('./routes/catalogos/InstanciaFondos')
 const http = require('http').Server(app)
 app.http = http
 const PORT = process.env.PORT || 3000
@@ -50,5 +52,7 @@ app.use(bodyParser.json())
 app.use('/organizaciones', catOrganizacionesRoutes)
 app.use('/fondos', catFondosRoutes)
 app.use('/entes_fiscalizadores', catEntesFiscalizadoresRoutes)
+app.use('/instancias', catInstanciasRoutes)
+app.use('/instancia_fondos', catInstanciaFondosRoutes)
 
 module.exports = app

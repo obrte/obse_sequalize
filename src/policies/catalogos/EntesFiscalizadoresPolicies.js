@@ -1,7 +1,6 @@
 const Joi = require('joi')
 const db = require('../../config/db')
 const Op = db.Sequelize.Op
-const buscar = require('../../customFunction/Buscar')
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
@@ -21,7 +20,7 @@ exports.registro = (req, res, next) => {
         mensajes.switchError(error, res)
     } else {
         const id = nuevoEnteFiscalizador.id_organizacion
-        existe.IdOrganizacion(id)
+        existe.idOrganizacion(id)
             .then(existeID => {
                 if (existeID) {
                     req.nuevoEnteFiscalizador = nuevoEnteFiscalizador
@@ -45,12 +44,12 @@ exports.registro = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-    const actualizarEnteFiscalizador = datosCuerpo(req)
+    const updateEnteFiscalizador = datosCuerpo(req)
     const {
         error
-    } = Joi.validate(actualizarEnteFiscalizador, schema)
+    } = Joi.validate(updateEnteFiscalizador, schema)
     if (error) {
-        customFunction.switchError(error, res)
+        mensajes.switchError(error, res)
     } else {
         const id = req.params.id
         db.catEntesFiscalizadores.find({
@@ -58,22 +57,18 @@ exports.actualizar = (req, res, next) => {
                     id_ente: id
                 },
                 nombre: {
-                    [Op.ne]: nombre
+                    [Op.ne]: updateEnteFiscalizador.nombre
                 }
             })
-            .then(editarEnteFiscalizador => {
-                if (editarEnteFiscalizador != null) {
-                    db.catOrganizaciones.find({
-                            where: {
-                                id_organizacion: id_organizacion
-                            }
-                        })
-                        .then(organizacion => {
-                            if (organizacion != null) {
-                                //editarEnteFiscalizador contiene todos los datos actualmente guardados en la tabla de catalogo_entes_fiscalizadores
-                                //actualizarEnteFiscalizador contiene los nuevos datos que se actualizarán
-                                req.actualizarEnteFiscalizador = actualizarEnteFiscalizador
-                                req.editarEnteFiscalizador = editarEnteFiscalizador
+            .then(oldEnteFiscalizador => {
+                if (oldEnteFiscalizador) {
+                    existe.idOrganizacion(updateEnteFiscalizador.id_organizacion)
+                        .then(existeID => {
+                            if (existeID) {
+                                //oldEnteFiscalizador contiene todos los datos actualmente guardados en la tabla de catalogo_entes_fiscalizadores
+                                //updateEnteFiscalizador contiene los nuevos datos que se actualizarán
+                                req.updateEnteFiscalizador = updateEnteFiscalizador
+                                req.oldEnteFiscalizador = oldEnteFiscalizador
                                 next()
                             } else {
                                 res.status(400).json({

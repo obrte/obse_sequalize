@@ -3,19 +3,19 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single Catalogo/Organizaciones
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catInstanciaFondos.create(req.nuevaInstanciaFondos)
+        .then(nuevaInstanciaFondos => {
+            res.status(200).json(nuevaInstanciaFondos)
         })
 }
 
 // GET all Catalogo/Organizaciones
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.status(200).json(organizaciones)
+    db.catInstanciaFondos.findAll()
+        .then(instanciasFondos => {
+            res.status(200).json(instanciasFondos)
         })
-        .catch(function (err) {
+        .catch(err => {
             // print the error details
             console.log(err)
             res.status(400).json({
@@ -28,10 +28,10 @@ exports.verTodos = (req, res) => {
 
 // GET one Catalogo/Organizaciones por id
 exports.verID = (req, res) => {
-    buscar.idOrganizacion(req.params.id)
-        .then(organizacion => {
-            if (organizacion) {
-                res.status(200).json(organizacion)
+    buscar.idInstanciaFondos(req.params.id)
+        .then(instanciaFondos => {
+            if (instanciaFondos) {
+                res.status(200).json(instanciaFondos)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -39,25 +39,42 @@ exports.verID = (req, res) => {
                 })
             }
         })
+        .catch(err => {
+            // print the error details
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'No encontrado',
+                error: err
+            })
+        })
 }
 
 // PATCH single Catalogo/Organizaciones
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.oldInstanciaFondos.updateAttributes(req.updateInstanciaFondos)
+        .then(instanciaFondosActualizado => {
+            res.json(instanciaFondosActualizado)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Fallo al actualizar',
+                error: err
+            })
         })
 }
 
 // DELETE single Catalogo/Organizaciones
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catInstanciaFondos.destroy({
             where: {
-                id_organizacion: req.params.id
+                id: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(instanciaFondosEliminado => {
+            if (instanciaFondosEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

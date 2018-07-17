@@ -56,25 +56,25 @@ y que la organizacion no esté capturada
 */
 exports.actualizar = (req, res, next) => {
     //! la funcion datosCuerpo se encuentra al final del archivo    
-    const actualizarOrganizacion = datosCuerpo(req)
+    const updateOrganizacion = datosCuerpo(req)
     const {
         error
-    } = Joi.validate(actualizarOrganizacion, schema)
+    } = Joi.validate(updateOrganizacion, schema)
 
     if (error) {
         mensajes.switchError(error, res)
     } else {
         const id = req.params.id
-        buscar.IdOrganizacion(id)
-            .then(existe => {
-                if (existe) {
+        buscar.idOrganizacion(id)
+            .then(oldOrganizacion => {
+                if (oldOrganizacion) {
                     db.catOrganizaciones.findOne({
                             where: {
                                 [Op.or]: [{
-                                        nombre: actualizarOrganizacion.nombre
+                                        nombre: updateOrganizacion.nombre
                                     },
                                     {
-                                        nombre_corto: actualizarOrganizacion.nombre_corto
+                                        nombre_corto: updateOrganizacion.nombre_corto
                                     }
                                 ],
                                 id_organizacion: {
@@ -83,15 +83,14 @@ exports.actualizar = (req, res, next) => {
                             }
                         })
                         .then(errorOrganizacion => {
-                            console.log('errorOrganizacion')
                             if (errorOrganizacion) {
                                 res.status(400).json({
                                     status: 'error',
                                     msg: 'El nombre o nombre corto ya existe.'
                                 })
                             } else {
-                                req.actualizarOrganizacion = actualizarOrganizacion
-                                req.organizacionExistente = existe
+                                req.updateOrganizacion = updateOrganizacion
+                                req.oldOrganizacion = oldOrganizacion
                                 next()
                             }
                         })

@@ -3,17 +3,17 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single Catalogo/Organizaciones
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catEntesFiscalizadores.create(req.nuevoEnteFiscalizador)
+        .then(nuevoEnteFiscalizador => {
+            res.status(200).json(nuevoEnteFiscalizador)
         })
 }
 
 // GET all Catalogo/Organizaciones
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.status(200).json(organizaciones)
+    db.catInstancias.findAll()
+        .then(instancias => {
+            res.status(200).json(instancias)
         })
         .catch(function (err) {
             // print the error details
@@ -28,10 +28,10 @@ exports.verTodos = (req, res) => {
 
 // GET one Catalogo/Organizaciones por id
 exports.verID = (req, res) => {
-    buscar.idOrganizacion(req.params.id)
-        .then(organizacion => {
-            if (organizacion) {
-                res.status(200).json(organizacion)
+    buscar.idInstancia(req.params.id)
+        .then(instancia => {
+            if (instancia) {
+                res.status(200).json(instancia)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -43,21 +43,21 @@ exports.verID = (req, res) => {
 
 // PATCH single Catalogo/Organizaciones
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.oldInstancia.updateAttributes(req.updateInstancia)
+        .then(instanciaActualizada => {
+            res.json(instanciaActualizada)
         })
 }
 
 // DELETE single Catalogo/Organizaciones
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catInstancias.destroy({
             where: {
-                id_organizacion: req.params.id
+                id_instancia: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(instanciaEliminada => {
+            if (instanciaEliminada == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

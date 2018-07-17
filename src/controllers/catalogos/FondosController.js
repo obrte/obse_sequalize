@@ -1,4 +1,5 @@
 const db = require('../../config/db')
+const buscar = require('../../customFunction/Buscar')
 
 //POST single Catalogo/Organizaciones
 exports.crear = (req, res) => {
@@ -12,21 +13,22 @@ exports.crear = (req, res) => {
 exports.verTodos = (req, res) => {
     db.catFondos.findAll()
         .then(fondos => {
-            res.json(fondos)
+            res.status(200).json(fondos)
         })
         .catch(function (err) {
             // print the error details
             console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'No encontrado',
+                error: err
+            })
         })
 }
 
 // GET one Catalogo/Organizaciones por id
 exports.verID = (req, res) => {
-    db.catFondos.find({
-            where: {
-                id_fondo: req.params.id
-            }
-        })
+    buscar.idFondo(req.params.id)
         .then(fondo => {
             if (fondo != null) {
                 res.json(fondo)
@@ -41,7 +43,7 @@ exports.verID = (req, res) => {
 
 // PATCH single Catalogo/Organizaciones
 exports.actualizar = (req, res) => {
-    req.editarFondo.updateAttributes(req.actualizarFondo)
+    req.oldFondo.updateAttributes(req.updateFondo)
         .then(fondoActualizado => {
             res.json(fondoActualizado)
         })
