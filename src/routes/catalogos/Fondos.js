@@ -1,23 +1,23 @@
-const express = require('express')
-const router = express.Router()
+// const express = require('express')
+// const router = express.Router()
 
-const FondosPolices = require('../../policies/catalogos/FondosPolicies')
+const FondosPolicies = require('../../policies/catalogos/FondosPolicies')
 const FondosController = require('../../controllers/catalogos/FondosController')
 
+module.exports = (router) => {
+// POST single
+router.post('/fondos', FondosPolicies.registro, FondosController.crear)
 
-// POST single catalogo/Fondo
-router.post('/', FondosPolices.registro, FondosController.crear)
+// GET all
+router.get('/fondos', FondosController.verTodos)
 
-// GET all catalogo/Fondo
-router.get('/', FondosController.verTodos)
+// GET one by id
+router.get('/fondos/:id', FondosController.verId)
 
-// GET one catalogo/Fondo by id
-router.get('/:id', FondosController.verID)
+// PATCH single
+router.patch('/fondos/:id', FondosPolicies.actualizar, FondosController.actualizar)
 
-// PATCH single catalogo/Fondo
-router.patch('/:id', FondosPolices.actualizar, FondosController.actualizar)
-
-// DELETE single catalogo/Fondo
-router.delete('/:id', FondosController.eliminar)
-
-module.exports = router
+// DELETE single
+router.delete('/fondos/:id', FondosController.eliminar)
+}
+//module.exports = router

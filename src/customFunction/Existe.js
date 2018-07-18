@@ -72,11 +72,66 @@ const idInstancia = (id) => {
             .catch(err => reject(err))
     })
 }
+
 const idInstanciaFondos = (id) => {
     return new Promise((resolve, reject) => {
         db.catInstanciaFondos.find({
                 where: {
                     id: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
+const idInstanciaEntes = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catInstanciaEntes.find({
+                where: {
+                    id: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
+const idUniAdm = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catUniAdm.find({
+                where: {
+                    id_uniadm: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
+const idUsuario = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catUsuarios.find({
+                where: {
+                    id_usuario: id
                 }
             })
             .then(datos => {
@@ -97,5 +152,8 @@ existe.idEnteFiscalizador = idEnteFiscalizador
 existe.idFondo = idFondo
 existe.idInstancia = idInstancia
 existe.idInstanciaFondos = idInstanciaFondos
+existe.idInstanciaEntes = idInstanciaEntes
+existe.idUniAdm = idUniAdm
+existe.idUsuario = idUsuario
 
 module.exports = existe

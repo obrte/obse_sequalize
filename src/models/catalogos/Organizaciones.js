@@ -7,20 +7,18 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         nombre: {
-            //varchar(255)
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
             unique: true
         },
         nombre_corto: {
-            //varchar (25)
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(25),
             allowNull: false,
             unique: true
         },
         activo: {
-            //int (11)
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         // Timestamps
         created_at: DataTypes.DATE,

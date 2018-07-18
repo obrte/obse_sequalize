@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catUsuarios.create(req.nuevoUsuario)
+        .then(nuevoUsuario => {
+            res.status(200).json(nuevoUsuario)
         })
         .catch(err => {
             console.log(err)
@@ -19,15 +19,15 @@ exports.crear = (req, res) => {
 
 // GET all
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.status(200).json(organizaciones)
+    db.catUsuarios.findAll()
+        .then(usuarios => {
+            res.status(200).json(usuarios)
         })
         .catch(err => {
             console.log(err)
             res.status(400).json({
                 status: 'error',
-                msg: 'No encontrado',
+                msg: 'Error al buscar',
                 error: err
             })
         })
@@ -35,10 +35,10 @@ exports.verTodos = (req, res) => {
 
 // GET one por id
 exports.verId = (req, res) => {
-    buscar.idOrganizacion(req.params.id)
-        .then(organizacion => {
-            if (organizacion) {
-                res.status(200).json(organizacion)
+    buscar.idUsuario(req.params.id)
+        .then(usuario => {
+            if (usuario) {
+                res.status(200).json(usuario)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -58,15 +58,15 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.oldUsuario.updateAttributes(req.updateUsuario)
+        .then(usuarioActualizado => {
+            res.json(usuarioActualizado)
         })
         .catch(err => {
             console.log(err)
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al actualizar',
+                msg: 'Fallo al actualizar',
                 error: err
             })
         })
@@ -74,13 +74,13 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catUsuarios.destroy({
             where: {
-                id_organizacion: req.params.id
+                id_usuario: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(usuarioEliminado => {
+            if (usuarioEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

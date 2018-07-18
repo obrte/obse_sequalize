@@ -92,6 +92,60 @@ const idInstanciaFondos = (id) => {
     })
 }
 
+const idInstanciaEntes = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catInstanciaEntes.find({
+                where: {
+                    id: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(datos)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
+const idUniAdm = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catUniAdm.find({
+                where: {
+                    id_uniadm: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(datos)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
+const idUsuario = (id) => {
+    return new Promise((resolve, reject) => {
+        db.catUsuarios.find({
+                where: {
+                    id_usuario: id
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(datos)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
 const buscar = {}
 
 buscar.idOrganizacion = idOrganizacion
@@ -99,5 +153,8 @@ buscar.idEnteFiscalizador = idEnteFiscalizador
 buscar.idFondo = idFondo
 buscar.idInstancia = idInstancia
 buscar.idInstanciaFondos = idInstanciaFondos
+buscar.idInstanciaEntes = idInstanciaEntes
+buscar.idUniAdm = idUniAdm
+buscar.idUsuario = idUsuario
 
 module.exports = buscar

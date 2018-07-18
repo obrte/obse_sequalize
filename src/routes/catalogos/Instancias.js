@@ -1,23 +1,23 @@
-const express = require('express')
-const router = express.Router()
+// const express = require('express')
+// const router = express.Router()
 
-const InstanciasPolices = require('../../policies/catalogos/InstanciasPolicies')
+const InstanciasPolicies = require('../../policies/catalogos/InstanciasPolicies')
 const InstanciasController = require('../../controllers/catalogos/InstanciasController')
 
+module.exports = (router) => {
+// POST single
+router.post('/instancias', InstanciasPolicies.registro, InstanciasController.crear)
 
-// POST single catalogo/Fondo
-router.post('/', InstanciasPolices.registro, InstanciasController.crear)
+// GET all
+router.get('/instancias', InstanciasController.verTodos)
 
-// GET all catalogo/Fondo
-router.get('/', InstanciasController.verTodos)
+// GET one by id
+router.get('/instancias/:id', InstanciasController.verId)
 
-// GET one catalogo/Fondo by id
-router.get('/:id', InstanciasController.verID)
+// PATCH single
+router.patch('/instancias/:id', InstanciasPolicies.actualizar, InstanciasController.actualizar)
 
-// PATCH single catalogo/Fondo
-router.patch('/:id', InstanciasPolices.actualizar, InstanciasController.actualizar)
-
-// DELETE single catalogo/Fondo
-router.delete('/:id', InstanciasController.eliminar)
-
-module.exports = router
+// DELETE single
+router.delete('/instancias/:id', InstanciasController.eliminar)
+}
+//module.exports = router

@@ -1,34 +1,32 @@
 const Joi = require('joi')
-const db = require('../../config/db')
-const Op = db.Sequelize.Op
+const buscar = require('../../customFunction/Buscar')
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
 const schema = {
-    id_organizacion: Joi.string().required(),
+    id_instancia: Joi.string().required(),
     nombre: Joi.string().required(),
     activo: Joi.number().integer().required()
 }
 
 //validar que los campos no esten vacios
 exports.registro = (req, res, next) => {
-    const nuevaInstancia = datosCuerpo(req)
+    const nuevaUniAdm = datosCuerpo(req)
     const {
         error
-    } = Joi.validate(nuevaInstancia, schema)
+    } = Joi.validate(nuevaUniAdm, schema)
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const id = nuevaInstancia.id_organizacion
-        existe.idOrganizacion(id)
+        existe.idInstancia(nuevaUniAdm.id_instancia)
             .then(existeID => {
                 if (existeID) {
-                    req.nuevaInstancia = nuevaInstancia
+                    req.nuevaUniAdm = nuevaUniAdm
                     next()
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'Organización no encontrada'
+                        msg: 'Instancia no encontrada'
                     })
                 }
             })
@@ -44,41 +42,33 @@ exports.registro = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-    const updateInstancia = datosCuerpo(req)
+    const updateUniAdm = datosCuerpo(req)
     const {
         error
-    } = Joi.validate(updateInstancia, schema)
+    } = Joi.validate(updateUniAdm, schema)
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const id = req.params.id
-        db.catInstancias.find({
-                where: {
-                    id_instancia: id
-                },
-                nombre: {
-                    [Op.ne]: updateInstancia.nombre
-                }
-            })
-            .then(oldInstancia => {
-                if (oldInstancia) {
-                    existe.idOrganizacion(updateInstancia.id_organizacion)
+        buscar.idUniAdm(req.params.id)
+            .then(oldUniAdm => {
+                if (oldUniAdm) {
+                    existe.idInstancia(updateUniAdm.id_instancia)
                         .then(existeID => {
                             if (existeID) {
-                                req.updateInstancia = updateInstancia
-                                req.oldInstancia = oldInstancia
+                                req.updateUniAdm = updateUniAdm
+                                req.oldUniAdm = oldUniAdm
                                 next()
                             } else {
                                 res.status(400).json({
                                     status: 'error',
-                                    msg: 'Organización no encontrada'
+                                    msg: 'Instancia no encontrada'
                                 })
                             }
                         })
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'Ente Fiscalizador no encontrado o ya se encuentra registrado para esta organizacion'
+                        msg: 'Unidad Administrativa no encontrada.'
                     })
                 }
             })
@@ -86,13 +76,13 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const id_organizacion = req.body.id_organizacion,
+    const id_instancia = req.body.id_instancia,
         nombre = req.body.nombre,
         activo = req.body.activo
-    const datosInstancia = {
-        id_organizacion: id_organizacion,
+    const datosUniAdm = {
+        id_instancia: id_instancia,
         nombre: nombre,
         activo: activo
     }
-    return datosInstancia
+    return datosUniAdm
 }

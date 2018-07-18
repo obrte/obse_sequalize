@@ -1,22 +1,29 @@
 const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
-//POST single Catalogo/Organizaciones
+//POST single
 exports.crear = (req, res) => {
     db.catInstanciaFondos.create(req.nuevaInstanciaFondos)
         .then(nuevaInstanciaFondos => {
             res.status(200).json(nuevaInstanciaFondos)
         })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al crear',
+                error: err
+            })
+        })
 }
 
-// GET all Catalogo/Organizaciones
+// GET all
 exports.verTodos = (req, res) => {
     db.catInstanciaFondos.findAll()
         .then(instanciasFondos => {
             res.status(200).json(instanciasFondos)
         })
         .catch(err => {
-            // print the error details
             console.log(err)
             res.status(400).json({
                 status: 'error',
@@ -26,8 +33,8 @@ exports.verTodos = (req, res) => {
         })
 }
 
-// GET one Catalogo/Organizaciones por id
-exports.verID = (req, res) => {
+// GET one por id
+exports.verId = (req, res) => {
     buscar.idInstanciaFondos(req.params.id)
         .then(instanciaFondos => {
             if (instanciaFondos) {
@@ -40,17 +47,16 @@ exports.verID = (req, res) => {
             }
         })
         .catch(err => {
-            // print the error details
             console.log(err)
             res.status(400).json({
                 status: 'error',
-                msg: 'No encontrado',
+                msg: 'Error al buscar',
                 error: err
             })
         })
 }
 
-// PATCH single Catalogo/Organizaciones
+// PATCH single
 exports.actualizar = (req, res) => {
     req.oldInstanciaFondos.updateAttributes(req.updateInstanciaFondos)
         .then(instanciaFondosActualizado => {
@@ -66,7 +72,7 @@ exports.actualizar = (req, res) => {
         })
 }
 
-// DELETE single Catalogo/Organizaciones
+// DELETE single
 exports.eliminar = (req, res) => {
     db.catInstanciaFondos.destroy({
             where: {
@@ -85,6 +91,13 @@ exports.eliminar = (req, res) => {
                     msg: 'No encontrado'
                 })
             }
-
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al eliminar',
+                error: err
+            })
         })
 }

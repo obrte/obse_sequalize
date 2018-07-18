@@ -65,8 +65,6 @@ exports.actualizar = (req, res, next) => {
                     existe.idOrganizacion(updateEnteFiscalizador.id_organizacion)
                         .then(existeID => {
                             if (existeID) {
-                                //oldEnteFiscalizador contiene todos los datos actualmente guardados en la tabla de catalogo_entes_fiscalizadores
-                                //updateEnteFiscalizador contiene los nuevos datos que se actualizarán
                                 req.updateEnteFiscalizador = updateEnteFiscalizador
                                 req.oldEnteFiscalizador = oldEnteFiscalizador
                                 next()

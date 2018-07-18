@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catUniAdm.create(req.nuevaUniAdm)
+        .then(nuevaUniAdm => {
+            res.status(200).json(nuevaUniAdm)
         })
         .catch(err => {
             console.log(err)
@@ -19,9 +19,9 @@ exports.crear = (req, res) => {
 
 // GET all
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.status(200).json(organizaciones)
+    db.catUniAdm.findAll()
+        .then(uniAdms => {
+            res.status(200).json(uniAdms)
         })
         .catch(err => {
             console.log(err)
@@ -35,10 +35,10 @@ exports.verTodos = (req, res) => {
 
 // GET one por id
 exports.verId = (req, res) => {
-    buscar.idOrganizacion(req.params.id)
-        .then(organizacion => {
-            if (organizacion) {
-                res.status(200).json(organizacion)
+    buscar.idUniAdm(req.params.id)
+        .then(uniAdm => {
+            if (uniAdm) {
+                res.status(200).json(uniAdm)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -58,9 +58,9 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.oldUniAdm.updateAttributes(req.updateUniAdm)
+        .then(uniAdmActualizada => {
+            res.json(uniAdmActualizada)
         })
         .catch(err => {
             console.log(err)
@@ -74,13 +74,13 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catUniAdm.destroy({
             where: {
-                id_organizacion: req.params.id
+                id_uniadm: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(uniAdmEliminada => {
+            if (uniAdmEliminada == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

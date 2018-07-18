@@ -7,18 +7,16 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         id_organizacion: {
-            //int (11)
             type: DataTypes.UUID,
             allowNull: false
         },
         nombre: {
-            //varchar(255)
-            type: DataTypes.STRING,
+            type: DataTypes.STRING(255),
             allowNull: false,
         },
         activo: {
-            //int (11)
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER(11),
+            allowNull: false
         },
         // Timestamps
         created_at: DataTypes.DATE,

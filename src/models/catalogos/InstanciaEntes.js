@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoInstanciaFondos = sequelize.define('catalogo_instancia_fondos', {
+    const catalogoInstanciaEntes = sequelize.define('catalogo_instancia_entes', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.UUID,
             allowNull: false
         },
-        id_fondo: {
+        id_ente: {
             type: DataTypes.UUID,
             allowNull: false
         },
@@ -21,5 +21,5 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: false,
         underscored: true
     })
-    return catalogoInstanciaFondos
+    return catalogoInstanciaEntes
 }

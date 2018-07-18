@@ -1,23 +1,23 @@
-const express = require('express')
-const router = express.Router()
+// const express = require('express')
+// const router = express.Router()
 
-const EntesFiscalizadoresPolices = require('../../policies/catalogos/EntesFiscalizadoresPolicies')
+const EntesFiscalizadoresPolicies = require('../../policies/catalogos/EntesFiscalizadoresPolicies')
 const EntesFiscalizadoresController = require('../../controllers/catalogos/EnteFiscalizadorController')
 
+module.exports = (router) => {
+// POST single
+router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.registro, EntesFiscalizadoresController.crear)
 
-// POST single catalogo/Fondo
-router.post('/', EntesFiscalizadoresPolices.registro, EntesFiscalizadoresController.crear)
+// GET all
+router.get('/entes_fiscalizadores', EntesFiscalizadoresController.verTodos)
 
-// GET all catalogo/Fondo
-router.get('/', EntesFiscalizadoresController.verTodos)
+// GET one by id
+router.get('/entes_fiscalizadores/:id', EntesFiscalizadoresController.verId)
 
-// GET one catalogo/Fondo by id
-router.get('/:id', EntesFiscalizadoresController.verID)
+// PATCH single
+router.patch('/entes_fiscalizadores/:id', EntesFiscalizadoresPolicies.actualizar, EntesFiscalizadoresController.actualizar)
 
-// PATCH single catalogo/Fondo
-router.patch('/:id', EntesFiscalizadoresPolices.actualizar, EntesFiscalizadoresController.actualizar)
-
-// DELETE single catalogo/Fondo
-router.delete('/:id', EntesFiscalizadoresController.eliminar)
-
-module.exports = router
+// DELETE single
+router.delete('/entes_fiscalizadores/:id', EntesFiscalizadoresController.eliminar)
+}
+//module.exports = router

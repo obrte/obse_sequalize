@@ -1,23 +1,24 @@
-const express = require('express')
-const router = express.Router()
+// const express = require('express')
+// const router = express.Router()
 
-const InstanciaFondosPolices = require('../../policies/catalogos/InstanciaFondosPolices')
+const InstanciaFondosPolicies = require('../../policies/catalogos/InstanciaFondosPolicies')
 const InstanciaFondosController = require('../../controllers/catalogos/InstanciaFondosController')
 
+module.exports = (router) => {
 
-// POST single catalogo/Fondo
-router.post('/', InstanciaFondosPolices.registro, InstanciaFondosController.crear)
+// POST single
+router.post('/instancia_fondos', InstanciaFondosPolicies.registro, InstanciaFondosController.crear)
 
-// GET all catalogo/Fondo
-router.get('/', InstanciaFondosController.verTodos)
+// GET all
+router.get('/instancia_fondos', InstanciaFondosController.verTodos)
 
-// GET one catalogo/Fondo by id
-router.get('/:id', InstanciaFondosController.verID)
+// GET one by id
+router.get('/instancia_fondos/:id', InstanciaFondosController.verId)
 
-// PATCH single catalogo/Fondo
-router.patch('/:id', InstanciaFondosPolices.actualizar, InstanciaFondosController.actualizar)
+// PATCH single
+router.patch('/instancia_fondos/:id', InstanciaFondosPolicies.actualizar, InstanciaFondosController.actualizar)
 
-// DELETE single catalogo/Fondo
-router.delete('/:id', InstanciaFondosController.eliminar)
-
-module.exports = router
+// DELETE single
+router.delete('/instancia_fondos/:id', InstanciaFondosController.eliminar)
+}
+//module.exports = router

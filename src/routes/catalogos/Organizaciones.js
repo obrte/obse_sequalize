@@ -1,23 +1,23 @@
-const express = require('express')
-const router = express.Router()
+//const express = require('express')
+//const router = express.Router()
 
-const OrganizacionPolices = require('../../policies/catalogos/OrganizacionesPolices')
+const OrganizacionPolicies = require('../../policies/catalogos/OrganizacionesPolicies')
 const OrganizacionesController = require('../../controllers/catalogos/OrganizacionesController')
 
+module.exports = (router) => {
+// POST single
+router.post('/organizaciones', OrganizacionPolicies.registro, OrganizacionesController.crear)
 
-// POST single catalogo/Organizaciones
-router.post('/', OrganizacionPolices.registro, OrganizacionesController.crear)
+// GET all
+router.get('/organizaciones', OrganizacionesController.verTodos)
 
-// GET all catalogo/Organizaciones
-router.get('/', OrganizacionesController.verTodos)
+// GET one by id
+router.get('/organizaciones/:id', OrganizacionesController.verId)
 
-// GET one catalogo/Organizaciones by id
-router.get('/:id', OrganizacionesController.verID)
+// PATCH single
+router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, OrganizacionesController.actualizar)
 
-// PATCH single catalogo/Organizaciones
-router.patch('/:id', OrganizacionPolices.actualizar, OrganizacionesController.actualizar)
-
-// DELETE single catalogo/Organizaciones
-router.delete('/:id', OrganizacionesController.eliminar)
-
-module.exports = router
+// DELETE single
+router.delete('/organizaciones/:id', OrganizacionesController.eliminar)
+}
+//module.exports = router

@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catInstanciaEntes.create(req.nuevaInstanciaEntes)
+        .then(nuevaInstanciaEntes => {
+            res.status(200).json(nuevaInstanciaEntes)
         })
         .catch(err => {
             console.log(err)
@@ -19,9 +19,9 @@ exports.crear = (req, res) => {
 
 // GET all
 exports.verTodos = (req, res) => {
-    db.catOrganizaciones.findAll()
-        .then(organizaciones => {
-            res.status(200).json(organizaciones)
+    db.catInstanciaEntes.findAll()
+        .then(instanciasEntes => {
+            res.status(200).json(instanciasEntes)
         })
         .catch(err => {
             console.log(err)
@@ -35,10 +35,10 @@ exports.verTodos = (req, res) => {
 
 // GET one por id
 exports.verId = (req, res) => {
-    buscar.idOrganizacion(req.params.id)
-        .then(organizacion => {
-            if (organizacion) {
-                res.status(200).json(organizacion)
+    buscar.idInstanciaEntes(req.params.id)
+        .then(instanciaEntes => {
+            if (instanciaEntes) {
+                res.status(200).json(instanciaEntes)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -58,15 +58,15 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
+    req.oldInstanciaEntes.updateAttributes(req.updateInstanciaEntes)
+        .then(instanciaEntesActualizado => {
+            res.json(instanciaEntesActualizado)
         })
         .catch(err => {
             console.log(err)
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al actualizar',
+                msg: 'Fallo al actualizar',
                 error: err
             })
         })
@@ -74,13 +74,13 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-    db.catOrganizaciones.destroy({
+    db.catInstanciaEntes.destroy({
             where: {
-                id_organizacion: req.params.id
+                id: req.params.id
             }
         })
-        .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+        .then(instanciaEntesEliminado => {
+            if (instanciaEntesEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
                     msg: 'Eliminación exitosa'

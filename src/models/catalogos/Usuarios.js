@@ -1,12 +1,24 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoFondos = sequelize.define('catalogo_fondos', {
-        id_fondo: {
+    const catalogoUsuarios = sequelize.define('catalogo_usuarios', {
+        id_usuario: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
             primaryKey: true
         },
+        tipo: {
+            type: DataTypes.STRING(25),
+            allowNull: false
+        },
         id_organizacion: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
+        id_instancia: {
+            type: DataTypes.UUID,
+            allowNull: false
+        },
+        id_uniadm: {
             type: DataTypes.UUID,
             allowNull: false
         },
@@ -15,11 +27,20 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             unique: true
         },
-        origen: {
-            type: DataTypes.INTEGER(11),
+        email: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+            unique: true
+        },
+        password: {
+            type: DataTypes.STRING(255),
             allowNull: false
         },
         activo: {
+            type: DataTypes.INTEGER(11),
+            allowNull: false
+        },
+        id_usuario_creacion: {
             type: DataTypes.INTEGER(11),
             allowNull: false
         },
@@ -30,5 +51,5 @@ module.exports = (sequelize, DataTypes) => {
         paranoid: false,
         underscored: true
     })
-    return catalogoFondos
+    return catalogoUsuarios
 }

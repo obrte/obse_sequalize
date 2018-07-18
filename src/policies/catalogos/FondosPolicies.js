@@ -1,6 +1,4 @@
 const Joi = require('joi')
-const db = require('../../config/db')
-const Op = db.Sequelize.Op
 const buscar = require('../../customFunction/Buscar')
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
@@ -46,15 +44,12 @@ exports.actualizar = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const id = req.params.id
-        buscar.idFondo(id)
+        buscar.idFondo(req.params.id)
             .then(oldFondo => {
                 if (oldFondo) {
                    existe.idOrganizacion(updateFondo.id_organizacion)
                         .then(existeID => {
                             if (existeID) {
-                                //oldFondo contiene todos los datos actualmente guardados en la tabla de catalogo_fondos
-                                //updateFondo contiene los nuevos datos que se actualizarán
                                 req.updateFondo = updateFondo
                                 req.oldFondo = oldFondo
                                 next()

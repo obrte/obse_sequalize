@@ -1,22 +1,29 @@
 const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
-//POST single Catalogo/Organizaciones
+//POST single
 exports.crear = (req, res) => {
-    db.catEntesFiscalizadores.create(req.nuevoEnteFiscalizador)
-        .then(nuevoEnteFiscalizador => {
-            res.status(200).json(nuevoEnteFiscalizador)
+    db.catInstancias.create(req.nuevaInstancia)
+        .then(nuevaInstancia => {
+            res.status(200).json(nuevaInstancia)
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al crear',
+                error: err
+            })
         })
 }
 
-// GET all Catalogo/Organizaciones
+// GET all
 exports.verTodos = (req, res) => {
     db.catInstancias.findAll()
         .then(instancias => {
             res.status(200).json(instancias)
         })
-        .catch(function (err) {
-            // print the error details
+        .catch(err => {
             console.log(err)
             res.status(400).json({
                 status: 'error',
@@ -26,8 +33,8 @@ exports.verTodos = (req, res) => {
         })
 }
 
-// GET one Catalogo/Organizaciones por id
-exports.verID = (req, res) => {
+// GET one por id
+exports.verId = (req, res) => {
     buscar.idInstancia(req.params.id)
         .then(instancia => {
             if (instancia) {
@@ -39,17 +46,33 @@ exports.verID = (req, res) => {
                 })
             }
         })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al buscar',
+                error: err
+            })
+        })
 }
 
-// PATCH single Catalogo/Organizaciones
+// PATCH single
 exports.actualizar = (req, res) => {
     req.oldInstancia.updateAttributes(req.updateInstancia)
         .then(instanciaActualizada => {
             res.json(instanciaActualizada)
         })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al actualizar',
+                error: err
+            })
+        })
 }
 
-// DELETE single Catalogo/Organizaciones
+// DELETE single
 exports.eliminar = (req, res) => {
     db.catInstancias.destroy({
             where: {
@@ -68,6 +91,13 @@ exports.eliminar = (req, res) => {
                     msg: 'No encontrado'
                 })
             }
-
+        })
+        .catch(err => {
+            console.log(err)
+            res.status(400).json({
+                status: 'error',
+                msg: 'Error al elimiar',
+                error: err
+            })
         })
 }
