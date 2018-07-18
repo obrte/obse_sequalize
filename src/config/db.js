@@ -34,8 +34,8 @@ db.catUniAdm = require('../models/catalogos/UniAdm')(sequelize, Sequelize)
 db.catUsuarios = require('../models/catalogos/Usuarios')(sequelize, Sequelize)
 
 /** 
-*!Relaciones
-**/
+ *!Relaciones
+ **/
 
 //catalogo_fondos/catalogo_organizacion(id_organizacion)
 db.catFondos.belongsTo(db.catOrganizaciones, {
@@ -57,10 +57,10 @@ db.catInstanciaFondos.belongsTo(db.catFondos, {
     foreignKey: 'id_fondo'
 })
 //catalogo_instancia_entes/catalogo_instancias/catalogo_entes_fiscalizadores(id_instancia/id_ente)
-db.catInstanciaFondos.belongsTo(db.catInstancias, {
+db.catInstanciaEntes.belongsTo(db.catInstancias, {
     foreignKey: 'id_instancia'
 })
-db.catInstanciaFondos.belongsTo(db.catEntesFiscalizadores, {
+db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, {
     foreignKey: 'id_ente'
 })
 //catalogo_uniadm/catalogo_instancia(id_instancia)
@@ -70,7 +70,7 @@ db.catUniAdm.belongsTo(db.catInstancias, {
 /**
  * catalogo_usuarios/catalogo_organizaciones/catalogo_instancia/catalogo_uniadm
  * (id_organizacion/id_instancia/id_uniadm)
-**/
+ **/
 db.catUsuarios.belongsTo(db.catOrganizaciones, {
     foreignKey: 'id_organizacion'
 })

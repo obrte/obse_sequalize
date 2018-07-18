@@ -17,27 +17,16 @@ exports.registro = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const idInstancia = nuevaInstanciaFondos.id_instancia
-        const idFondo = nuevaInstanciaFondos.id_fondo
-        existe.idInstancia(idInstancia)
-            .then(existeInstancia => {
-                if (existeInstancia) {
-                    existe.idFondo(idFondo)
-                        .then(existeFondo => {
-                            if (existeFondo) {
-                                req.nuevaInstanciaFondos = nuevaInstanciaFondos
-                                next()
-                            } else {
-                                res.status(400).json({
-                                    status: 'error',
-                                    msg: 'Fondo no encontrado'
-                                })
-                            }
-                        })
+        //busca el id_instancia y el id_fondo
+        existenIds(nuevaInstanciaFondos)
+            .then(ids => {
+                if (ids.existe) {
+                    req.nuevaInstanciaFondos = nuevaInstanciaFondos
+                    next()
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'Instancia no encontrada'
+                        msg: ids.msg
                     })
                 }
             })
@@ -63,28 +52,27 @@ exports.actualizar = (req, res, next) => {
         buscar.idInstanciaFondos(req.params.id)
             .then(oldInstanciaFondos => {
                 if (oldInstanciaFondos) {
-                    existe.idInstancia(updateInstanciaFondos.id_instancia)
-                        .then(existeInstancia => {
-                            if (existeInstancia) {
-                                existe.idFondo(updateInstanciaFondos.id_fondo)
-                                    .then(existeFondo => {
-                                        if (existeFondo) {
-                                            req.updateInstanciaFondos = updateInstanciaFondos
-                                            req.oldInstanciaFondos = oldInstanciaFondos
-                                            next()
-                                        } else {
-                                            res.status(400).json({
-                                                status: 'error',
-                                                msg: 'Fondo no encontrado'
-                                            })
-                                        }
-                                    })
+                    //busca el id_instancia y el id_fondo
+                    existenIds(updateInstanciaFondos)
+                        .then(ids => {
+                            if (ids.existe) {
+                                console.log(oldInstanciaFondos)
+                                req.updateInstanciaFondos = updateInstanciaFondos
+                                req.oldInstanciaFondos = oldInstanciaFondos
+                                next()
                             } else {
                                 res.status(400).json({
                                     status: 'error',
-                                    msg: 'Instancia no encontrada'
+                                    msg: ids.msg
                                 })
                             }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(400).json({
+                                status: 'error',
+                                msg: err
+                            })
                         })
                 } else {
                     res.status(400).json({
@@ -104,4 +92,37 @@ const datosCuerpo = (req) => {
         id_fondo: id_fondo
     }
     return datosInstanciaFondos
+}
+
+const existenIds = (datos) => {
+    return new Promise((resolve, reject) => {
+        existe.idInstancia(datos.id_instancia)
+            .then(existeInstancia => {
+                if (existeInstancia) {
+                    existe.idFondo(datos.id_fondo)
+                        .then(existeFondo => {
+                            if (existeFondo) {
+                                const ids = {
+                                    existe: true
+                                }
+                                resolve(ids)
+                            } else {
+                                const ids = {
+                                    existe: false,
+                                    msg: 'Fondo no encontrado'
+                                }
+                                resolve(ids)
+                            }
+                        })
+                        .catch(err => reject(err))
+                } else {
+                    const ids = {
+                        existe: false,
+                        msg: 'Instancia no encontrada'
+                    }
+                    resolve(ids)
+                }
+            })
+            .catch(err => reject(err))
+    })
 }

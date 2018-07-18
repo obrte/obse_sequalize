@@ -58,7 +58,7 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldEnteFiscalizador.updateAttributes(req.newEnteFiscalizador)
+    req.oldEnteFiscalizador.updateAttributes(req.updateEnteFiscalizador)
         .then(enteFiscalizadorActualizado => {
             res.json(enteFiscalizadorActualizado)
         })

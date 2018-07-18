@@ -58,7 +58,7 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldInstanciaEntes.updateAttributes(req.updateInstanciaEntes)
+    req.oldInstanciaEntes.updateAttributes(req.updateInstanciaEnte)
         .then(instanciaEntesActualizado => {
             res.json(instanciaEntesActualizado)
         })

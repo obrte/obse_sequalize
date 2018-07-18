@@ -145,6 +145,24 @@ const idUsuario = (id) => {
     })
 }
 
+const email = (email) => {
+    return new Promise((resolve, reject) => {
+        db.catUsuarios.find({
+                where: {
+                    email: email
+                }
+            })
+            .then(datos => {
+                if (datos) {
+                    resolve(true)
+                } else {
+                    resolve(false)
+                }
+            })
+            .catch(err => reject(err))
+    })
+}
+
 const existe = {}
 
 existe.idOrganizacion = idOrganizacion
@@ -155,5 +173,6 @@ existe.idInstanciaFondos = idInstanciaFondos
 existe.idInstanciaEntes = idInstanciaEntes
 existe.idUniAdm = idUniAdm
 existe.idUsuario = idUsuario
+existe.email = email
 
 module.exports = existe

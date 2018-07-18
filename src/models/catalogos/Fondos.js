@@ -12,8 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         nombre: {
             type: DataTypes.STRING(255),
-            allowNull: false,
-            unique: true
+            allowNull: false
         },
         origen: {
             type: DataTypes.INTEGER(11),

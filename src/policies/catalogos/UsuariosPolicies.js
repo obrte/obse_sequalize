@@ -24,11 +24,28 @@ exports.registro = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        buscarIds(nuevoUsuario)
+        existenIds(nuevoUsuario)
             .then(ids => {
                 if (ids.existe) {
-                    req.nuevoUsuario = nuevoUsuario
-                    next()
+                    existe.email(nuevoUsuario.email)
+                        .then(existeEmail => {
+                            if (!existeEmail) {
+                                req.nuevoUsuario = nuevoUsuario
+                                next()
+                            } else {
+                                res.status(400).json({
+                                    status: 'error',
+                                    msg: 'El correo ya está en uso'
+                                })
+                            }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(400).json({
+                                status: 'error',
+                                msg: err
+                            })
+                        })
                 } else {
                     res.status(400).json({
                         status: 'error',
@@ -58,12 +75,35 @@ exports.actualizar = (req, res, next) => {
         buscar.idUsuario(req.params.id)
             .then(oldUsuario => {
                 if (oldUsuario) {
-                    buscarIds(updateUsuario)
+                    existenIds(updateUsuario)
                         .then(ids => {
                             if (ids.existe) {
-                                req.oldUsuario = oldUsuario
-                                req.updateUsuario = updateUsuario
-                                next()
+                                if (updateUsuario.email == oldUsuario.email) {
+                                    req.oldUsuario = oldUsuario
+                                    req.updateUsuario = updateUsuario
+                                    next()
+                                } else {
+                                    existe.email(updateUsuario.email)
+                                        .then(existeEmail => {
+                                            if (!existeEmail) {
+                                                req.oldUsuario = oldUsuario
+                                                req.updateUsuario = updateUsuario
+                                                next()
+                                            } else {
+                                                res.status(400).json({
+                                                    status: 'error',
+                                                    msg: 'El correo ya está en uso'
+                                                })
+                                            }
+                                        })
+                                        .catch(err => {
+                                            console.log(err)
+                                            res.status(400).json({
+                                                status: 'error',
+                                                msg: err
+                                            })
+                                        })
+                                }
                             } else {
                                 res.status(400).json({
                                     status: 'error',
@@ -107,15 +147,15 @@ const datosCuerpo = (req) => {
     return datosUsuario
 }
 
-const buscarIds = (datos) => {
+const existenIds = (datos) => {
     return new Promise((resolve, reject) => {
         existe.idOrganizacion(datos.id_organizacion)
             .then(existeOrganizacion => {
                 if (existeOrganizacion) {
-                    existe.idInstancia(nuevoUsuario.id_instancia)
+                    existe.idInstancia(datos.id_instancia)
                         .then(existeInstancia => {
                             if (existeInstancia) {
-                                existe.idUniAdm(nuevoUsuario.id_uniadm)
+                                existe.idUniAdm(datos.id_uniadm)
                                     .then(existeUniAdm => {
                                         if (existeUniAdm) {
                                             const ids = {

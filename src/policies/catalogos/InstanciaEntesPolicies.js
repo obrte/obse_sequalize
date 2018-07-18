@@ -17,27 +17,15 @@ exports.registro = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const idInstancia = nuevaInstanciaEntes.id_instancia
-        const idEnte = nuevaInstanciaEntes.id_ente
-        existe.idInstancia(idInstancia)
-            .then(existeInstancia => {
-                if (existeInstancia) {
-                    existe.idEnte(idEnte)
-                        .then(existeEnte => {
-                            if (existeEnte) {
-                                req.nuevaInstanciaEntes = nuevaInstanciaEntes
-                                next()
-                            } else {
-                                res.status(400).json({
-                                    status: 'error',
-                                    msg: 'Ente no encontrado'
-                                })
-                            }
-                        })
+        existenIds(nuevaInstanciaEntes)
+            .then(ids => {
+                if (ids.existe) {
+                    req.nuevaInstanciaEntes = nuevaInstanciaEntes
+                    next()
                 } else {
                     res.status(400).json({
                         status: 'error',
-                        msg: 'Instancia no encontrada'
+                        msg: ids.msg
                     })
                 }
             })
@@ -63,28 +51,25 @@ exports.actualizar = (req, res, next) => {
         buscar.idInstanciaEntes(req.params.id)
             .then(oldInstanciaEntes => {
                 if (oldInstanciaEntes) {
-                    existe.idInstancia(updateInstanciaEnte.id_instancia)
-                        .then(existeInstancia => {
-                            if (existeInstancia) {
-                                existe.idEnte(updateInstanciaEnte.id_ente)
-                                    .then(existeEnte => {
-                                        if (existeEnte) {
-                                            req.updateInstanciaEnte = updateInstanciaEnte
-                                            req.oldInstanciaEntes = oldInstanciaEntes
-                                            next()
-                                        } else {
-                                            res.status(400).json({
-                                                status: 'error',
-                                                msg: 'Ente no encontrado'
-                                            })
-                                        }
-                                    })
+                    existenIds(updateInstanciaEnte)
+                        .then(ids => {
+                            if (ids.existe) {
+                                req.updateInstanciaEnte = updateInstanciaEnte
+                                req.oldInstanciaEntes = oldInstanciaEntes
+                                next()
                             } else {
                                 res.status(400).json({
                                     status: 'error',
-                                    msg: 'Instancia no encontrada'
+                                    msg: ids.msg
                                 })
                             }
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            res.status(400).json({
+                                status: 'error',
+                                msg: err
+                            })
                         })
                 } else {
                     res.status(400).json({
@@ -92,6 +77,13 @@ exports.actualizar = (req, res, next) => {
                         msg: 'Instancia-Entes no encontrado'
                     })
                 }
+            })
+            .catch(err => {
+                console.log(err)
+                res.status(400).json({
+                    status: 'error',
+                    msg: err
+                })
             })
     }
 }
@@ -104,4 +96,37 @@ const datosCuerpo = (req) => {
         id_ente: id_ente
     }
     return datosInstanciaEntes
+}
+
+const existenIds = (datos) => {
+    return new Promise((resolve, reject) => {
+        existe.idInstancia(datos.id_instancia)
+            .then(existeInstancia => {
+                if (existeInstancia) {
+                    existe.idEnteFiscalizador(datos.id_ente)
+                        .then(existeEnte => {
+                            if (existeEnte) {
+                                const ids = {
+                                    existe: true
+                                }
+                                resolve(ids)
+                            } else {
+                                const ids = {
+                                    existe: false,
+                                    msg: 'Ente no encontrado'
+                                }
+                                resolve(ids)
+                            }
+                        })
+                        .catch(err => reject(err))
+                } else {
+                    const ids = {
+                        existe: false,
+                        msg: 'Instancia no encontrada'
+                    }
+                    resolve(ids)
+                }
+            })
+            .catch(err => reject(err))
+    })
 }
