@@ -29,10 +29,10 @@ exports.test = (req, res) => {
 
 exports.crear = (req, res, next) => {
     const nuevaOrganizacion = datosCuerpo(req)
+    console.log(nuevaOrganizacion)
     const {
         error
     } = Joi.validate(nuevaOrganizacion, schema)
-
     if (error) {
         mensajes.switchError(error, res)
     } else {
@@ -126,12 +126,12 @@ exports.actualizar = (req, res, next) => {
 
 const datosCuerpo = (req) => {
     const nombre = req.body.nombre,
-        nombreCorto = req.body.nombreCorto,
-        activo = req.body.activo
+        nombreCorto = req.body.nombreCorto
+       // activo = req.body.activo
     const datosOrganizacion = {
         nombre: nombre,
         nombreCorto: nombreCorto,
-        activo: activo
+       // activo: activo
     }
     return datosOrganizacion
 }

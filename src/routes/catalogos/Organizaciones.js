@@ -1,6 +1,3 @@
-//const express = require('express')
-//const router = express.Router()
-
 const OrganizacionPolicies = require('../../policies/catalogos/OrganizacionesPolicies')
 const OrganizacionesController = require('../../controllers/catalogos/OrganizacionesController')
 
@@ -22,4 +19,6 @@ router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, Organizacio
 // DELETE single
 router.delete('/organizaciones/:id', OrganizacionesController.eliminar)
 }
-//module.exports = router
+
+//Patch Activo
+//router.patch('/organizaciones/activo/:id', OrganizacionesController.activo)

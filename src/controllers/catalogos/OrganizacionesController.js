@@ -72,13 +72,44 @@ exports.actualizar = (req, res) => {
         })
 }
 
+exports.activo = (req, res) => {
+    db.catOrganizaciones.find({
+        where: {
+            idOrganizacion: req.params.id
+        }
+    })
+        .then(organizacion => {
+            if (organizacion) {
+                const activo = { activo: !organizacion.activo }
+                organizacion.updateAttributes(activo)
+                    .then(actualizada => {
+                        res.status(200).json(actualizada)
+                    })
+                    .catch(err => {
+                        console.log(err)
+                        res.status(400).json({
+                            status: 'error',
+                            msg: 'Error al actualizar',
+                            error: err
+                        })
+                    })
+            } else {
+                res.status(400).json({
+                    status: 'error',
+                    msg: 'Error al actualizar'
+
+                })
+            }
+        })
+}
+
 // DELETE single
 exports.eliminar = (req, res) => {
     db.catOrganizaciones.destroy({
-            where: {
-                idOrganizacion: req.params.id
-            }
-        })
+        where: {
+            idOrganizacion: req.params.id
+        }
+    })
         .then(organizacionEliminada => {
             if (organizacionEliminada == 1) {
                 res.status(200).json({

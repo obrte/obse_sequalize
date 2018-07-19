@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         activo: {
             type: DataTypes.BOOLEAN,
             allowNull: false,
-            defaultValue: 1
+            defaultValue: true
         },
         // Timestamps
         created_at: DataTypes.DATE,
