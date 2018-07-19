@@ -4,8 +4,8 @@ const existe = require('../../customFunction/Existe')
 const buscar = require('../../customFunction/Buscar')
 
 const schema = {
-    id_instancia: Joi.string().required(),
-    id_fondo: Joi.string().required()
+    idInstancia: Joi.string().required(),
+    idFondo: Joi.string().required()
 }
 
 //validar que los campos no esten vacios
@@ -85,18 +85,18 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const id_instancia = req.body.id_instancia,
-        id_fondo = req.body.id_fondo
+    const idInstancia = req.body.idInstancia,
+        idFondo = req.body.idFondo
     const datosInstanciaFondos = {
-        id_instancia: id_instancia,
-        id_fondo: id_fondo
+        idInstancia: idInstancia,
+        idFondo: idFondo
     }
     return datosInstanciaFondos
 }
 
 const existenIds = (datos) => {
     return new Promise((resolve, reject) => {
-        existe.idInstancia(datos.id_instancia)
+        existe.idInstancia(datos.idInstancia)
             .then(existeInstancia => {
                 if (existeInstancia) {
                     existe.idFondo(datos.id_fondo)

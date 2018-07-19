@@ -6,7 +6,9 @@ const OrganizacionesController = require('../../controllers/catalogos/Organizaci
 
 module.exports = (router) => {
 // POST single
-router.post('/organizaciones', OrganizacionPolicies.registro, OrganizacionesController.crear)
+router.post('/organizaciones', OrganizacionPolicies.crear, OrganizacionesController.crear)
+
+router.post('/test', OrganizacionPolicies.test)
 
 // GET all
 router.get('/organizaciones', OrganizacionesController.verTodos)

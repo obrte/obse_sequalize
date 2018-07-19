@@ -76,7 +76,7 @@ exports.actualizar = (req, res) => {
 exports.eliminar = (req, res) => {
     db.catUniAdm.destroy({
             where: {
-                id_uniadm: req.params.id
+                idUniadm: req.params.id
             }
         })
         .then(uniAdmEliminada => {

@@ -76,7 +76,7 @@ exports.actualizar = (req, res) => {
 exports.eliminar = (req, res) => {
     db.catOrganizaciones.destroy({
             where: {
-                id_organizacion: req.params.id
+                idOrganizacion: req.params.id
             }
         })
         .then(organizacionEliminada => {

@@ -76,7 +76,7 @@ exports.actualizar = (req, res) => {
 exports.eliminar = (req, res) => {
     db.catFondos.destroy({
             where: {
-                id_fondo: req.params.id
+                idFondo: req.params.id
             }
         })
         .then(fondoEliminado => {

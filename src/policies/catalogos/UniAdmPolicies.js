@@ -4,9 +4,8 @@ const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
 const schema = {
-    id_instancia: Joi.string().required(),
-    nombre: Joi.string().required(),
-    activo: Joi.number().integer().required()
+    idInstancia: Joi.string().required(),
+    nombre: Joi.string().required()
 }
 
 //validar que los campos no esten vacios
@@ -52,7 +51,7 @@ exports.actualizar = (req, res, next) => {
         buscar.idUniAdm(req.params.id)
             .then(oldUniAdm => {
                 if (oldUniAdm) {
-                    existe.idInstancia(updateUniAdm.id_instancia)
+                    existe.idInstancia(updateUniAdm.idInstancia)
                         .then(existeID => {
                             if (existeID) {
                                 req.updateUniAdm = updateUniAdm
@@ -76,11 +75,11 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const id_instancia = req.body.id_instancia,
+    const idInstancia = req.body.idInstancia,
         nombre = req.body.nombre,
         activo = req.body.activo
     const datosUniAdm = {
-        id_instancia: id_instancia,
+        idInstancia: idInstancia,
         nombre: nombre,
         activo: activo
     }

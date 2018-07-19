@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoOrganizaciones = sequelize.define('catalogo_organizaciones', {
-        id_organizacion: {
+    const catalogoOrganizaciones = sequelize.define('catalogoOrganizaciones', {
+        idOrganizacion: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
@@ -11,14 +11,15 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             unique: true
         },
-        nombre_corto: {
+        nombreCorto: {
             type: DataTypes.STRING(25),
             allowNull: false,
             unique: true
         },
         activo: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: 1
         },
         // Timestamps
         created_at: DataTypes.DATE,

@@ -5,9 +5,8 @@ const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
 const schema = {
-    id_organizacion: Joi.string().required(),
-    nombre: Joi.string().required(),
-    activo: Joi.number().integer().required()
+    idOrganizacion: Joi.string().required(),
+    nombre: Joi.string().required()
 }
 
 //validar que los campos no esten vacios
@@ -19,7 +18,7 @@ exports.registro = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const id = nuevoEnteFiscalizador.id_organizacion
+        const id = nuevoEnteFiscalizador.idOrganizacion
         existe.idOrganizacion(id)
             .then(existeID => {
                 if (existeID) {
@@ -54,7 +53,7 @@ exports.actualizar = (req, res, next) => {
         const id = req.params.id
         db.catEntesFiscalizadores.find({
                 where: {
-                    id_ente: id
+                    idEnte: id
                 },
                 nombre: {
                     [Op.ne]: updateEnteFiscalizador.nombre
@@ -62,7 +61,7 @@ exports.actualizar = (req, res, next) => {
             })
             .then(oldEnteFiscalizador => {
                 if (oldEnteFiscalizador) {
-                    existe.idOrganizacion(updateEnteFiscalizador.id_organizacion)
+                    existe.idOrganizacion(updateEnteFiscalizador.idOrganizacion)
                         .then(existeID => {
                             if (existeID) {
                                 req.updateEnteFiscalizador = updateEnteFiscalizador
@@ -86,11 +85,11 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const id_organizacion = req.body.id_organizacion,
+    const idOrganizacion = req.body.idOrganizacion,
         nombre = req.body.nombre,
         activo = req.body.activo
     const datosEnteFiscalizador = {
-        id_organizacion: id_organizacion,
+        idOrganizacion: idOrganizacion,
         nombre: nombre,
         activo: activo
     }

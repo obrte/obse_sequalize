@@ -1,24 +1,24 @@
 const switchError = (error, res) => {
     switch (error.details[0].context.key) {
-        case 'id_organizacion':
+        case 'idOrganizacion':
             res.status(400).json({
                 status: 'error',
                 msg: 'Debe introducir la organizacion.'
             })
             break
-        case 'id_instancia':
+        case 'idInstancia':
             res.status(400).json({
                 status: 'error',
                 msg: 'Debe introducir la instancia.'
             })
             break
-        case 'id_ente':
+        case 'idEnte':
             res.status(400).json({
                 status: 'error',
                 msg: 'Debe introducir el ente.'
             })
             break
-        case 'id_uniadm':
+        case 'idUniadm':
             res.status(400).json({
                 status: 'error',
                 msg: 'Debe introducir la Unidad Administrativa'
@@ -48,13 +48,13 @@ const switchError = (error, res) => {
                 msg: 'Debe proporcionar el campo activo.'
             })
             break
-        case 'id_usuario_creacion':
+        case 'idUsuarioCreacion':
             res.status(400).json({
                 status: 'error',
-                msg: 'Debe introducir un id_usuario_creacion.'
+                msg: 'Debe introducir un idUsuarioCreacion.'
             })
             break
-        case 'nombre_corto':
+        case 'nombreCorto':
             res.status(400).json({
                 status: 'error',
                 msg: 'Debe introducir un nombre corto.'

@@ -1,12 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoUniAdm = sequelize.define('catalogo_uniadm', {
-        id_uniadm: {
+    const catalogoUniAdm = sequelize.define('catalogoUniAdm', {
+        idUniadm: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
             primaryKey: true
         },
-        id_instancia: {
+        idInstancia: {
             type: DataTypes.UUID,
             allowNull: false
         },
@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         activo: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: 1
         },
         // Timestamps
         created_at: DataTypes.DATE,

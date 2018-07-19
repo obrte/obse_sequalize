@@ -1,12 +1,12 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoEntesFiscalizadores = sequelize.define('catalogo_entes_fiscalizadores', {
-        id_ente: {
+    const catalogoEntesFiscalizadores = sequelize.define('catalogoEntesFiscalizadores', {
+        idEnte: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
             primaryKey: true
         },
-        id_organizacion: {
+        idOrganizacion: {
             type: DataTypes.UUID,
             allowNull: false
         },
@@ -15,8 +15,9 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
         },
         activo: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: 1
         },
         // Timestamps
         created_at: DataTypes.DATE,

@@ -6,16 +6,28 @@ const mensajes = require('../../customFunction/Mensajes')
 
 const schema = {
     nombre: Joi.string().required(),
-    nombre_corto: Joi.string().required(),
-    activo: Joi.number().integer().required()
+    nombreCorto: Joi.string().required()
 }
 
 /*
 esta funcion valida que los campos que se van a registrar no esten vacios 
 y que la organizacion no esté capturada
 */
-exports.registro = (req, res, next) => {
-    //! la funcion datosCuerpo se encuentra al final del archivo
+
+exports.test = (req, res) => {
+    var llaves = Object.keys(req.body)
+    llaves.forEach((item) => {
+        if(req.body[item] == ""){
+            res.status(400).json({
+                status: 'error',
+                msg: 'Debe proporcionar el dato ' + item + '.'
+            })
+        } 
+    })
+    
+}
+
+exports.crear = (req, res, next) => {
     const nuevaOrganizacion = datosCuerpo(req)
     const {
         error
@@ -31,7 +43,7 @@ exports.registro = (req, res, next) => {
                             nombre: nuevaOrganizacion.nombre
                         },
                         {
-                            nombre_corto: nuevaOrganizacion.nombre_corto
+                            nombreCorto: nuevaOrganizacion.nombreCorto
                         }
                     ]
                 }
@@ -55,7 +67,8 @@ esta funcion valida que los campos que se van a actualizar no esten vacios
 y que la organizacion no esté capturada
 */
 exports.actualizar = (req, res, next) => {
-    //! la funcion datosCuerpo se encuentra al final del archivo    
+    //! la funcion datosCuerpo se encuentra al final del archivo   
+    
     const updateOrganizacion = datosCuerpo(req)
     const {
         error
@@ -74,10 +87,10 @@ exports.actualizar = (req, res, next) => {
                                         nombre: updateOrganizacion.nombre
                                     },
                                     {
-                                        nombre_corto: updateOrganizacion.nombre_corto
+                                        nombreCorto: updateOrganizacion.nombreCorto
                                     }
                                 ],
-                                id_organizacion: {
+                                idOrganizacion: {
                                     [Op.ne]: id
                                 }
                             }
@@ -113,11 +126,11 @@ exports.actualizar = (req, res, next) => {
 
 const datosCuerpo = (req) => {
     const nombre = req.body.nombre,
-        nombre_corto = req.body.nombre_corto,
+        nombreCorto = req.body.nombreCorto,
         activo = req.body.activo
     const datosOrganizacion = {
         nombre: nombre,
-        nombre_corto: nombre_corto,
+        nombreCorto: nombreCorto,
         activo: activo
     }
     return datosOrganizacion

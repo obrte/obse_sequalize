@@ -76,7 +76,7 @@ exports.actualizar = (req, res) => {
 exports.eliminar = (req, res) => {
     db.catEntesFiscalizadores.destroy({
             where: {
-                id_ente: req.params.id
+                idEnte: req.params.id
             }
         })
         .then(enteFiscalizadorEliminado => {

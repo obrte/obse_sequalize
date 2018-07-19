@@ -7,7 +7,7 @@ const idOrganizacion = (id) => {
     return new Promise((resolve, reject) => {
         db.catOrganizaciones.find({
                 where: {
-                    id_organizacion: id
+                    idOrganizacion: id
                 }
             })
             .then(datos => {
@@ -24,7 +24,7 @@ const idEnteFiscalizador = (id) => {
     return new Promise((resolve, reject) => {
         db.catEntesFiscalizadores.find({
                 where: {
-                    id_ente: id
+                    idEnte: id
                 }
             })
             .then(datos => {
@@ -42,7 +42,7 @@ const idFondo = (id) => {
     return new Promise((resolve, reject) => {
         db.catFondos.find({
                 where: {
-                    id_fondo: id
+                    idFondo: id
                 }
             })
             .then(datos => {
@@ -60,7 +60,7 @@ const idInstancia = (id) => {
     return new Promise((resolve, reject) => {
         db.catInstancias.find({
                 where: {
-                    id_instancia: id
+                    idInstancia: id
                 }
             })
             .then(datos => {
@@ -114,7 +114,7 @@ const idUniAdm = (id) => {
     return new Promise((resolve, reject) => {
         db.catUniAdm.find({
                 where: {
-                    id_uniadm: id
+                    idUniadm: id
                 }
             })
             .then(datos => {
@@ -132,7 +132,7 @@ const idUsuario = (id) => {
     return new Promise((resolve, reject) => {
         db.catUsuarios.find({
                 where: {
-                    id_usuario: id
+                    idUsuario: id
                 }
             })
             .then(datos => {

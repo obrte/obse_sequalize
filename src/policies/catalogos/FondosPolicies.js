@@ -4,10 +4,9 @@ const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
 const schema = {
-    id_organizacion: Joi.string().required(),
+    idOrganizacion: Joi.string().required(),
     nombre: Joi.string().required(),
-    origen: Joi.number().integer().required(),
-    activo: Joi.number().integer().required()
+    origen: Joi.number().integer().required()
 }
 
 //validar que los campos no esten vacios
@@ -20,7 +19,7 @@ exports.registro = (req, res, next) => {
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        existe.idOrganizacion(nuevoFondo.id_organizacion)
+        existe.idOrganizacion(nuevoFondo.idOrganizacion)
             .then(existeID => {
                 if (existeID) {
                     req.nuevoFondo = nuevoFondo
@@ -47,7 +46,7 @@ exports.actualizar = (req, res, next) => {
         buscar.idFondo(req.params.id)
             .then(oldFondo => {
                 if (oldFondo) {
-                   existe.idOrganizacion(updateFondo.id_organizacion)
+                   existe.idOrganizacion(updateFondo.idOrganizacion)
                         .then(existeID => {
                             if (existeID) {
                                 req.updateFondo = updateFondo
@@ -71,12 +70,12 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const id_organizacion = req.body.id_organizacion,
+    const idOrganizacion = req.body.idOrganizacion,
     nombre = req.body.nombre,
     origen = req.body.origen,
     activo = req.body.activo
 const datosFondo = {
-    id_organizacion: id_organizacion,
+    idOrganizacion: idOrganizacion,
     nombre: nombre,
     origen: origen,
     activo: activo

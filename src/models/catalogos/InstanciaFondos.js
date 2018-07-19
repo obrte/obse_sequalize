@@ -1,16 +1,16 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoInstanciaFondos = sequelize.define('catalogo_instancia_fondos', {
+    const catalogoInstanciaFondos = sequelize.define('catalogoInstanciaFondos', {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
             primaryKey: true
         },
-        id_instancia: {
+        idInstancia: {
             type: DataTypes.UUID,
             allowNull: false
         },
-        id_fondo: {
+        idFondo: {
             type: DataTypes.UUID,
             allowNull: false
         },

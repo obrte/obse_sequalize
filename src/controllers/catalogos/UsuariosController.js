@@ -76,7 +76,7 @@ exports.actualizar = (req, res) => {
 exports.eliminar = (req, res) => {
     db.catUsuarios.destroy({
             where: {
-                id_usuario: req.params.id
+                idUsuario: req.params.id
             }
         })
         .then(usuarioEliminado => {

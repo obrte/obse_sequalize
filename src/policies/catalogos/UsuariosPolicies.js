@@ -5,14 +5,13 @@ const buscar = require('../../customFunction/Buscar')
 
 const schema = {
     tipo: Joi.string().required(),
-    id_organizacion: Joi.string().required(),
-    id_instancia: Joi.string().required(),
-    id_uniadm: Joi.string().required(),
+    idOrganizacion: Joi.string().required(),
+    idInstancia: Joi.string().required(),
+    idUniadm: Joi.string().required(),
     nombre: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().required(),
-    activo: Joi.number().integer().required(),
-    id_usuario_creacion: Joi.number().integer().required()
+    idUsuarioCreacion: Joi.number().integer().required()
 }
 
 //validar que los campos no esten vacios
@@ -125,24 +124,24 @@ exports.actualizar = (req, res, next) => {
 
 const datosCuerpo = (req) => {
     const tipo = req.body.tipo,
-        id_organizacion = req.body.id_organizacion,
-        id_instancia = req.body.id_instancia,
-        id_uniadm = req.body.id_uniadm,
+        idOrganizacion = req.body.idOrganizacion,
+        idInstancia = req.body.idInstancia,
+        idUniadm = req.body.idUniadm,
         nombre = req.body.nombre,
         email = req.body.email,
         password = req.body.password,
         activo = req.body.activo,
-        id_usuario_creacion = req.body.id_usuario_creacion
+        idUsuarioCreacion = req.body.idUsuarioCreacion
     const datosUsuario = {
         tipo: tipo,
-        id_organizacion: id_organizacion,
-        id_instancia: id_instancia,
-        id_uniadm: id_uniadm,
+        idOrganizacion: idOrganizacion,
+        idInstancia: idInstancia,
+        idUniadm: idUniadm,
         nombre: nombre,
         email: email,
         password: password,
         activo: activo,
-        id_usuario_creacion: id_usuario_creacion
+        idUsuarioCreacion: idUsuarioCreacion
     }
     return datosUsuario
 }

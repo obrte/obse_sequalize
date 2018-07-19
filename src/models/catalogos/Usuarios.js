@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const catalogoUsuarios = sequelize.define('catalogo_usuarios', {
-        id_usuario: {
+    const catalogoUsuarios = sequelize.define('catalogoUsuarios', {
+        idUsuario: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             unique: true,
@@ -10,15 +10,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(25),
             allowNull: false
         },
-        id_organizacion: {
+        idOrganizacion: {
             type: DataTypes.UUID,
             allowNull: false
         },
-        id_instancia: {
+        idInstancia: {
             type: DataTypes.UUID,
             allowNull: false
         },
-        id_uniadm: {
+        idUniadm: {
             type: DataTypes.UUID,
             allowNull: false
         },
@@ -36,11 +36,12 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         activo: {
-            type: DataTypes.INTEGER(11),
-            allowNull: false
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: 1
         },
-        id_usuario_creacion: {
-            type: DataTypes.INTEGER(11),
+        idUsuarioCreacion: {
+            type: DataTypes.UUID,
             allowNull: false
         },
         // Timestamps

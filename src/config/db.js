@@ -1,13 +1,16 @@
 /*
  ! CONECCION A LA DB
  ! USANDO MySQL-Sequalize
- new Sequelize('database', 'username', 'password', {
 */
 const Sequelize = require('sequelize')
 const sequelize = new Sequelize('observaciones_bd', 'root', '12345678', {
     host: 'localhost',
     dialect: 'mysql',
     operatorsAliases: false,
+    define: {
+        charset: 'utf8',
+        collate: 'utf8_general_ci'
+      },
     pool: {
         max: 5,
         min: 0,
