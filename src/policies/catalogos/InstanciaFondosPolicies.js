@@ -85,8 +85,8 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const idInstancia = req.body.idInstancia,
-        idFondo = req.body.idFondo
+    const idInstancia = req.body.instancia.idInstancia,
+        idFondo = req.body.instancia.idFondo
     const datosInstanciaFondos = {
         idInstancia: idInstancia,
         idFondo: idFondo

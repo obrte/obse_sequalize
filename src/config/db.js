@@ -42,46 +42,46 @@ db.catUsuarios = require('../models/catalogos/Usuarios')(sequelize, Sequelize)
 
 //catalogo_fondos/catalogo_organizacion(id_organizacion)
 db.catFondos.belongsTo(db.catOrganizaciones, {
-    foreignKey: 'id_organizacion'
+    foreignKey: 'idOrganizacion'
 })
 //catalogo_entes_fiscalizadores/catalogo_organizacion(id_organizacion)
 db.catEntesFiscalizadores.belongsTo(db.catOrganizaciones, {
-    foreignKey: 'id_organizacion'
+    foreignKey: 'idOrganizacion'
 })
 //catalogo_instancias/catalogo_organizacion(id_organizacion)
 db.catInstancias.belongsTo(db.catOrganizaciones, {
-    foreignKey: 'id_organizacion'
+    foreignKey: 'idOrganizacion'
 })
 //catalogo_instancia_fondos/catalogo_instancias/catalogo_fondos(id_instancia/id_fondo)
 db.catInstanciaFondos.belongsTo(db.catInstancias, {
-    foreignKey: 'id_instancia'
+    foreignKey: 'idInstancia'
 })
 db.catInstanciaFondos.belongsTo(db.catFondos, {
-    foreignKey: 'id_fondo'
+    foreignKey: 'idFondo'
 })
 //catalogo_instancia_entes/catalogo_instancias/catalogo_entes_fiscalizadores(id_instancia/id_ente)
 db.catInstanciaEntes.belongsTo(db.catInstancias, {
-    foreignKey: 'id_instancia'
+    foreignKey: 'idInstancia'
 })
 db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, {
-    foreignKey: 'id_ente'
+    foreignKey: 'idEnte'
 })
 //catalogo_uniadm/catalogo_instancia(id_instancia)
 db.catUniAdm.belongsTo(db.catInstancias, {
-    foreignKey: 'id_instancia'
+    foreignKey: 'idInstancia'
 })
 /**
  * catalogo_usuarios/catalogo_organizaciones/catalogo_instancia/catalogo_uniadm
  * (id_organizacion/id_instancia/id_uniadm)
  **/
 db.catUsuarios.belongsTo(db.catOrganizaciones, {
-    foreignKey: 'id_organizacion'
+    foreignKey: 'idOrganizacion'
 })
 db.catUsuarios.belongsTo(db.catInstancias, {
-    foreignKey: 'id_instancia'
+    foreignKey: 'idInstancia'
 })
 db.catUsuarios.belongsTo(db.catUniAdm, {
-    foreignKey: 'id_uniadm'
+    foreignKey: 'idUniadm'
 })
 
 module.exports = db

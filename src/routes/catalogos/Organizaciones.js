@@ -18,7 +18,4 @@ router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, Organizacio
 
 // DELETE single
 router.delete('/organizaciones/:id', OrganizacionesController.eliminar)
-
-//Patch Activo
-router.patch('/organizaciones/activo/:id', OrganizacionesController.activo)
 }

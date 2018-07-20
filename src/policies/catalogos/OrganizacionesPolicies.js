@@ -68,15 +68,17 @@ y que la organizacion no esté capturada
 */
 exports.actualizar = (req, res, next) => {
     //! la funcion datosCuerpo se encuentra al final del archivo   
-    
+    var llaves = Object.keys(req.body)
+    llaves.forEach((item) => {
+        if(req.body[item] == ""){
+            res.status(400).json({
+                status: 'error',
+                msg: 'Debe proporcionar el dato ' + item + '.'
+            })
+        } 
+    })
     const updateOrganizacion = datosCuerpo(req)
-    const {
-        error
-    } = Joi.validate(updateOrganizacion, schema)
-
-    if (error) {
-        mensajes.switchError(error, res)
-    } else {
+    
         const id = req.params.id
         buscar.idOrganizacion(id)
             .then(oldOrganizacion => {
@@ -121,13 +123,13 @@ exports.actualizar = (req, res, next) => {
                     error: err
                 })
             )
-    }
+    
 }
 
 const datosCuerpo = (req) => {
-    const nombre = req.body.nombre,
-        nombreCorto = req.body.nombreCorto
-       // activo = req.body.activo
+    const nombre = req.body.organizacion.nombre,
+        nombreCorto = req.body.organizacion.nombreCorto
+       // activo = req.body.organizacion.activo
     const datosOrganizacion = {
         nombre: nombre,
         nombreCorto: nombreCorto,

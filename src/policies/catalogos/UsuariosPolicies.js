@@ -123,15 +123,15 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const tipo = req.body.tipo,
-        idOrganizacion = req.body.idOrganizacion,
-        idInstancia = req.body.idInstancia,
-        idUniadm = req.body.idUniadm,
-        nombre = req.body.nombre,
-        email = req.body.email,
-        password = req.body.password,
-        activo = req.body.activo,
-        idUsuarioCreacion = req.body.idUsuarioCreacion
+    const tipo = req.body.usuario.tipo,
+        idOrganizacion = req.body.usuario.idOrganizacion,
+        idInstancia = req.body.usuario.idInstancia,
+        idUniadm = req.body.usuario.idUniadm,
+        nombre = req.body.usuario.nombre,
+        email = req.body.usuario.email,
+        password = req.body.usuario.password,
+        activo = req.body.usuario.activo,
+        idUsuarioCreacion = req.body.usuario.idUsuarioCreacion
     const datosUsuario = {
         tipo: tipo,
         idOrganizacion: idOrganizacion,

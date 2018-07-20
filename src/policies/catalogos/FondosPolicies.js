@@ -70,10 +70,10 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const idOrganizacion = req.body.idOrganizacion,
-    nombre = req.body.nombre,
-    origen = req.body.origen,
-    activo = req.body.activo
+    const idOrganizacion = req.body.fondo.idOrganizacion,
+    nombre = req.body.fondo.nombre,
+    origen = req.body.fondo.origen,
+    activo = req.body.fondo.activo
 const datosFondo = {
     idOrganizacion: idOrganizacion,
     nombre: nombre,

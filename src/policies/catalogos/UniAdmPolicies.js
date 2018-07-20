@@ -75,9 +75,9 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const idInstancia = req.body.idInstancia,
-        nombre = req.body.nombre,
-        activo = req.body.activo
+    const idInstancia = req.body.uniadm.idInstancia,
+        nombre = req.body.uniadm.nombre,
+        activo = req.body.uniadm.activo
     const datosUniAdm = {
         idInstancia: idInstancia,
         nombre: nombre,

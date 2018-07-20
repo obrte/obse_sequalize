@@ -85,9 +85,9 @@ exports.actualizar = (req, res, next) => {
 }
 
 const datosCuerpo = (req) => {
-    const idOrganizacion = req.body.idOrganizacion,
-        nombre = req.body.nombre,
-        activo = req.body.activo
+    const idOrganizacion = req.body.ente.idOrganizacion,
+        nombre = req.body.ente.nombre,
+        activo = req.body.ente.activo
     const datosEnteFiscalizador = {
         idOrganizacion: idOrganizacion,
         nombre: nombre,
