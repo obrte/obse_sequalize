@@ -43,10 +43,9 @@ exports.actualizar = (req, res, next) => {
     const id = req.params.id
     const ente = req.body.ente
     continuar(id, ente)
-        .then(continuar => {
+        .then(() => {
             req.ente = ente
             next()
-
         })
         .catch(err => {
             res.status(400).json({

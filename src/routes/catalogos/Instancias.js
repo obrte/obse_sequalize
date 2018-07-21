@@ -6,18 +6,18 @@ const InstanciasController = require('../../controllers/catalogos/InstanciasCont
 
 module.exports = (router) => {
 // POST single
-router.post('/instancias', InstanciasPolicies.registro, InstanciasController.crear)
+	router.post('/instancias', InstanciasPolicies.registro, InstanciasController.crear)
 
-// GET all
-router.get('/instancias', InstanciasController.verTodos)
+	// GET all
+	router.get('/instancias', InstanciasController.verTodos)
 
-// GET one by id
-router.get('/instancias/:id', InstanciasController.verId)
+	// GET one by id
+	router.get('/instancias/:id', InstanciasController.verId)
 
-// PATCH single
-router.patch('/instancias/:id', InstanciasPolicies.actualizar, InstanciasController.actualizar)
+	// PATCH single
+	router.patch('/instancias/:id', InstanciasPolicies.actualizar, InstanciasController.actualizar)
 
-// DELETE single
-router.delete('/instancias/:id', InstanciasController.eliminar)
+	// DELETE single
+	router.delete('/instancias/:id', InstanciasController.eliminar)
 }
 //module.exports = router

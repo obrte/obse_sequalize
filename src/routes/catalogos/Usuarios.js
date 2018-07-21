@@ -3,17 +3,17 @@ const UsuariosController = require('../../controllers/catalogos/UsuariosControll
 
 module.exports = (router) => {
 // POST single
-router.post('/usuarios', UsuariosPolicies.registro, UsuariosController.crear)
+	router.post('/usuarios', UsuariosPolicies.registro, UsuariosController.crear)
 
-// GET all
-router.get('/usuarios', UsuariosController.verTodos)
+	// GET all
+	router.get('/usuarios', UsuariosController.verTodos)
 
-// GET one by id
-router.get('/usuarios/:id', UsuariosController.verId)
+	// GET one by id
+	router.get('/usuarios/:id', UsuariosController.verId)
 
-// PATCH single
-router.patch('/usuarios/:id', UsuariosPolicies.actualizar, UsuariosController.actualizar)
+	// PATCH single
+	router.patch('/usuarios/:id', UsuariosPolicies.actualizar, UsuariosController.actualizar)
 
-// DELETE single
-router.delete('/usuarios/:id', UsuariosController.eliminar)
+	// DELETE single
+	router.delete('/usuarios/:id', UsuariosController.eliminar)
 }

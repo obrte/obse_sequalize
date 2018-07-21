@@ -6,18 +6,18 @@ const InstanciaEntesController = require('../../controllers/catalogos/InstanciaE
 
 module.exports = (router) => {
 // POST single
-router.post('/instancia_entes', InstanciaEntesPolicies.registro, InstanciaEntesController.crear)
+	router.post('/instancia_entes', InstanciaEntesPolicies.registro, InstanciaEntesController.crear)
 
-// GET all
-router.get('/instancia_entes', InstanciaEntesController.verTodos)
+	// GET all
+	router.get('/instancia_entes', InstanciaEntesController.verTodos)
 
-// GET one by id
-router.get('/instancia_entes/:id', InstanciaEntesController.verId)
+	// GET one by id
+	router.get('/instancia_entes/:id', InstanciaEntesController.verId)
 
-// PATCH single
-router.patch('/instancia_entes/:id', InstanciaEntesPolicies.actualizar, InstanciaEntesController.actualizar)
+	// PATCH single
+	router.patch('/instancia_entes/:id', InstanciaEntesPolicies.actualizar, InstanciaEntesController.actualizar)
 
-// DELETE single
-router.delete('/instancia_entes/:id', InstanciaEntesController.eliminar)
+	// DELETE single
+	router.delete('/instancia_entes/:id', InstanciaEntesController.eliminar)
 }
 //module.exports = router

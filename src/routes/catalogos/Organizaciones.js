@@ -3,17 +3,17 @@ const OrganizacionesController = require('../../controllers/catalogos/Organizaci
 
 module.exports = (router) => {
 // POST single
-router.post('/organizaciones', OrganizacionPolicies.crear, OrganizacionesController.crear)
+	router.post('/organizaciones', OrganizacionPolicies.crear, OrganizacionesController.crear)
 
-// GET all
-router.get('/organizaciones', OrganizacionesController.organizaciones)
+	// GET all
+	router.get('/organizaciones', OrganizacionesController.organizaciones)
 
-// GET one by id
-router.get('/organizaciones/:id', OrganizacionesController.organizacion)
+	// GET one by id
+	router.get('/organizaciones/:id', OrganizacionesController.organizacion)
 
-// PATCH single
-router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, OrganizacionesController.actualizar)
+	// PATCH single
+	router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, OrganizacionesController.actualizar)
 
-// DELETE single
-router.delete('/organizaciones/:id', OrganizacionesController.eliminar)
+	// DELETE single
+	router.delete('/organizaciones/:id', OrganizacionesController.eliminar)
 }
