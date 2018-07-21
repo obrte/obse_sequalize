@@ -1,18 +1,15 @@
-// const express = require('express')
-// const router = express.Router()
-
 const EntesFiscalizadoresPolicies = require('../../policies/catalogos/EntesFiscalizadoresPolicies')
 const EntesFiscalizadoresController = require('../../controllers/catalogos/EnteFiscalizadorController')
 
 module.exports = (router) => {
 // POST single
-router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.registro, EntesFiscalizadoresController.crear)
+router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.crear, EntesFiscalizadoresController.crear)
 
 // GET all
-router.get('/entes_fiscalizadores', EntesFiscalizadoresController.verTodos)
+router.get('/entes_fiscalizadores', EntesFiscalizadoresController.entes)
 
 // GET one by id
-router.get('/entes_fiscalizadores/:id', EntesFiscalizadoresController.verId)
+router.get('/entes_fiscalizadores/:id', EntesFiscalizadoresController.ente)
 
 // PATCH single
 router.patch('/entes_fiscalizadores/:id', EntesFiscalizadoresPolicies.actualizar, EntesFiscalizadoresController.actualizar)
@@ -20,4 +17,3 @@ router.patch('/entes_fiscalizadores/:id', EntesFiscalizadoresPolicies.actualizar
 // DELETE single
 router.delete('/entes_fiscalizadores/:id', EntesFiscalizadoresController.eliminar)
 }
-//module.exports = router

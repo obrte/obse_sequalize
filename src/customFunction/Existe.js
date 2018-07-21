@@ -15,7 +15,9 @@ const idOrganizacion = (id) => {
                     resolve(false)
                 }
             })
-            .catch(err => reject(err))
+            .catch(err => {
+                reject(err)
+            })
     })
 }
 

@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catOrganizaciones.create(req.nuevaOrganizacion)
-        .then(nuevaOrganizacion => {
-            res.status(200).json(nuevaOrganizacion)
+    db.catOrganizaciones.create(req.organizacion)
+        .then(organizacion => {
+            res.status(200).json(organizacion)
         })
         .catch(err => {
             console.log(err)
@@ -18,7 +18,7 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.organizaciones = (req, res) => {
     db.catOrganizaciones.findAll()
         .then(organizaciones => {
             res.status(200).json(organizaciones)
@@ -34,7 +34,7 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.organizacion = (req, res) => {
     buscar.idOrganizacion(req.params.id)
         .then(organizacion => {
             if (organizacion) {
@@ -58,18 +58,33 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldOrganizacion.updateAttributes(req.updateOrganizacion)
-        .then(organizacionActualizada => {
-            res.json(organizacionActualizada)
-        })
-        .catch(err => {
-            console.log(err)
+    db.catOrganizaciones.update(req.organizacion, {
+        where: {
+            idOrganizacion: req.params.id
+        }
+    })
+    .then(organizacionActualizada => {
+        if(organizacionActualizada > 0) {
+            res.status(200).json({
+                status: 'success',
+                id: req.params.id,
+                datos: req.organizacion
+            })
+        } else {
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al actualizar',
-                error: err
+                msg: 'Error al actualizar'
             })
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(400).json({
+            status: 'error',
+            msg: 'Error al actualizar',
+            error: err
         })
+    })
 }
 
 // DELETE single
@@ -80,10 +95,11 @@ exports.eliminar = (req, res) => {
         }
     })
         .then(organizacionEliminada => {
-            if (organizacionEliminada == 1) {
+            if (organizacionEliminada > 0) {
                 res.status(200).json({
                     status: 'success',
-                    msg: 'Eliminación exitosa'
+                    msg: 'Eliminación exitosa',
+                    id: req.params.id
                 })
             } else {
                 res.status(400).json({
@@ -96,8 +112,11 @@ exports.eliminar = (req, res) => {
             console.log(err)
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al eliminar',
-                error: err
+                msg: 'Error al eliminar, verifica que no tenga dependencias',
+                error: {
+                    name: err.name,
+                   code: err.parent.code
+                }
             })
         })
 }

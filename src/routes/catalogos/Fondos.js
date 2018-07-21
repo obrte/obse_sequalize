@@ -6,13 +6,13 @@ const FondosController = require('../../controllers/catalogos/FondosController')
 
 module.exports = (router) => {
 // POST single
-router.post('/fondos', FondosPolicies.registro, FondosController.crear)
+router.post('/fondos', FondosPolicies.crear, FondosController.crear)
 
 // GET all
-router.get('/fondos', FondosController.verTodos)
+router.get('/fondos', FondosController.fondos)
 
 // GET one by id
-router.get('/fondos/:id', FondosController.verId)
+router.get('/fondos/:id', FondosController.fondo)
 
 // PATCH single
 router.patch('/fondos/:id', FondosPolicies.actualizar, FondosController.actualizar)

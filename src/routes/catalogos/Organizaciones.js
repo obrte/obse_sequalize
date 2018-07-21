@@ -5,13 +5,11 @@ module.exports = (router) => {
 // POST single
 router.post('/organizaciones', OrganizacionPolicies.crear, OrganizacionesController.crear)
 
-router.post('/test', OrganizacionPolicies.test)
-
 // GET all
-router.get('/organizaciones', OrganizacionesController.verTodos)
+router.get('/organizaciones', OrganizacionesController.organizaciones)
 
 // GET one by id
-router.get('/organizaciones/:id', OrganizacionesController.verId)
+router.get('/organizaciones/:id', OrganizacionesController.organizacion)
 
 // PATCH single
 router.patch('/organizaciones/:id', OrganizacionPolicies.actualizar, OrganizacionesController.actualizar)

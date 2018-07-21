@@ -1,6 +1,4 @@
 const Joi = require('joi')
-const db = require('../../config/db')
-const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
@@ -10,19 +8,18 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.registro = (req, res, next) => {
-    const nuevoEnteFiscalizador = datosCuerpo(req)
+exports.crear = (req, res, next) => {
+    const ente = req.body.ente
     const {
         error
-    } = Joi.validate(nuevoEnteFiscalizador, schema)
+    } = Joi.validate(ente, schema)
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        const id = nuevoEnteFiscalizador.idOrganizacion
-        existe.idOrganizacion(id)
+        existe.idOrganizacion(ente.idOrganizacion)
             .then(existeID => {
                 if (existeID) {
-                    req.nuevoEnteFiscalizador = nuevoEnteFiscalizador
+                    req.ente = ente
                     next()
                 } else {
                     res.status(400).json({
@@ -43,55 +40,62 @@ exports.registro = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-    const updateEnteFiscalizador = datosCuerpo(req)
-    const {
-        error
-    } = Joi.validate(updateEnteFiscalizador, schema)
-    if (error) {
-        mensajes.switchError(error, res)
-    } else {
-        const id = req.params.id
-        db.catEntesFiscalizadores.find({
-                where: {
-                    idEnte: id
-                },
-                nombre: {
-                    [Op.ne]: updateEnteFiscalizador.nombre
-                }
+    const id = req.params.id
+    const ente = req.body.ente
+    continuar(id, ente)
+        .then(continuar => {
+            req.ente = ente
+            next()
+
+        })
+        .catch(err => {
+            res.status(400).json({
+                status: 'error',
+                msg: err.msg
             })
-            .then(oldEnteFiscalizador => {
-                if (oldEnteFiscalizador) {
-                    existe.idOrganizacion(updateEnteFiscalizador.idOrganizacion)
-                        .then(existeID => {
-                            if (existeID) {
-                                req.updateEnteFiscalizador = updateEnteFiscalizador
-                                req.oldEnteFiscalizador = oldEnteFiscalizador
-                                next()
-                            } else {
-                                res.status(400).json({
-                                    status: 'error',
-                                    msg: 'Organización no encontrada'
-                                })
-                            }
-                        })
+        })
+}
+
+const continuar = (id, ente) => {
+    return new Promise((resolve, reject) => {
+        existe.idEnteFiscalizador(id)
+            .then(existeEnte => {
+                if (!existeEnte) {
+                    const err = {
+                        msg: 'Ente no encontrado'
+                    }
+                    reject(err)
                 } else {
-                    res.status(400).json({
-                        status: 'error',
-                        msg: 'Ente Fiscalizador no encontrado o ya se encuentra registrado para esta organizacion'
+                    var llaves = Object.keys(ente)
+                    var contador = 1
+                    llaves.forEach(async (item) => {
+                        if ((ente[item] == "") && item != "activo") {
+                            const err = {
+                                msg: 'Debe proporcionar el dato ' + item + '.'
+                            }
+                            reject(err)
+                        } else {
+                            console.log(item, contador)
+                            if ((item == "idOrganizacion") && (contador < llaves.length)) {
+                                await existe.idOrganizacion(ente.idOrganizacion)
+                                    .then(existeId => {
+                                        if (!existeId) {
+                                            const err = {
+                                                msg: 'Organizacion no encontrada'
+                                            }
+                                            reject(err)
+                                        }
+                                    })
+                                resolve(true)
+                            } else {
+                                if ((item == "activo") && (contador == llaves.length)) {
+                                    resolve(true)
+                                }
+                            }
+                        }
+                        contador++
                     })
                 }
             })
-    }
-}
-
-const datosCuerpo = (req) => {
-    const idOrganizacion = req.body.ente.idOrganizacion,
-        nombre = req.body.ente.nombre,
-        activo = req.body.ente.activo
-    const datosEnteFiscalizador = {
-        idOrganizacion: idOrganizacion,
-        nombre: nombre,
-        activo: activo
-    }
-    return datosEnteFiscalizador
+    })
 }

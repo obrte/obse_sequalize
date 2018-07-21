@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catEntesFiscalizadores.create(req.nuevoEnteFiscalizador)
-        .then(nuevoEnteFiscalizador => {
-            res.status(200).json(nuevoEnteFiscalizador)
+    db.catEntesFiscalizadores.create(req.ente)
+        .then(ente => {
+            res.status(200).json(ente)
         })
         .catch(err => {
             console.log(err)
@@ -18,10 +18,10 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.entes = (req, res) => {
     db.catEntesFiscalizadores.findAll()
-        .then(entesFiscalizadores => {
-            res.status(200).json(entesFiscalizadores)
+        .then(entes => {
+            res.status(200).json(entes)
         })
         .catch(err => {
             console.log(err)
@@ -34,11 +34,11 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.ente = (req, res) => {
     buscar.idEnteFiscalizador(req.params.id)
-        .then(enteFiscalizador => {
-            if (enteFiscalizador) {
-                res.status(200).json(enteFiscalizador)
+        .then(ente => {
+            if (ente) {
+                res.status(200).json(ente)
             } else {
                 res.status(400).json({
                     status: 'error',
@@ -58,18 +58,33 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldEnteFiscalizador.updateAttributes(req.updateEnteFiscalizador)
-        .then(enteFiscalizadorActualizado => {
-            res.json(enteFiscalizadorActualizado)
-        })
-        .catch(err => {
-            console.log(err)
+    db.catEntesFiscalizadores.update(req.ente, {
+        where: {
+            idEnte: req.params.id
+        }
+    })
+    .then(enteActualizado => {
+        if(enteActualizado > 0) {
+            res.status(200).json({
+                status: 'success',
+                id: req.params.id,
+                datos: req.ente
+            })
+        } else {
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al actualizar',
-                error: err
+                msg: 'Error al actualizar'
             })
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(400).json({
+            status: 'error',
+            msg: 'Error al actualizar',
+            error: err
         })
+    })
 }
 
 // DELETE single
@@ -83,7 +98,8 @@ exports.eliminar = (req, res) => {
             if (enteFiscalizadorEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
-                    msg: 'Eliminación exitosa'
+                    msg: 'Eliminación exitosa',
+                    id: req.params.id
                 })
             } else {
                 res.status(400).json({
@@ -97,7 +113,10 @@ exports.eliminar = (req, res) => {
             res.status(400).json({
                 status: 'error',
                 msg: 'Error al eliminar',
-                error: err
+                error: {
+                    name: err.name,
+                   code: err.parent.code
+                }
             })
         })
 }

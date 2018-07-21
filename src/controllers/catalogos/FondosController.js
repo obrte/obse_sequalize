@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-    db.catFondos.create(req.nuevoFondo)
-        .then(nuevoFondo => {
-            res.status(200).json(nuevoFondo)
+    db.catFondos.create(req.fondo)
+        .then(fondo => {
+            res.status(200).json(fondo)
         })
         .catch(err => {
             console.log(err)
@@ -18,7 +18,7 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.fondos = (req, res) => {
     db.catFondos.findAll()
         .then(fondos => {
             res.status(200).json(fondos)
@@ -34,7 +34,7 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.fondo = (req, res) => {
     buscar.idFondo(req.params.id)
         .then(fondo => {
             if (fondo) {
@@ -58,18 +58,34 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-    req.oldFondo.updateAttributes(req.updateFondo)
-        .then(fondoActualizado => {
-            res.json(fondoActualizado)
-        })
-        .catch(err => {
-            console.log(err)
+    console.log('Actualizar')
+    db.catFondos.update(req.fondo, {
+        where: {
+            idFondo: req.params.id
+        }
+    })
+    .then(fondoActualizado => {
+        if(fondoActualizado > 0) {
+            res.status(200).json({
+                status: 'success',
+                id: req.params.id,
+                datos: req.fondo
+            })
+        } else {
             res.status(400).json({
                 status: 'error',
-                msg: 'Error al actualizar',
-                error: err
+                msg: 'Error al actualizar'
             })
+        }
+    })
+    .catch(err => {
+        console.log(err)
+        res.status(400).json({
+            status: 'error',
+            msg: 'Error al actualizar',
+            error: err
         })
+    })
 }
 
 // DELETE single
@@ -83,7 +99,8 @@ exports.eliminar = (req, res) => {
             if (fondoEliminado == 1) {
                 res.status(200).json({
                     status: 'success',
-                    msg: 'Eliminación exitosa'
+                    msg: 'Eliminación exitosa',
+                    id: req.params.id
                 })
             } else {
                 res.status(400).json({
@@ -97,7 +114,10 @@ exports.eliminar = (req, res) => {
             res.status(400).json({
                 status: 'error',
                 msg: 'Error al eliminar',
-                error: err
+                error: {
+                    name: err.name,
+                   code: err.parent.code
+                }
             })
         })
 }

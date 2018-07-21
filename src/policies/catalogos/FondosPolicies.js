@@ -1,5 +1,4 @@
 const Joi = require('joi')
-const buscar = require('../../customFunction/Buscar')
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
@@ -10,19 +9,19 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.registro = (req, res, next) => {
-    const nuevoFondo = datosCuerpo(req)
+exports.crear = (req, res, next) => {
+    const fondo = req.body.fondo
     const {
         error
-    } = Joi.validate(nuevoFondo, schema)
+    } = Joi.validate(fondo, schema)
 
     if (error) {
         mensajes.switchError(error, res)
     } else {
-        existe.idOrganizacion(nuevoFondo.idOrganizacion)
+        existe.idOrganizacion(fondo.idOrganizacion)
             .then(existeID => {
                 if (existeID) {
-                    req.nuevoFondo = nuevoFondo
+                    req.fondo = fondo
                     next()
                 } else {
                     res.status(400).json({
@@ -36,49 +35,62 @@ exports.registro = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-    const updateFondo = datosCuerpo(req)
-    const {
-        error
-    } = Joi.validate(updateFondo, schema)
-    if (error) {
-        mensajes.switchError(error, res)
-    } else {
-        buscar.idFondo(req.params.id)
-            .then(oldFondo => {
-                if (oldFondo) {
-                   existe.idOrganizacion(updateFondo.idOrganizacion)
-                        .then(existeID => {
-                            if (existeID) {
-                                req.updateFondo = updateFondo
-                                req.oldFondo = oldFondo
-                                next()
-                            } else {
-                                res.status(400).json({
-                                    status: 'error',
-                                    msg: 'Organización no encontrada'
-                                })
-                            }
-                        })
-                } else {
-                    res.status(400).json({
-                        status: 'error',
+    const fondo = req.body.fondo
+    const id = req.params.id
+    continuar(id, fondo)
+        .then(continuar => {
+            req.fondo = fondo
+            next()
+
+        })
+        .catch(err => {
+            res.status(400).json({
+                status: 'error',
+                msg: err.msg
+            })
+        })
+}
+const continuar = (id, fondo) => {
+    return new Promise((resolve, reject) => {
+        existe.idFondo(id)
+            .then(existeFondo => {
+                if (!existeFondo) {
+                    const err = {
                         msg: 'Fondo no encontrado'
+                    }
+                    reject(err)
+                } else {
+                    console.log(1)
+                    var llaves = Object.keys(fondo)
+                    var contador = 1
+                    llaves.forEach(async (item) => {
+                        console.log(2, contador)
+                        if ((fondo[item] == "") && item != "activo") {
+                            const err = {
+                                msg: 'Debe proporcionar el dato ' + item + '.'
+                            }
+                            reject(err)
+                        } else {
+                            if ((item == "idOrganizacion") && (contador < llaves.length)) {
+                                await existe.idOrganizacion(fondo.idOrganizacion)
+                                    .then(existeId => {
+                                        if (!existeId) {
+                                            const err = {
+                                                msg: 'Organizacion no encontrada'
+                                            }
+                                            reject(err)
+                                        }
+                                    })
+                                resolve(true)
+                            } else {
+                                if((item == "activo") && (contador == llaves.length)){
+                                    resolve(true)
+                                }
+                            }
+                        }
+                        contador++
                     })
                 }
             })
-    }
-}
-
-const datosCuerpo = (req) => {
-    const idOrganizacion = req.body.fondo.idOrganizacion,
-    nombre = req.body.fondo.nombre,
-    origen = req.body.fondo.origen,
-    activo = req.body.fondo.activo
-const datosFondo = {
-    idOrganizacion: idOrganizacion,
-    nombre: nombre,
-    origen: origen,
-    activo: activo
-}
-    return datosFondo
+    })
 }
