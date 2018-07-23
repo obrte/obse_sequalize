@@ -3,9 +3,9 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.crear = (req, res) => {
-	db.catInstancias.create(req.nuevaInstancia)
-		.then(nuevaInstancia => {
-			res.status(200).json(nuevaInstancia)
+	db.catInstancias.create(req.instancia)
+		.then(instancia => {
+			res.status(200).json(instancia)
 		})
 		.catch(err => {
 			console.log(err)
@@ -18,7 +18,7 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.instancias = (req, res) => {
 	db.catInstancias.findAll()
 		.then(instancias => {
 			res.status(200).json(instancias)
@@ -34,7 +34,7 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.instancia = (req, res) => {
 	buscar.idInstancia(req.params.id)
 		.then(instancia => {
 			if (instancia) {
@@ -58,9 +58,24 @@ exports.verId = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	req.oldInstancia.updateAttributes(req.updateInstancia)
-		.then(instanciaActualizada => {
-			res.json(instanciaActualizada)
+	db.catInstancias.update(req.instancia, {
+		where: {
+			idInstancia: req.params.id
+		}
+	})
+		.then(instanciaActualizado => {
+			if (instanciaActualizado > 0) {
+				res.status(200).json({
+					status: 'success',
+					id: req.params.id,
+					datos: req.instancia
+				})
+			} else {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Error al actualizar'
+				})
+			}
 		})
 		.catch(err => {
 			console.log(err)
@@ -70,6 +85,8 @@ exports.actualizar = (req, res) => {
 				error: err
 			})
 		})
+
+
 }
 
 // DELETE single
@@ -83,7 +100,8 @@ exports.eliminar = (req, res) => {
 			if (instanciaEliminada == 1) {
 				res.status(200).json({
 					status: 'success',
-					msg: 'Eliminación exitosa'
+					msg: 'Eliminación exitosa',
+					id: req.params.id
 				})
 			} else {
 				res.status(400).json({
@@ -97,7 +115,10 @@ exports.eliminar = (req, res) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al elimiar',
-				error: err
+				error: {
+					name: err.name,
+					code: err.parent.code
+				}
 			})
 		})
 }

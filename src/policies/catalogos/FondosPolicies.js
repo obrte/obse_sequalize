@@ -50,6 +50,7 @@ exports.actualizar = (req, res, next) => {
 			})
 		})
 }
+
 const continuar = (id, fondo) => {
 	return new Promise((resolve, reject) => {
 		existe.idFondo(id)
@@ -60,11 +61,9 @@ const continuar = (id, fondo) => {
 					}
 					reject(err)
 				} else {
-					console.log(1)
 					var llaves = Object.keys(fondo)
 					var contador = 1
 					llaves.forEach(async (item) => {
-						console.log(2, contador)
 						if ((fondo[item] == '') && item != 'activo') {
 							const err = {
 								msg: 'Debe proporcionar el dato ' + item + '.'

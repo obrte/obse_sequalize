@@ -74,7 +74,6 @@ const continuar = (id, ente) => {
 							}
 							reject(err)
 						} else {
-							console.log(item, contador)
 							if ((item == 'idOrganizacion') && (contador < llaves.length)) {
 								await existe.idOrganizacion(ente.idOrganizacion)
 									.then(existeId => {

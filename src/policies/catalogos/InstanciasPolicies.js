@@ -1,29 +1,26 @@
 const Joi = require('joi')
-const db = require('../../config/db')
-const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
 const existe = require('../../customFunction/Existe')
 
 const schema = {
-	id_organizacion: Joi.string().required(),
-	nombre: Joi.string().required(),
-	activo: Joi.number().integer().required()
+	idOrganizacion: Joi.string().required(),
+	nombre: Joi.string().required()
 }
 
 //validar que los campos no esten vacios
-exports.registro = (req, res, next) => {
-	const nuevaInstancia = datosCuerpo(req)
+exports.crear = (req, res, next) => {
+	const instancia = req.body.instancia
 	const {
 		error
-	} = Joi.validate(nuevaInstancia, schema)
+	} = Joi.validate(instancia, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		const id = nuevaInstancia.id_organizacion
+		const id = instancia.idOrganizacion
 		existe.idOrganizacion(id)
 			.then(existeID => {
 				if (existeID) {
-					req.nuevaInstancia = nuevaInstancia
+					req.instancia = instancia
 					next()
 				} else {
 					res.status(400).json({
@@ -44,55 +41,43 @@ exports.registro = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	const updateInstancia = datosCuerpo(req)
-	const {
-		error
-	} = Joi.validate(updateInstancia, schema)
-	if (error) {
-		mensajes.switchError(error, res)
-	} else {
-		const id = req.params.id
-		db.catInstancias.find({
-			where: {
-				id_instancia: id
-			},
-			nombre: {
-				[Op.ne]: updateInstancia.nombre
+	const instancia = req.body.instancia
+	existe.idInstancia(req.params.id)
+		.then(existeId => {
+			if (existeId) {
+				var llaves = Object.keys(instancia)
+				var contador = 1
+				llaves.forEach(async (item) => {
+					if ((instancia[item] == '') && item != 'activo') {
+						res.status(400).json({
+							status: 'error',
+							msg: 'Debe proporcionar el dato ' + item + '.'
+						})
+					} else {
+						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
+							await existe.idOrganizacion(instancia.idOrganizacion)
+								.then(existeId => {
+									if (!existeId) {
+										res.status(400).json({
+											status: 'error',
+											msg: 'Organizacion no encontrada'
+										})
+									}
+								})
+						} else {
+							if ((item == 'activo') || (contador == llaves.length)) {
+								req.instancia = instancia
+								next()
+							}
+						}
+					}
+					contador++
+				})
+			} else {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Instancia no encontrada'
+				})
 			}
 		})
-			.then(oldInstancia => {
-				if (oldInstancia) {
-					existe.idOrganizacion(updateInstancia.id_organizacion)
-						.then(existeID => {
-							if (existeID) {
-								req.updateInstancia = updateInstancia
-								req.oldInstancia = oldInstancia
-								next()
-							} else {
-								res.status(400).json({
-									status: 'error',
-									msg: 'Organización no encontrada'
-								})
-							}
-						})
-				} else {
-					res.status(400).json({
-						status: 'error',
-						msg: 'Ente Fiscalizador no encontrado o ya se encuentra registrado para esta organizacion'
-					})
-				}
-			})
-	}
-}
-
-const datosCuerpo = (req) => {
-	const id_organizacion = req.body.instancia.id_organizacion,
-		nombre = req.body.instancia.nombre,
-		activo = req.body.instancia.activo
-	const datosInstancia = {
-		id_organizacion: id_organizacion,
-		nombre: nombre,
-		activo: activo
-	}
-	return datosInstancia
 }
