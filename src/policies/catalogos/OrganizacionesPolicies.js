@@ -4,6 +4,7 @@ const Op = db.Sequelize.Op
 const existe = require('../../customFunction/Existe')
 const mensajes = require('../../customFunction/Mensajes')
 
+
 const schema = {
 	nombre: Joi.string().required(),
 	nombreCorto: Joi.string().required()

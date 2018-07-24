@@ -1,6 +1,7 @@
 const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
+
 //POST single
 exports.guardar = (req, res) => {
 	db.catOrganizaciones.create(req.organizacion)
