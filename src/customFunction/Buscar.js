@@ -3,7 +3,7 @@ const db = require('../config/db')
 
 
 //Regresa todos los datos del ID encontrado
-const idOrganizacion = (id) => {
+const organizacion = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catOrganizaciones.find({
 			where: {
@@ -20,43 +20,45 @@ const idOrganizacion = (id) => {
 	})
 }
 
-const idEnteFiscalizador = (id) => {
+const ente = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catEntesFiscalizadores.find({
 			where: {
 				idEnte: id
 			}
 		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
+			.then(ente => {
+				organizacion(ente.idOrganizacion)
+					.then(organizacion => {
+						ente.dataValues.nombreOrganizacion = organizacion.nombre
+						resolve(ente)
+					})
+					.catch(err => reject(err))
 			})
 			.catch(err => reject(err))
 	})
 }
 
-const idFondo = (id) => {
+const fondo = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catFondos.find({
 			where: {
 				idFondo: id
 			}
 		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
+			.then(fondo => {
+				organizacion(fondo.idOrganizacion)
+					.then(organizacion => {
+						fondo.dataValues.nombreOrganizacion = organizacion.nombre
+						resolve(fondo)
+					})
+					.catch(err => reject(err))
 			})
 			.catch(err => reject(err))
 	})
 }
 
-const idInstancia = (id) => {
+const instancia = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstancias.find({
 			where: {
@@ -74,7 +76,7 @@ const idInstancia = (id) => {
 	})
 }
 
-const idInstanciaFondos = (id) => {
+const instanciaFondos = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstanciaFondos.find({
 			where: {
@@ -92,7 +94,7 @@ const idInstanciaFondos = (id) => {
 	})
 }
 
-const idInstanciaEntes = (id) => {
+const instanciaEntes = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstanciaEntes.find({
 			where: {
@@ -110,7 +112,7 @@ const idInstanciaEntes = (id) => {
 	})
 }
 
-const idUniAdm = (id) => {
+const uniAdm = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catUniAdm.find({
 			where: {
@@ -128,7 +130,7 @@ const idUniAdm = (id) => {
 	})
 }
 
-const idUsuario = (id) => {
+const usuario = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catUsuarios.find({
 			where: {
@@ -146,47 +148,16 @@ const idUsuario = (id) => {
 	})
 }
 
-const datosFondo = (idFondo) => {
-	return new Promise((resolve, reject) => {
-		idFondo(idFondo)
-			.then(fondo => {
-				idOrganizacion(fondo.idOrganizacion)
-					.then(organizacion => {
-						fondo.nombreOrganizacion = organizacion.nombre
-						resolve(fondo)
-					})
-					.catch(err => reject(err))
-			})
-			.catch(err => reject(err))
-	})
-}
-
-const datosEnte = (idEnte) => {
-	return new Promise((resolve, reject) => {
-		idEnte(idEnte)
-			.then(ente => {
-				idOrganizacion(ente.idOrganizacion)
-					.then(organizacion => {
-						ente.nombreOrganizacion = organizacion.nombre
-						resolve(ente)
-					})
-					.catch(err => reject(err))
-			})
-			.catch(err => reject(err))
-	})
-}
 
 const buscar = {}
 
-buscar.idOrganizacion = idOrganizacion
-buscar.idEnteFiscalizador = idEnteFiscalizador
-buscar.idFondo = idFondo
-buscar.idInstancia = idInstancia
-buscar.idInstanciaFondos = idInstanciaFondos
-buscar.idInstanciaEntes = idInstanciaEntes
-buscar.idUniAdm = idUniAdm
-buscar.idUsuario = idUsuario
-buscar.datosFondo = datosFondo
-buscar.datosEnte = datosEnte
+buscar.organizacion = organizacion
+buscar.ente = ente
+buscar.fondo = fondo
+buscar.instancia = instancia
+buscar.instanciaFondos = instanciaFondos
+buscar.instanciaEntes = instanciaEntes
+buscar.uniAdm = uniAdm
+buscar.usuario = usuario
 
 module.exports = buscar

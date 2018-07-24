@@ -22,7 +22,7 @@ db.sequelize
 	})
 
 // db.sequelize.sync().then(() => {
-//     console.log('Connected...')
+// 	console.log('Connected...')
 // })
 
 /*

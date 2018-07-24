@@ -43,7 +43,7 @@ exports.guardar = (req, res, next) => {
 
 exports.actualizar = (req, res, next) => {
 	const id = req.params.id
-	existe.idOrganizacion(id)
+	existe.organizacion(id)
 		.then(existeOrganizacion => {
 			if (existeOrganizacion) {
 				var llaves = Object.keys(req.body.organizacion)

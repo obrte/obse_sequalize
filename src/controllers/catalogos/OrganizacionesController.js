@@ -64,7 +64,7 @@ exports.actualizar = (req, res) => {
 	})
 		.then(organizacionActualizada => {
 			if (organizacionActualizada > 0) {
-				buscar.idOrganizacion(req.params.id)
+				buscar.organizacion(req.params.id)
 					.then(organizacion => {
 						res.status(200).json(organizacion)
 					})

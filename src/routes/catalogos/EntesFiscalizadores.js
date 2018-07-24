@@ -3,17 +3,17 @@ const EntesFiscalizadoresController = require('../../controllers/catalogos/EnteF
 
 module.exports = (router) => {
 	// POST single
-	router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.guardar, EntesFiscalizadoresController.guardar)
+	router.post('/entes', EntesFiscalizadoresPolicies.guardar, EntesFiscalizadoresController.guardar)
 
 	// GET all
-	router.get('/entes_fiscalizadores', EntesFiscalizadoresController.entes)
+	router.get('/entes', EntesFiscalizadoresController.entes)
 
 	// GET one by id
-	router.get('/entes_fiscalizadores/:id', EntesFiscalizadoresController.ente)
+	router.get('/entes/:id', EntesFiscalizadoresController.ente)
 
 	// PATCH single
-	router.patch('/entes_fiscalizadores/:id', EntesFiscalizadoresPolicies.actualizar, EntesFiscalizadoresController.actualizar)
+	router.patch('/entes/:id', EntesFiscalizadoresPolicies.actualizar, EntesFiscalizadoresController.actualizar)
 
 	// DELETE single
-	router.delete('/entes_fiscalizadores/:id', EntesFiscalizadoresController.eliminar)
+	router.delete('/entes/:id', EntesFiscalizadoresController.eliminar)
 }

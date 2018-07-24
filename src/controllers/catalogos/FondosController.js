@@ -5,13 +5,13 @@ const buscar = require('../../customFunction/Buscar')
 exports.guardar = (req, res) => {
 	db.catFondos.create(req.body.fondo)
 		.then(fondo => {
-			buscar.datosFondo(fondo.idFondo)
+			buscar.fondo(fondo.idFondo)
 				.then(datosFondo => {
 					res.status(200).json(datosFondo)
 				})
 				.catch(err => res.status(400).json({
 					status: 'error',
-					msg: 'Error al crear',
+					msg: 'Error al crear(buscar).',
 					error: err
 				}))
 		})
@@ -71,13 +71,13 @@ exports.actualizar = (req, res) => {
 	})
 		.then(fondoActualizado => {
 			if (fondoActualizado > 0) {
-				buscar.datosFondo(req.params.id)
+				buscar.fondo(req.params.id)
 					.then(datosFondo => {
 						res.status(200).json(datosFondo)
 					})
 					.catch(err => res.status(400).json({
 						status: 'error',
-						msg: 'Error al actualizar',
+						msg: 'Error al actualizar(buscar).',
 						error: err
 					}))
 			} else {

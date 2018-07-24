@@ -5,13 +5,13 @@ const buscar = require('../../customFunction/Buscar')
 exports.guardar = (req, res) => {
 	db.catEntesFiscalizadores.create(req.body.ente)
 		.then(ente => {
-			buscar.datosEnte(ente.idFondo)
+			buscar.ente(ente.idEnte)
 				.then(datosEnte => {
 					res.status(200).json(datosEnte)
 				})
 				.catch(err => res.status(400).json({
 					status: 'error',
-					msg: 'Error al crear',
+					msg: 'Error al crear(buscar)',
 					error: err
 				}))
 		})
@@ -73,13 +73,13 @@ exports.actualizar = (req, res) => {
 	})
 		.then(enteActualizado => {
 			if (enteActualizado > 0) {
-				buscar.datosEnte(req.params.id)
+				buscar.ente(req.params.id)
 					.then(datosEnte => {
 						res.status(200).json(datosEnte)
 					})
 					.catch(err => res.status(400).json({
 						status: 'error',
-						msg: 'Error al actualizar',
+						msg: 'Error al actualizar(buscar)',
 						error: err
 					}))
 			} else {

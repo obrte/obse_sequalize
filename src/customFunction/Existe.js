@@ -1,7 +1,7 @@
 const db = require('../config/db')
 //const Op = db.Sequelize.Op
 
-const idOrganizacion = (id) => {
+const organizacion = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catOrganizaciones.find({
 			where: {
@@ -21,7 +21,7 @@ const idOrganizacion = (id) => {
 	})
 }
 
-const idEnteFiscalizador = (id) => {
+const ente = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catEntesFiscalizadores.find({
 			where: {
@@ -39,7 +39,7 @@ const idEnteFiscalizador = (id) => {
 	})
 }
 
-const idFondo = (id) => {
+const fondo = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catFondos.find({
 			where: {
@@ -57,7 +57,7 @@ const idFondo = (id) => {
 	})
 }
 
-const idInstancia = (id) => {
+const instancia = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstancias.find({
 			where: {
@@ -75,7 +75,7 @@ const idInstancia = (id) => {
 	})
 }
 
-const idInstanciaFondos = (id) => {
+const instanciaFondos = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstanciaFondos.find({
 			where: {
@@ -93,7 +93,7 @@ const idInstanciaFondos = (id) => {
 	})
 }
 
-const idInstanciaEntes = (id) => {
+const instanciaEntes = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catInstanciaEntes.find({
 			where: {
@@ -111,7 +111,7 @@ const idInstanciaEntes = (id) => {
 	})
 }
 
-const idUniAdm = (id) => {
+const uniAdm = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catUniAdm.find({
 			where: {
@@ -129,7 +129,7 @@ const idUniAdm = (id) => {
 	})
 }
 
-const idUsuario = (id) => {
+const usuario = (id) => {
 	return new Promise((resolve, reject) => {
 		db.catUsuarios.find({
 			where: {
@@ -167,14 +167,14 @@ const email = (email) => {
 
 const existe = {}
 
-existe.idOrganizacion = idOrganizacion
-existe.idEnteFiscalizador = idEnteFiscalizador
-existe.idFondo = idFondo
-existe.idInstancia = idInstancia
-existe.idInstanciaFondos = idInstanciaFondos
-existe.idInstanciaEntes = idInstanciaEntes
-existe.idUniAdm = idUniAdm
-existe.idUsuario = idUsuario
+existe.organizacion = organizacion
+existe.ente = ente
+existe.fondo = fondo
+existe.instancia = instancia
+existe.instanciaFondos = instanciaFondos
+existe.instanciaEntes = instanciaEntes
+existe.uniAdm = uniAdm
+existe.usuario = usuario
 existe.email = email
 
 module.exports = existe

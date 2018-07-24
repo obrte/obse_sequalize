@@ -5,7 +5,6 @@ const buscar = require('../../customFunction/Buscar')
 exports.guardar = (req, res) => {
 	db.catInstancias.create(req.body.instancia)
 		.then(instancia => {
-
 			const fondos = req.body.instancia.fondos
 			var datosFondos = Object.keys(fondos)
 			instancia.fondos = []

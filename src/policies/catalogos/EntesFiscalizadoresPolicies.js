@@ -15,7 +15,7 @@ exports.guardar = (req, res, next) => {
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		existe.idOrganizacion(req.body.ente.idOrganizacion)
+		existe.organizacion(req.body.ente.idOrganizacion)
 			.then(existeID => {
 				if (existeID) {
 					next()
@@ -27,7 +27,6 @@ exports.guardar = (req, res, next) => {
 				}
 			})
 			.catch(err => {
-				console.log(err)
 				res.status(400).json({
 					status: 'error',
 					msg: err
@@ -38,7 +37,7 @@ exports.guardar = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	existe.idEnteFiscalizador(req.params.id)
+	existe.ente(req.params.id)
 		.then(existeEnte => {
 			if (!existeEnte) {
 				res.status(400).json({
@@ -56,7 +55,7 @@ exports.actualizar = (req, res, next) => {
 						})
 					} else {
 						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
-							await existe.idOrganizacion(req.body.ente.idOrganizacion)
+							await existe.organizacion(req.body.ente.idOrganizacion)
 								.then(existeId => {
 									if (!existeId) {
 										res.status(400).json({
