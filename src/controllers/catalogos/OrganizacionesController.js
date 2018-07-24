@@ -2,7 +2,7 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
+exports.guardar = (req, res) => {
 	db.catOrganizaciones.create(req.organizacion)
 		.then(organizacion => {
 			res.status(200).json(organizacion)
@@ -64,12 +64,11 @@ exports.actualizar = (req, res) => {
 		}
 	})
 		.then(organizacionActualizada => {
-			if(organizacionActualizada > 0) {
-				res.status(200).json({
-					status: 'success',
-					id: req.params.id,
-					datos: req.organizacion
-				})
+			if (organizacionActualizada > 0) {
+				buscar.idOrganizacion(req.params.id)
+					.then(organizacion => {
+						res.status(200).json(organizacion)
+					})
 			} else {
 				res.status(400).json({
 					status: 'error',
@@ -78,7 +77,6 @@ exports.actualizar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',
@@ -109,7 +107,6 @@ exports.eliminar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al eliminar, verifica que no tenga dependencias',

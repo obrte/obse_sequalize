@@ -2,8 +2,8 @@ const EntesFiscalizadoresPolicies = require('../../policies/catalogos/EntesFisca
 const EntesFiscalizadoresController = require('../../controllers/catalogos/EnteFiscalizadorController')
 
 module.exports = (router) => {
-// POST single
-	router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.crear, EntesFiscalizadoresController.crear)
+	// POST single
+	router.post('/entes_fiscalizadores', EntesFiscalizadoresPolicies.guardar, EntesFiscalizadoresController.guardar)
 
 	// GET all
 	router.get('/entes_fiscalizadores', EntesFiscalizadoresController.entes)

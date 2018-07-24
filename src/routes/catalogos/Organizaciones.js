@@ -2,8 +2,8 @@ const OrganizacionPolicies = require('../../policies/catalogos/OrganizacionesPol
 const OrganizacionesController = require('../../controllers/catalogos/OrganizacionesController')
 
 module.exports = (router) => {
-// POST single
-	router.post('/organizaciones', OrganizacionPolicies.crear, OrganizacionesController.crear)
+	// POST single
+	router.post('/organizaciones', OrganizacionPolicies.guardar, OrganizacionesController.guardar)
 
 	// GET all
 	router.get('/organizaciones', OrganizacionesController.organizaciones)

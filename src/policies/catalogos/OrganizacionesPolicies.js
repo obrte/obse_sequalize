@@ -9,21 +9,20 @@ const schema = {
 	nombreCorto: Joi.string().required()
 }
 
-exports.crear = (req, res, next) => {
-	const organizacion = req.body.organizacion
+exports.guardar = (req, res, next) => {
 	const {
 		error
-	} = Joi.validate(organizacion, schema)
+	} = Joi.validate(req.body.organizacion, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catOrganizaciones.findOne({
 			where: {
 				[Op.or]: [{
-					nombre: organizacion.nombre
+					nombre: req.body.organizacion.nombre
 				},
 				{
-					nombreCorto: organizacion.nombreCorto
+					nombreCorto: req.body.organizacion.nombreCorto
 				}
 				]
 			}
@@ -35,7 +34,6 @@ exports.crear = (req, res, next) => {
 						msg: 'El nombre o nombre corto ya existe.'
 					})
 				} else {
-					req.organizacion = organizacion
 					next()
 				}
 			})
@@ -47,10 +45,9 @@ exports.actualizar = (req, res, next) => {
 	existe.idOrganizacion(id)
 		.then(existeOrganizacion => {
 			if (existeOrganizacion) {
-				const organizacion = req.body.organizacion
-				var llaves = Object.keys(organizacion)
+				var llaves = Object.keys(req.body.organizacion)
 				llaves.forEach((item) => {
-					if ((organizacion[item] == '') && item != 'activo') {
+					if ((req.body.organizacion[item] == '') && item != 'activo') {
 						res.status(400).json({
 							status: 'error',
 							msg: 'Debe proporcionar el dato ' + item + '.'
@@ -60,7 +57,7 @@ exports.actualizar = (req, res, next) => {
 					if (item == 'nombre') {
 						db.catOrganizaciones.findOne({
 							where: {
-								nombre: organizacion.nombre
+								nombre: req.body.organizacion.nombre
 							},
 							idOrganizacion: {
 								[Op.ne]: id
@@ -79,7 +76,7 @@ exports.actualizar = (req, res, next) => {
 					if (item == 'nombreCorto') {
 						db.catOrganizaciones.findOne({
 							where: {
-								nombre: organizacion.nombreCorto
+								nombre: req.body.organizacion.nombreCorto
 							},
 							idOrganizacion: {
 								[Op.ne]: id
@@ -96,7 +93,6 @@ exports.actualizar = (req, res, next) => {
 							})
 					}
 				})
-				req.organizacion = organizacion
 				next()
 			} else {
 				res.status(400).json({

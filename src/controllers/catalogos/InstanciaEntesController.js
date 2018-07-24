@@ -2,7 +2,7 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
+exports.guardar = (req, res) => {
 	db.catInstanciaEntes.create(req.nuevaInstanciaEntes)
 		.then(nuevaInstanciaEntes => {
 			res.status(200).json(nuevaInstanciaEntes)
@@ -18,7 +18,7 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.entes = (req, res) => {
 	db.catInstanciaEntes.findAll()
 		.then(instanciasEntes => {
 			res.status(200).json(instanciasEntes)
@@ -34,7 +34,7 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.ente = (req, res) => {
 	buscar.idInstanciaEntes(req.params.id)
 		.then(instanciaEntes => {
 			if (instanciaEntes) {

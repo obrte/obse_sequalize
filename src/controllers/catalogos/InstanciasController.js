@@ -2,9 +2,30 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
-	db.catInstancias.create(req.instancia)
+exports.guardar = (req, res) => {
+	db.catInstancias.create(req.body.instancia)
 		.then(instancia => {
+
+			const fondos = req.body.instancia.fondos
+			var datosFondos = Object.keys(fondos)
+			instancia.fondos = []
+			if (datosFondos.length > 0) {
+				var instanciaFondos = {
+					idInstancia: instancia.idInstancia
+				}
+				datosFondos.forEach((item) => {
+					instanciaFondos.idFondo = fondos[item]
+					db.catInstanciaFondos.create(instanciaFondos)
+						.then(instanciaFondo => {
+							buscar.idFondo(instanciaFondo.idFondo)
+								.then(fondo => {
+									instancia.fondo.push(fondo.nombre)
+								})
+								.catch(err => res.status(400).json(err))
+						})
+						.catch(err => res.status(400).json(err))
+				})
+			}
 			res.status(200).json(instancia)
 		})
 		.catch(err => {
@@ -122,3 +143,25 @@ exports.eliminar = (req, res) => {
 			})
 		})
 }
+
+// const instanciaEntes = (instancia, entes) => {
+// 	var datosEntes = Object.keys(entes)
+// 	instancia.entes = []
+// 	if (datosEntes.length > 0) {
+// 		var instanciaEntes = {
+// 			idInstancia: instancia.idInstancia
+// 		}
+// 		datosEntes.forEach((item) => {
+// 			instanciaEntes.idEnte = entes[item]
+// 			db.catInstanciaEntes.create(instanciaEntes)
+// 				.then(instanciaEnte => {
+// 					buscar.idEnte(instanciaEnte.idEnte)
+// 						.then(ente => {
+// 							instancia.ente.push(ente.nombre)
+// 						})
+// 						.catch(err => err)
+// 				})
+// 				.catch(err => err)
+// 		})
+// 	}
+// }

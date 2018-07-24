@@ -2,13 +2,20 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
-	db.catFondos.create(req.fondo)
+exports.guardar = (req, res) => {
+	db.catFondos.create(req.body.fondo)
 		.then(fondo => {
-			res.status(200).json(fondo)
+			buscar.datosFondo(fondo.idFondo)
+				.then(datosFondo => {
+					res.status(200).json(datosFondo)
+				})
+				.catch(err => res.status(400).json({
+					status: 'error',
+					msg: 'Error al crear',
+					error: err
+				}))
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al crear',
@@ -24,7 +31,6 @@ exports.fondos = (req, res) => {
 			res.status(200).json(fondos)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al buscar',
@@ -58,19 +64,22 @@ exports.fondo = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	console.log('Actualizar')
 	db.catFondos.update(req.fondo, {
 		where: {
 			idFondo: req.params.id
 		}
 	})
 		.then(fondoActualizado => {
-			if(fondoActualizado > 0) {
-				res.status(200).json({
-					status: 'success',
-					id: req.params.id,
-					datos: req.fondo
-				})
+			if (fondoActualizado > 0) {
+				buscar.datosFondo(req.params.id)
+					.then(datosFondo => {
+						res.status(200).json(datosFondo)
+					})
+					.catch(err => res.status(400).json({
+						status: 'error',
+						msg: 'Error al actualizar',
+						error: err
+					}))
 			} else {
 				res.status(400).json({
 					status: 'error',

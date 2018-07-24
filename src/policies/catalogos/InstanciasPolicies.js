@@ -8,19 +8,16 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.crear = (req, res, next) => {
-	const instancia = req.body.instancia
+exports.guardar = (req, res, next) => {
 	const {
 		error
-	} = Joi.validate(instancia, schema)
+	} = Joi.validate(req.body.instancia, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		const id = instancia.idOrganizacion
-		existe.idOrganizacion(id)
+		existe.idOrganizacion(req.body.instancia.idOrganizacion)
 			.then(existeID => {
 				if (existeID) {
-					req.instancia = instancia
 					next()
 				} else {
 					res.status(400).json({
@@ -41,21 +38,20 @@ exports.crear = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	const instancia = req.body.instancia
 	existe.idInstancia(req.params.id)
 		.then(existeId => {
 			if (existeId) {
-				var llaves = Object.keys(instancia)
+				var llaves = Object.keys(req.body.instancia)
 				var contador = 1
 				llaves.forEach(async (item) => {
-					if ((instancia[item] == '') && item != 'activo') {
+					if ((req.body.instancia[item] == '') && item != 'activo') {
 						res.status(400).json({
 							status: 'error',
 							msg: 'Debe proporcionar el dato ' + item + '.'
 						})
 					} else {
 						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
-							await existe.idOrganizacion(instancia.idOrganizacion)
+							await existe.idOrganizacion(req.body.instancia.idOrganizacion)
 								.then(existeId => {
 									if (!existeId) {
 										res.status(400).json({
@@ -65,8 +61,7 @@ exports.actualizar = (req, res, next) => {
 									}
 								})
 						} else {
-							if ((item == 'activo') || (contador == llaves.length)) {
-								req.instancia = instancia
+							if (contador == llaves.length) {
 								next()
 							}
 						}

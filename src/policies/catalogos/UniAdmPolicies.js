@@ -9,7 +9,7 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.registro = (req, res, next) => {
+exports.guardar = (req, res, next) => {
 	const nuevaUniAdm = datosCuerpo(req)
 	const {
 		error

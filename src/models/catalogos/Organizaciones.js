@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 			unique: true
 		},
 		activo: {
-			type: DataTypes.BOOLEAN,
+			type: DataTypes.INTEGER(11),
 			allowNull: false,
 			defaultValue: true
 		},

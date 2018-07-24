@@ -2,7 +2,7 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
+exports.guardar = (req, res) => {
 	db.catUsuarios.create(req.nuevoUsuario)
 		.then(nuevoUsuario => {
 			res.status(200).json(nuevoUsuario)
@@ -18,7 +18,7 @@ exports.crear = (req, res) => {
 }
 
 // GET all
-exports.verTodos = (req, res) => {
+exports.usuarios = (req, res) => {
 	db.catUsuarios.findAll()
 		.then(usuarios => {
 			res.status(200).json(usuarios)
@@ -34,7 +34,7 @@ exports.verTodos = (req, res) => {
 }
 
 // GET one por id
-exports.verId = (req, res) => {
+exports.usuario = (req, res) => {
 	buscar.idUsuario(req.params.id)
 		.then(usuario => {
 			if (usuario) {

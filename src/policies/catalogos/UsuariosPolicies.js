@@ -15,7 +15,7 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.registro = (req, res, next) => {
+exports.guardar = (req, res, next) => {
 	const nuevoUsuario = datosCuerpo(req)
 	const {
 		error

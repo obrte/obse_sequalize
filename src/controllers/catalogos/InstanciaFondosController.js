@@ -2,7 +2,7 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
+exports.guardar = (req, res) => {
 	db.catInstanciaFondos.create(req.nuevaInstanciaFondos)
 		.then(nuevaInstanciaFondos => {
 			res.status(200).json(nuevaInstanciaFondos)

@@ -1,12 +1,9 @@
-// const express = require('express')
-// const router = express.Router()
-
 const InstanciasPolicies = require('../../policies/catalogos/InstanciasPolicies')
 const InstanciasController = require('../../controllers/catalogos/InstanciasController')
 
 module.exports = (router) => {
 	// POST single
-	router.post('/instancias', InstanciasPolicies.crear, InstanciasController.crear)
+	router.post('/instancias', InstanciasPolicies.guardar, InstanciasController.guardar)
 
 	// GET all
 	router.get('/instancias', InstanciasController.instancias)
@@ -20,4 +17,3 @@ module.exports = (router) => {
 	// DELETE single
 	router.delete('/instancias/:id', InstanciasController.eliminar)
 }
-//module.exports = router

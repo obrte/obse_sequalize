@@ -1,4 +1,3 @@
-const Joi = require('joi')
 const db = require('../../../config/db')
 const Op = db.Sequelize.Op
 const existe = require('../../../customFunction/Existe')
@@ -7,11 +6,11 @@ exports.crear = (req, res, next) => {
 	const entes = req.body.instancia.entes
 	const fondos = req.body.instancia.fondos
 
-	var llavesEntes = Object.keys(entes)
-	var llavesFondos = Object.keys(fondos)
+	var datosEntes = Object.keys(entes)
+	var datosFondos = Object.keys(fondos)
 
-	if ((llavesEntes.length > 0) || (llavesFondos.length > 0)) {
-		instanciaEntes(entes, llavesEntes)
+	if ((datosEntes.length > 0) || (datosFondos.length > 0)) {
+		instanciaEntes(entes, datosEntes)
 			.then(() => {
 				req.entes = entes
 			})
@@ -21,7 +20,7 @@ exports.crear = (req, res, next) => {
 					err
 				})
 			})
-		instanciaFondos(fondos, llavesFondos)
+		instanciaFondos(fondos, datosFondos)
 			.then(() => {
 				req.fondos = fondos
 			})

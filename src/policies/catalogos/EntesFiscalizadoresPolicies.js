@@ -8,18 +8,16 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.crear = (req, res, next) => {
-	const ente = req.body.ente
+exports.guardar = (req, res, next) => {
 	const {
 		error
-	} = Joi.validate(ente, schema)
+	} = Joi.validate(req.body.ente, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		existe.idOrganizacion(ente.idOrganizacion)
+		existe.idOrganizacion(req.body.ente.idOrganizacion)
 			.then(existeID => {
 				if (existeID) {
-					req.ente = ente
 					next()
 				} else {
 					res.status(400).json({
@@ -40,60 +38,41 @@ exports.crear = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	const id = req.params.id
-	const ente = req.body.ente
-	continuar(id, ente)
-		.then(() => {
-			req.ente = ente
-			next()
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: err.msg
-			})
-		})
-}
-
-const continuar = (id, ente) => {
-	return new Promise((resolve, reject) => {
-		existe.idEnteFiscalizador(id)
-			.then(existeEnte => {
-				if (!existeEnte) {
-					const err = {
-						msg: 'Ente no encontrado'
-					}
-					reject(err)
-				} else {
-					var llaves = Object.keys(ente)
-					var contador = 1
-					llaves.forEach(async (item) => {
-						if ((ente[item] == '') && item != 'activo') {
-							const err = {
-								msg: 'Debe proporcionar el dato ' + item + '.'
-							}
-							reject(err)
+	existe.idEnteFiscalizador(req.params.id)
+		.then(existeEnte => {
+			if (!existeEnte) {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Ente no encontrado'
+				})
+			} else {
+				var llaves = Object.keys(req.body.ente)
+				var contador = 1
+				llaves.forEach(async (item) => {
+					if ((req.body.ente[item] == '') && item != 'activo') {
+						res.status(400).json({
+							status: 'error',
+							msg: 'Debe proporcionar el dato ' + item + '.'
+						})
+					} else {
+						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
+							await existe.idOrganizacion(req.body.ente.idOrganizacion)
+								.then(existeId => {
+									if (!existeId) {
+										res.status(400).json({
+											status: 'error',
+											msg: 'Organizacion no encontrada.'
+										})
+									}
+								})
 						} else {
-							if ((item == 'idOrganizacion') && (contador < llaves.length)) {
-								await existe.idOrganizacion(ente.idOrganizacion)
-									.then(existeId => {
-										if (!existeId) {
-											const err = {
-												msg: 'Organizacion no encontrada'
-											}
-											reject(err)
-										}
-									})
-								resolve(true)
-							} else {
-								if ((item == 'activo') && (contador == llaves.length)) {
-									resolve(true)
-								}
+							if (contador == llaves.length) {
+								next()
 							}
 						}
-						contador++
-					})
-				}
-			})
-	})
+					}
+					contador++
+				})
+			}
+		})
 }

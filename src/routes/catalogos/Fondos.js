@@ -5,8 +5,8 @@ const FondosPolicies = require('../../policies/catalogos/FondosPolicies')
 const FondosController = require('../../controllers/catalogos/FondosController')
 
 module.exports = (router) => {
-// POST single
-	router.post('/fondos', FondosPolicies.crear, FondosController.crear)
+	// POST single
+	router.post('/fondos', FondosPolicies.guardar, FondosController.guardar)
 
 	// GET all
 	router.get('/fondos', FondosController.fondos)

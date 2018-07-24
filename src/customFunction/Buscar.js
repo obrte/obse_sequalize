@@ -146,6 +146,36 @@ const idUsuario = (id) => {
 	})
 }
 
+const datosFondo = (idFondo) => {
+	return new Promise((resolve, reject) => {
+		idFondo(idFondo)
+			.then(fondo => {
+				idOrganizacion(fondo.idOrganizacion)
+					.then(organizacion => {
+						fondo.nombreOrganizacion = organizacion.nombre
+						resolve(fondo)
+					})
+					.catch(err => reject(err))
+			})
+			.catch(err => reject(err))
+	})
+}
+
+const datosEnte = (idEnte) => {
+	return new Promise((resolve, reject) => {
+		idEnte(idEnte)
+			.then(ente => {
+				idOrganizacion(ente.idOrganizacion)
+					.then(organizacion => {
+						ente.nombreOrganizacion = organizacion.nombre
+						resolve(ente)
+					})
+					.catch(err => reject(err))
+			})
+			.catch(err => reject(err))
+	})
+}
+
 const buscar = {}
 
 buscar.idOrganizacion = idOrganizacion
@@ -156,5 +186,7 @@ buscar.idInstanciaFondos = idInstanciaFondos
 buscar.idInstanciaEntes = idInstanciaEntes
 buscar.idUniAdm = idUniAdm
 buscar.idUsuario = idUsuario
+buscar.datosFondo = datosFondo
+buscar.datosEnte = datosEnte
 
 module.exports = buscar

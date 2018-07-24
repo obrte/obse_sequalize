@@ -9,19 +9,17 @@ const schema = {
 }
 
 //validar que los campos no esten vacios
-exports.crear = (req, res, next) => {
-	const fondo = req.body.fondo
+exports.guardar = (req, res, next) => {
 	const {
 		error
-	} = Joi.validate(fondo, schema)
+	} = Joi.validate(req.body.fondo, schema)
 
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		existe.idOrganizacion(fondo.idOrganizacion)
+		existe.idOrganizacion(req.body.fondo.idOrganizacion)
 			.then(existeID => {
 				if (existeID) {
-					req.fondo = fondo
 					next()
 				} else {
 					res.status(400).json({
@@ -35,61 +33,41 @@ exports.crear = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	const fondo = req.body.fondo
-	const id = req.params.id
-	continuar(id, fondo)
-		.then(() => {
-			req.fondo = fondo
-			next()
-
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: err.msg
-			})
-		})
-}
-
-const continuar = (id, fondo) => {
-	return new Promise((resolve, reject) => {
-		existe.idFondo(id)
-			.then(existeFondo => {
-				if (!existeFondo) {
-					const err = {
-						msg: 'Fondo no encontrado'
-					}
-					reject(err)
-				} else {
-					var llaves = Object.keys(fondo)
-					var contador = 1
-					llaves.forEach(async (item) => {
-						if ((fondo[item] == '') && item != 'activo') {
-							const err = {
-								msg: 'Debe proporcionar el dato ' + item + '.'
-							}
-							reject(err)
+	existe.idFondo(req.params.id)
+		.then(existeFondo => {
+			if (!existeFondo) {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Fondo no encontrado.'
+				})
+			} else {
+				var llaves = Object.keys(req.body.fondo)
+				var contador = 1
+				llaves.forEach(async (item) => {
+					if ((req.body.fondo[item] == '') && item != 'activo') {
+						res.status(400).json({
+							status: 'error',
+							msg: 'Debe proporcionar el dato ' + item + '.'
+						})
+					} else {
+						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
+							await existe.idOrganizacion(req.body.fondo.idOrganizacion)
+								.then(existeId => {
+									if (!existeId) {
+										res.status(400).json({
+											status: 'error',
+											msg: 'Organizacion no encontrada.'
+										})
+									}
+								})
 						} else {
-							if ((item == 'idOrganizacion') && (contador < llaves.length)) {
-								await existe.idOrganizacion(fondo.idOrganizacion)
-									.then(existeId => {
-										if (!existeId) {
-											const err = {
-												msg: 'Organizacion no encontrada'
-											}
-											reject(err)
-										}
-									})
-								resolve(true)
-							} else {
-								if ((item == 'activo') && (contador == llaves.length)) {
-									resolve(true)
-								}
+							if (contador == llaves.length) {
+								next()
 							}
 						}
-						contador++
-					})
-				}
-			})
-	})
+					}
+					contador++
+				})
+			}
+		})
 }

@@ -2,10 +2,18 @@ const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
-exports.crear = (req, res) => {
+exports.guardar = (req, res) => {
 	db.catEntesFiscalizadores.create(req.ente)
 		.then(ente => {
-			res.status(200).json(ente)
+			buscar.datosEnte(ente.idFondo)
+				.then(datosEnte => {
+					res.status(200).json(datosEnte)
+				})
+				.catch(err => res.status(400).json({
+					status: 'error',
+					msg: 'Error al crear',
+					error: err
+				}))
 		})
 		.catch(err => {
 			console.log(err)
@@ -64,12 +72,16 @@ exports.actualizar = (req, res) => {
 		}
 	})
 		.then(enteActualizado => {
-			if(enteActualizado > 0) {
-				res.status(200).json({
-					status: 'success',
-					id: req.params.id,
-					datos: req.ente
-				})
+			if (enteActualizado > 0) {
+				buscar.datosEnte(req.params.id)
+					.then(datosEnte => {
+						res.status(200).json(datosEnte)
+					})
+					.catch(err => res.status(400).json({
+						status: 'error',
+						msg: 'Error al actualizar',
+						error: err
+					}))
 			} else {
 				res.status(400).json({
 					status: 'error',
