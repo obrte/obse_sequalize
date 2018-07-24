@@ -4,12 +4,11 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catOrganizaciones.create(req.organizacion)
+	db.catOrganizaciones.create(req.body.organizacion)
 		.then(organizacion => {
 			res.status(200).json(organizacion)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al crear',
@@ -25,7 +24,6 @@ exports.organizaciones = (req, res) => {
 			res.status(200).json(organizaciones)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'No encontrado',
@@ -59,7 +57,7 @@ exports.organizacion = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catOrganizaciones.update(req.organizacion, {
+	db.catOrganizaciones.update(req.body.organizacion, {
 		where: {
 			idOrganizacion: req.params.id
 		}

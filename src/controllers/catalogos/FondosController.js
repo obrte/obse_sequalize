@@ -64,7 +64,7 @@ exports.fondo = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catFondos.update(req.fondo, {
+	db.catFondos.update(req.body.fondo, {
 		where: {
 			idFondo: req.params.id
 		}

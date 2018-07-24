@@ -3,7 +3,7 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catEntesFiscalizadores.create(req.ente)
+	db.catEntesFiscalizadores.create(req.body.ente)
 		.then(ente => {
 			buscar.datosEnte(ente.idFondo)
 				.then(datosEnte => {
@@ -66,7 +66,7 @@ exports.ente = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catEntesFiscalizadores.update(req.ente, {
+	db.catEntesFiscalizadores.update(req.body.ente, {
 		where: {
 			idEnte: req.params.id
 		}

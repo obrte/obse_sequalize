@@ -79,7 +79,7 @@ exports.instancia = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catInstancias.update(req.instancia, {
+	db.catInstancias.update(req.body.instancia, {
 		where: {
 			idInstancia: req.params.id
 		}
