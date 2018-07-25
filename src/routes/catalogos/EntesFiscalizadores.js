@@ -6,10 +6,10 @@ module.exports = (router) => {
 	router.post('/entes', EntesFiscalizadoresPolicies.guardar, EntesFiscalizadoresController.guardar)
 
 	// GET all
-	router.get('/entes', EntesFiscalizadoresController.entes)
+	router.get('/entes/:id', EntesFiscalizadoresController.entes)
 
 	// GET one by id
-	router.get('/entes/:id', EntesFiscalizadoresController.ente)
+	router.get('/ente/:id', EntesFiscalizadoresController.ente)
 
 	// PATCH single
 	router.patch('/entes/:id', EntesFiscalizadoresPolicies.actualizar, EntesFiscalizadoresController.actualizar)

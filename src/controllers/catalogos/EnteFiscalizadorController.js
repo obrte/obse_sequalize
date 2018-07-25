@@ -27,23 +27,27 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.entes = (req, res) => {
-	db.catEntesFiscalizadores.findAll()
+	db.catOrganizaciones.findAll({
+		where: {
+			idOrganizacion: req.params.id
+		},
+		include: [{
+			model: db.catEntesFiscalizadores,
+			attributes: ['nombre'],
+			as: 'entes'
+		}],
+	})
 		.then(entes => {
-			res.status(200).json(entes)
+			res.json(entes)
 		})
 		.catch(err => {
-			console.log(err)
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
-				error: err
-			})
+			res.json(err)
 		})
 }
 
 // GET one por id
 exports.ente = (req, res) => {
-	buscar.idEnteFiscalizador(req.params.id)
+	buscar.ente(req.params.id)
 		.then(ente => {
 			if (ente) {
 				res.status(200).json(ente)
@@ -90,7 +94,6 @@ exports.actualizar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',

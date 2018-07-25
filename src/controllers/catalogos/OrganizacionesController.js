@@ -34,25 +34,78 @@ exports.organizaciones = (req, res) => {
 
 // GET one por id
 exports.organizacion = (req, res) => {
-	buscar.idOrganizacion(req.params.id)
-		.then(organizacion => {
-			if (organizacion) {
-				res.status(200).json(organizacion)
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'No encontrado'
-				})
-			}
+	db.catOrganizaciones.findAll({
+		where: {
+			idOrganizacion: req.params.id
+		},
+		include: [{
+			model: db.catEntesFiscalizadores,
+			attributes: ['nombre'],
+			as: 'entes'
+		},
+		{
+			model: db.catFondos,
+			attributes: ['nombre', 'origen'],
+			as: 'fondos'
+		},
+		{
+			model: db.catInstancias,
+			attributes: ['nombre'],
+			as: 'instancias',
+			include: [
+				{
+					model: db.catInstanciaEntes,
+					attributes: ['idEnte',],
+					as: 'entes',
+					include: [
+						{
+							model: db.catEntesFiscalizadores,
+							attributes: ['nombre'],
+							as: 'ente'
+						}
+					]
+				},
+				{
+					model: db.catInstanciaFondos,
+					attributes: ['idFondo'],
+					as: 'fondos',
+					include: [
+						{
+							model: db.catFondos,
+							attributes: ['nombre', 'origen'],
+							as: 'fondo'
+						}
+					]
+				}
+			]
+		}]
+	})
+		.then(entes => {
+			res.json(entes)
 		})
 		.catch(err => {
 			console.log(err)
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
-				error: err
-			})
+			res.json(err)
 		})
+	// buscar.idOrganizacion(req.params.id)
+	// 	.then(organizacion => {
+	// 		if (organizacion) {
+	// 			res.status(200).json(organizacion)
+	// 		} else {
+	// 			res.status(400).json({
+	// 				status: 'error',
+	// 				msg: 'No encontrado'
+	// 			})
+	// 		}
+	// 	})
+	// 	.catch(err => {
+	// 		console.log(err)
+	// 		res.status(400).json({
+	// 			status: 'error',
+	// 			msg: 'Error al buscar',
+	// 			error: err
+	// 		})
+	// 	})
 }
 
 // PATCH single
@@ -71,7 +124,7 @@ exports.actualizar = (req, res) => {
 			} else {
 				res.status(400).json({
 					status: 'error',
-					msg: 'Error al actualizar'
+					msg: 'Organización no actualizada.'
 				})
 			}
 		})
