@@ -141,21 +141,21 @@ const fondos = (fondos, idInstancia) => {
 	if (datosFondos.length > 0) {
 		var instanciaFondos = []
 		datosFondos.forEach((item) => {
-			instanciaFondos.push({ idInstancia: idInstancia, idFondo: fondos[item].idFondo })
+			instanciaFondos.push({ idInstancia: idInstancia, idFondo: item })
 		})
 		db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
-			.then(() => { return console.log('se cargaron los fondos.') })
+			.then(() => true)
 			.catch(err => console.log(err))
 	}
 }
-const entes = (entes, idInstancia) => {
+const entes = async (entes, idInstancia) => {
 	var datosEntes = Object.keys(entes)
 	if (datosEntes.length > 0) {
 		var instanciaEntes = []
 		datosEntes.forEach((item) => {
 			instanciaEntes.push({ idInstancia: idInstancia, idEnte: entes[item].idEnte })
 		})
-		db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
+		await db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
 			.then(() => { return console.log('se cargaron los entes.') })
 			.catch(err => console.log(err))
 	}

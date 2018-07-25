@@ -11,18 +11,29 @@ const schema = {
 	fondos: Joi.array()
 }
 
+const datosInstancia = (req) => {
+	return {
+		idOrganizacion: req.body.instancia.idOrganizacion,
+		nombre: req.body.instancia.nombre,
+		activo: req.body.instancia.activo,
+		entes: req.body.instancia.entes,
+		fondos: req.body.instancia.fondos
+	}
+}
+
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
+	const instancia = datosInstancia(req)
 	const {
 		error
-	} = Joi.validate(req.body.instancia, schema)
+	} = Joi.validate(instancia, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catInstancias.findOne({
 			where: {
-				idOrganizacion: req.body.instancia.idOrganizacion,
-				nombre: req.body.instancia.nombre
+				idOrganizacion: instancia.idOrganizacion,
+				nombre: instancia.nombre
 			}
 		})
 			.then(conflictoNombre => {
@@ -40,16 +51,17 @@ exports.guardar = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
+	const instancia = datosInstancia(req)
 	const {
 		error
-	} = Joi.validate(req.body.instancia, schema)
+	} = Joi.validate(instancia, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catInstancias.findOne({
 			where: {
-				idOrganizacion: req.body.instancia.idOrganizacion,
-				nombre: req.body.instancia.nombre
+				idOrganizacion: instancia.idOrganizacion,
+				nombre: instancia.nombre
 			},
 			idInstancia: {
 				[Op.ne]: req.params.id

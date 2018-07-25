@@ -9,18 +9,27 @@ const schema = {
 	activo: Joi.number().integer()
 }
 
+const datosEnte = (req) => {
+	return {
+		idOrganizacion: req.body.entes.idOrganizacion,
+		nombre: req.body.entes.nombre,
+		activo: req.body.entes.activo
+	}
+}
+
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
+	const ente = datosEnte(req)
 	const {
 		error
-	} = Joi.validate(req.body.ente, schema)
+	} = Joi.validate(ente, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catEntesFiscalizadores.findOne({
 			where: {
-				idOrganizacion: req.body.ente.idOrganizacion,
-				nombre: req.body.ente.nombre
+				idOrganizacion: ente.idOrganizacion,
+				nombre: ente.nombre
 			}
 		})
 			.then(conflictoNombre => {
@@ -38,16 +47,17 @@ exports.guardar = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
+	const ente = datosEnte(req)
 	const {
 		error
-	} = Joi.validate(req.body.ente, schema)
+	} = Joi.validate(ente, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catEntesFiscalizadores.findOne({
 			where: {
-				idOrganizacion: req.body.ente.idOrganizacion,
-				nombre: req.body.ente.nombre
+				idOrganizacion: ente.idOrganizacion,
+				nombre: ente.nombre
 			},
 			idEnte: {
 				[Op.ne]: req.params.id

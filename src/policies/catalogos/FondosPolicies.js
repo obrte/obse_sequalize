@@ -10,19 +10,28 @@ const schema = {
 	activo: Joi.number().integer()
 }
 
+const datosFondo = (req) => {
+	return {
+		idOrganizacion: req.body.fondo.idOrganizacion,
+		nombre: req.body.fondo.nombre,
+		activo: req.body.fondo.activo
+	}
+}
+
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
+	const fondo = datosFondo(req)
 	const {
 		error
-	} = Joi.validate(req.body.fondo, schema)
+	} = Joi.validate(fondo, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catFondos.findOne({
 			where: {
-				idOrganizacion: req.body.fondo.idOrganizacion,
-				nombre: req.body.fondo.nombre,
-				origen: req.body.fondo.origen
+				idOrganizacion: fondo.idOrganizacion,
+				nombre: fondo.nombre,
+				origen: fondo.origen
 			}
 		})
 			.then(conflictoFondo => {
@@ -40,17 +49,18 @@ exports.guardar = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
+	const fondo = datosFondo(req)
 	const {
 		error
-	} = Joi.validate(req.body.fondo, schema)
+	} = Joi.validate(fondo, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
 		db.catFondos.findOne({
 			where: {
-				idOrganizacion: req.body.fondo.idOrganizacion,
-				nombre: req.body.fondo.nombre,
-				origen: req.body.fondo.origen
+				idOrganizacion: fondo.idOrganizacion,
+				nombre: fondo.nombre,
+				origen: fondo.origen
 			},
 			idFondo: {
 				[Op.ne]: req.params.id
