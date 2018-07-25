@@ -21,9 +21,9 @@ db.sequelize
 		console.error('Unable to connect to the database:', err)
 	})
 
-// db.sequelize.sync().then(() => {
-// 	console.log('Connected...')
-// })
+db.sequelize.sync().then(() => {
+	console.log('Connected...')
+})
 
 /*
  ! OPCIONES DE APP

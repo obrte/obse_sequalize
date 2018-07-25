@@ -9,10 +9,10 @@ module.exports = (router) => {
 	router.post('/fondos', FondosPolicies.guardar, FondosController.guardar)
 
 	// GET all
-	router.get('/fondos', FondosController.fondos)
+	router.get('/fondos/:id', FondosController.fondos)
 
 	// GET one by id
-	router.get('/fondos/:id', FondosController.fondo)
+	router.get('/fondo/:id', FondosController.fondo)
 
 	// PATCH single
 	router.patch('/fondos/:id', FondosPolicies.actualizar, FondosController.actualizar)

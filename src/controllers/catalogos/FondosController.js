@@ -26,16 +26,21 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.fondos = (req, res) => {
-	db.catFondos.findAll()
+	db.catOrganizaciones.findAll({
+		where: {
+			idOrganizacion: req.params.id
+		},
+		include: [{
+			model: db.catFondos,
+			attributes: ['nombre', 'origen'],
+			as: 'fondos'
+		}],
+	})
 		.then(fondos => {
-			res.status(200).json(fondos)
+			res.json(fondos)
 		})
 		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
-				error: err
-			})
+			res.json(err)
 		})
 }
 

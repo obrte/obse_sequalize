@@ -3,21 +3,29 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	const instancia = {
-		idOrganizacion: req.body.instancia.idOrganizacion,
-		nombre: req.body.instancia.nombre
-	}
-	db.catInstancias.create(instancia)
+	db.catInstancias.create(req.body.instancia)
 		.then(instancia => {
-			fondos(req.body.instancia.fondos, instancia.idInstancia)
-			console.log('entre Funciones')
-			entes(req.body.instancia.entes, instancia.idInstancia)
-
-			console.log('Antes de BUSCAR')
-			// buscar.instancia(instancia.idInstancia)
-			// 	.then(instancia => {
-			// 		res.status(200).json(instancia)
-			// 	})
+			const fondos = req.body.instancia.fondos
+			var datosFondos = Object.keys(fondos)
+			instancia.fondos = []
+			if (datosFondos.length > 0) {
+				var instanciaFondos = {
+					idInstancia: instancia.idInstancia
+				}
+				datosFondos.forEach((item) => {
+					instanciaFondos.idFondo = fondos[item]
+					db.catInstanciaFondos.create(instanciaFondos)
+						.then(instanciaFondo => {
+							buscar.idFondo(instanciaFondo.idFondo)
+								.then(fondo => {
+									instancia.fondo.push(fondo.nombre)
+								})
+								.catch(err => res.status(400).json(err))
+						})
+						.catch(err => res.status(400).json(err))
+				})
+			}
+			res.status(200).json(instancia)
 		})
 		.catch(err => {
 			console.log(err)
@@ -27,7 +35,6 @@ exports.guardar = (req, res) => {
 				error: err
 			})
 		})
-	console.log('FIN')
 }
 
 // GET all
@@ -136,27 +143,24 @@ exports.eliminar = (req, res) => {
 		})
 }
 
-const fondos = (fondos, idInstancia) => {
-	var datosFondos = Object.keys(fondos)
-	if (datosFondos.length > 0) {
-		var instanciaFondos = []
-		datosFondos.forEach((item) => {
-			instanciaFondos.push({ idInstancia: idInstancia, idFondo: fondos[item].idFondo })
-		})
-		db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
-			.then(() => { return console.log('se cargaron los fondos.') })
-			.catch(err => console.log(err))
-	}
-}
-const entes = (entes, idInstancia) => {
-	var datosEntes = Object.keys(entes)
-	if (datosEntes.length > 0) {
-		var instanciaEntes = []
-		datosEntes.forEach((item) => {
-			instanciaEntes.push({ idInstancia: idInstancia, idEnte: entes[item].idEnte })
-		})
-		db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
-			.then(() => { return console.log('se cargaron los entes.') })
-			.catch(err => console.log(err))
-	}
-}
+// const instanciaEntes = (instancia, entes) => {
+// 	var datosEntes = Object.keys(entes)
+// 	instancia.entes = []
+// 	if (datosEntes.length > 0) {
+// 		var instanciaEntes = {
+// 			idInstancia: instancia.idInstancia
+// 		}
+// 		datosEntes.forEach((item) => {
+// 			instanciaEntes.idEnte = entes[item]
+// 			db.catInstanciaEntes.create(instanciaEntes)
+// 				.then(instanciaEnte => {
+// 					buscar.idEnte(instanciaEnte.idEnte)
+// 						.then(ente => {
+// 							instancia.ente.push(ente.nombre)
+// 						})
+// 						.catch(err => err)
+// 				})
+// 				.catch(err => err)
+// 		})
+// 	}
+// }

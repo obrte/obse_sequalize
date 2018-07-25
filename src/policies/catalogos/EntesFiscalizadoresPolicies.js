@@ -1,10 +1,12 @@
 const Joi = require('joi')
+const db = require('../../config/db')
+const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
-const existe = require('../../customFunction/Existe')
 
 const schema = {
 	idOrganizacion: Joi.string().required(),
-	nombre: Joi.string().required()
+	nombre: Joi.string().required(),
+	activo: Joi.number().integer()
 }
 
 //validar que los campos no esten vacios
@@ -15,63 +17,51 @@ exports.guardar = (req, res, next) => {
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		existe.organizacion(req.body.ente.idOrganizacion)
-			.then(existeID => {
-				if (existeID) {
-					next()
-				} else {
+		db.catEntesFiscalizadores.findOne({
+			where: {
+				idOrganizacion: req.body.ente.idOrganizacion,
+				nombre: req.body.ente.nombre
+			}
+		})
+			.then(conflictoNombre => {
+				if (conflictoNombre) {
 					res.status(400).json({
 						status: 'error',
-						msg: 'Organización no encontrada'
+						msg: 'El ente ya existe en esta organización.'
 					})
+				} else {
+					next()
 				}
-			})
-			.catch(err => {
-				res.status(400).json({
-					status: 'error',
-					msg: err
-				})
 			})
 	}
 }
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	existe.ente(req.params.id)
-		.then(existeEnte => {
-			if (!existeEnte) {
-				res.status(400).json({
-					status: 'error',
-					msg: 'Ente no encontrado'
-				})
-			} else {
-				var llaves = Object.keys(req.body.ente)
-				var contador = 1
-				llaves.forEach(async (item) => {
-					if ((req.body.ente[item] == '') && item != 'activo') {
-						res.status(400).json({
-							status: 'error',
-							msg: 'Debe proporcionar el dato ' + item + '.'
-						})
-					} else {
-						if ((item == 'idOrganizacion') && (contador < llaves.length)) {
-							await existe.organizacion(req.body.ente.idOrganizacion)
-								.then(existeId => {
-									if (!existeId) {
-										res.status(400).json({
-											status: 'error',
-											msg: 'Organizacion no encontrada.'
-										})
-									}
-								})
-						} else {
-							if (contador == llaves.length) {
-								next()
-							}
-						}
-					}
-					contador++
-				})
+	const {
+		error
+	} = Joi.validate(req.body.ente, schema)
+	if (error) {
+		mensajes.switchError(error, res)
+	} else {
+		db.catEntesFiscalizadores.findOne({
+			where: {
+				idOrganizacion: req.body.ente.idOrganizacion,
+				nombre: req.body.ente.nombre
+			},
+			idEnte: {
+				[Op.ne]: req.params.id
 			}
 		})
+			.then(conflictoNombre => {
+				if (conflictoNombre) {
+					res.status(400).json({
+						status: 'error',
+						msg: 'El ente ya existe en esta organización.'
+					})
+				} else {
+					next()
+				}
+			})
+	}
 }

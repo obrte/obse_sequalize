@@ -25,15 +25,15 @@ const ente = (id) => {
 		db.catEntesFiscalizadores.find({
 			where: {
 				idEnte: id
-			}
+			},
+			include: [{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}],
 		})
 			.then(ente => {
-				organizacion(ente.idOrganizacion)
-					.then(organizacion => {
-						ente.dataValues.nombreOrganizacion = organizacion.nombre
-						resolve(ente)
-					})
-					.catch(err => reject(err))
+				resolve(ente)
 			})
 			.catch(err => reject(err))
 	})
@@ -44,15 +44,15 @@ const fondo = (id) => {
 		db.catFondos.find({
 			where: {
 				idFondo: id
-			}
+			},
+			include: [{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}],
 		})
 			.then(fondo => {
-				organizacion(fondo.idOrganizacion)
-					.then(organizacion => {
-						fondo.dataValues.nombreOrganizacion = organizacion.nombre
-						resolve(fondo)
-					})
-					.catch(err => reject(err))
+				resolve(fondo)
 			})
 			.catch(err => reject(err))
 	})
@@ -63,14 +63,20 @@ const instancia = (id) => {
 		db.catInstancias.find({
 			where: {
 				idInstancia: id
-			}
+			},
+			include: [{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre'],
+				as: 'entes'
+			},
+			{
+				model: db.catFondos,
+				attributes: ['nombre', 'origen'],
+				as: 'fondos'
+			}]
 		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
+			.then(instancia => {
+				resolve(instancia)
 			})
 			.catch(err => reject(err))
 	})
