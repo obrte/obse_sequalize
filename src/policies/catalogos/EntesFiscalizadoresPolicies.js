@@ -11,9 +11,9 @@ const schema = {
 
 const datosEnte = (req) => {
 	return {
-		idOrganizacion: req.body.entes.idOrganizacion,
-		nombre: req.body.entes.nombre,
-		activo: req.body.entes.activo
+		idOrganizacion: req.body.ente.idOrganizacion,
+		nombre: req.body.ente.nombre,
+		activo: req.body.ente.activo
 	}
 }
 

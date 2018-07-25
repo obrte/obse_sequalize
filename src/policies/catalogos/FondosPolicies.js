@@ -14,6 +14,7 @@ const datosFondo = (req) => {
 	return {
 		idOrganizacion: req.body.fondo.idOrganizacion,
 		nombre: req.body.fondo.nombre,
+		origen: req.body.fondo.origen,
 		activo: req.body.fondo.activo
 	}
 }
