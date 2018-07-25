@@ -137,15 +137,17 @@ exports.eliminar = (req, res) => {
 }
 
 const fondos = (fondos, idInstancia) => {
-	var datosFondos = Object.keys(fondos)
-	if (datosFondos.length > 0) {
+	if (fondos.length > 0) {
 		var instanciaFondos = []
-		datosFondos.forEach((item) => {
+		fondos.forEach((item) => {
 			instanciaFondos.push({ idInstancia: idInstancia, idFondo: item })
 		})
 		db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
 			.then(() => true)
-			.catch(err => console.log(err))
+			.catch((err) => {
+
+				console.log(err)
+			})
 	}
 }
 const entes = async (entes, idInstancia) => {
