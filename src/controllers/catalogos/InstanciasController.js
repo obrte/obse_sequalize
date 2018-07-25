@@ -8,16 +8,13 @@ exports.guardar = (req, res) => {
 		nombre: req.body.instancia.nombre
 	}
 	db.catInstancias.create(instancia)
-		.then(instancia => {
-			fondos(req.body.instancia.fondos, instancia.idInstancia)
-			console.log('entre Funciones')
-			entes(req.body.instancia.entes, instancia.idInstancia)
-
-			console.log('Antes de BUSCAR')
-			// buscar.instancia(instancia.idInstancia)
-			// 	.then(instancia => {
-			// 		res.status(200).json(instancia)
-			// 	})
+		.then(async instancia => {
+			await fondos(req.body.instancia.fondos, instancia.idInstancia)
+			await entes(req.body.instancia.entes, instancia.idInstancia)
+			buscar.instancia(instancia.idInstancia)
+				.then(instancia => {
+					res.status(200).json(instancia)
+				})
 		})
 		.catch(err => {
 			console.log(err)
@@ -27,7 +24,6 @@ exports.guardar = (req, res) => {
 				error: err
 			})
 		})
-	console.log('FIN')
 }
 
 // GET all
@@ -136,29 +132,26 @@ exports.eliminar = (req, res) => {
 		})
 }
 
-const fondos = (fondos, idInstancia) => {
+async function fondos(fondos, idInstancia) {
 	if (fondos.length > 0) {
 		var instanciaFondos = []
 		fondos.forEach((item) => {
 			instanciaFondos.push({ idInstancia: idInstancia, idFondo: item })
 		})
-		db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
-			.then(() => true)
-			.catch((err) => {
-
-				console.log(err)
-			})
+		await db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
+			.then(() => console.log('Fondos Agregados'))
+			.catch((err) => console.log(err))
 	}
 }
-const entes = async (entes, idInstancia) => {
-	var datosEntes = Object.keys(entes)
-	if (datosEntes.length > 0) {
+
+async function entes(entes, idInstancia) {
+	if (entes.length > 0) {
 		var instanciaEntes = []
-		datosEntes.forEach((item) => {
-			instanciaEntes.push({ idInstancia: idInstancia, idEnte: entes[item].idEnte })
+		entes.forEach((item) => {
+			instanciaEntes.push({ idInstancia: idInstancia, idEnte: item })
 		})
 		await db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
-			.then(() => { return console.log('se cargaron los entes.') })
+			.then(() => console.log('Entes Agregados'))
 			.catch(err => console.log(err))
 	}
 }

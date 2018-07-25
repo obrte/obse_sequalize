@@ -1,7 +1,7 @@
 const routes = [
 	require('./catalogos/EntesFiscalizadores'),
 	require('./catalogos/Fondos'),
-	// require('./catalogos/InstanciaEntes'),
+	require('./catalogos/InstanciaEntes'),
 	// require('./catalogos/InstanciaFondos'),
 	require('./catalogos/Instancias'),
 	require('./catalogos/Organizaciones'),
