@@ -57,10 +57,10 @@ exports.actualizar = (req, res, next) => {
 		db.catEntesFiscalizadores.findOne({
 			where: {
 				idOrganizacion: ente.idOrganizacion,
-				nombre: ente.nombre
-			},
-			idEnte: {
-				[Op.ne]: req.params.id
+				nombre: ente.nombre,
+				idEnte: {
+					[Op.ne]: req.params.id
+				}
 			}
 		})
 			.then(conflictoNombre => {

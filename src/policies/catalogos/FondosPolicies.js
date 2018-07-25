@@ -57,14 +57,15 @@ exports.actualizar = (req, res, next) => {
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
+		console.log(fondo)
 		db.catFondos.findOne({
 			where: {
 				idOrganizacion: fondo.idOrganizacion,
 				nombre: fondo.nombre,
-				origen: fondo.origen
-			},
-			idFondo: {
-				[Op.ne]: req.params.id
+				origen: fondo.origen,
+				idFondo: {
+					[Op.ne]: req.params.id
+				}
 			}
 		})
 			.then(conflictoFondo => {
