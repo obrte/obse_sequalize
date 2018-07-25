@@ -34,6 +34,29 @@ exports.organizaciones = (req, res) => {
 
 // GET one por id
 exports.organizacion = (req, res) => {
+	buscar.idOrganizacion(req.params.id)
+		.then(organizacion => {
+			if (organizacion) {
+				res.status(200).json(organizacion)
+			} else {
+				res.status(400).json({
+					status: 'error',
+					msg: 'No encontrado'
+				})
+			}
+		})
+		.catch(err => {
+			console.log(err)
+			res.status(400).json({
+				status: 'error',
+				msg: 'Error al buscar',
+				error: err
+			})
+		})
+}
+
+// GET one por id
+exports.organizacionAll = (req, res) => {
 	db.catOrganizaciones.findAll({
 		where: {
 			idOrganizacion: req.params.id

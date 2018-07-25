@@ -67,7 +67,7 @@ const switchError = (error, res) => {
 		})
 		break
 	default:
-		res.status(400).json({
+		res.status(500).json({
 			status: 'error',
 			msg: 'No se encontraron un caso para este error.'
 		})

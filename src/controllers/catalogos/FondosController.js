@@ -26,14 +26,11 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.fondos = (req, res) => {
-	db.catOrganizaciones.findAll({
-		where: {
-			idOrganizacion: req.params.id
-		},
+	db.catFondos.findAll({
 		include: [{
-			model: db.catFondos,
-			attributes: ['nombre', 'origen'],
-			as: 'fondos'
+			model: db.catOrganizaciones,
+			attributes: ['nombre'],
+			as: 'organizacion'
 		}],
 	})
 		.then(fondos => {
@@ -57,8 +54,7 @@ exports.fondo = (req, res) => {
 				})
 			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al buscar',
@@ -93,7 +89,6 @@ exports.actualizar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',
@@ -124,7 +119,6 @@ exports.eliminar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al eliminar',

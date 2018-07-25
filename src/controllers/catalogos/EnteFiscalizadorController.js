@@ -27,14 +27,11 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.entes = (req, res) => {
-	db.catOrganizaciones.findAll({
-		where: {
-			idOrganizacion: req.params.id
-		},
+	db.catEntesFiscalizadores.findAll({
 		include: [{
-			model: db.catEntesFiscalizadores,
+			model: db.catOrganizaciones,
 			attributes: ['nombre'],
-			as: 'entes'
+			as: 'organizacion'
 		}],
 	})
 		.then(entes => {
@@ -58,8 +55,7 @@ exports.ente = (req, res) => {
 				})
 			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al buscar',
@@ -81,7 +77,7 @@ exports.actualizar = (req, res) => {
 					.then(datosEnte => {
 						res.status(200).json(datosEnte)
 					})
-					.catch(err => res.status(400).json({
+					.catch((err) => res.status(400).json({
 						status: 'error',
 						msg: 'Error al actualizar(buscar)',
 						error: err
@@ -93,7 +89,7 @@ exports.actualizar = (req, res) => {
 				})
 			}
 		})
-		.catch(err => {
+		.catch((err) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',

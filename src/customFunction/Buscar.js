@@ -35,7 +35,7 @@ const ente = (id) => {
 			.then(ente => {
 				resolve(ente)
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -54,7 +54,7 @@ const fondo = (id) => {
 			.then(fondo => {
 				resolve(fondo)
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -78,7 +78,7 @@ const instancia = (id) => {
 			.then(instancia => {
 				resolve(instancia)
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -96,7 +96,7 @@ const instanciaFondos = (id) => {
 					resolve(false)
 				}
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -114,7 +114,7 @@ const instanciaEntes = (id) => {
 					resolve(false)
 				}
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -132,7 +132,7 @@ const uniAdm = (id) => {
 					resolve(false)
 				}
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
@@ -150,7 +150,7 @@ const usuario = (id) => {
 					resolve(false)
 				}
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
