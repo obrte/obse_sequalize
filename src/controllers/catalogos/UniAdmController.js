@@ -3,39 +3,43 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catUniAdm.create(req.nuevaUniAdm)
-		.then(nuevaUniAdm => {
-			res.status(200).json(nuevaUniAdm)
-		})
-		.catch(err => {
-			console.log(err)
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al crear',
-				error: err
-			})
+	console.log(1)
+	db.catUniAdm.create(req.body.uniAdm)
+		.then(uniAdm => {
+			console.log(2)
+			buscar.uniAdm(uniAdm.idUniAdm)
+				.then(datosUniAdm => {
+					console.log(5)
+					res.status(201).json(datosUniAdm)
+				})
+				.catch(err => res.status(400).json({
+					status: 'error',
+					msg: 'Error al crear(buscar).',
+					error: err
+				}))
 		})
 }
 
 // GET all
 exports.uniAdms = (req, res) => {
-	db.catUniAdm.findAll()
-		.then(uniAdms => {
-			res.status(200).json(uniAdms)
+	db.catUniAdm.findAll({
+		include: [{
+			model: db.catInstancias,
+			attributes: ['nombre'],
+			as: 'instancia'
+		}],
+	})
+		.then(uniAdm => {
+			res.json(uniAdm)
 		})
-		.catch(err => {
-			console.log(err)
-			res.status(400).json({
-				status: 'error',
-				msg: 'No encontrado',
-				error: err
-			})
+		.catch((err) => {
+			res.json(err)
 		})
 }
 
 // GET one por id
 exports.uniAdm = (req, res) => {
-	buscar.idUniAdm(req.params.id)
+	buscar.uniAdm(req.params.id)
 		.then(uniAdm => {
 			if (uniAdm) {
 				res.status(200).json(uniAdm)
@@ -58,12 +62,30 @@ exports.uniAdm = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	req.oldUniAdm.updateAttributes(req.updateUniAdm)
+	db.catUniAdm.update(req.body.uniAdm, {
+		where: {
+			idUniAdm: req.params.id
+		}
+	})
 		.then(uniAdmActualizada => {
-			res.json(uniAdmActualizada)
+			if (uniAdmActualizada > 0) {
+				buscar.uniAdm(req.params.id)
+					.then(datosUniAdm => {
+						res.status(200).json(datosUniAdm)
+					})
+					.catch(err => res.status(400).json({
+						status: 'error',
+						msg: 'Error al actualizar.',
+						error: err
+					}))
+			} else {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Error al actualizar'
+				})
+			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',
