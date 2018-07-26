@@ -58,16 +58,22 @@ db.catOrganizaciones.hasMany(db.catInstancias, { foreignKey: 'idOrganizacion', a
 //** InstanciaFondos
 //catalogo_instancia_fondos/catalogo_instancias/catalogo_fondos(id_instancia/id_fondo)
 db.catInstanciaFondos.belongsTo(db.catInstancias, { foreignKey: 'idInstancia', as: 'instancia' })
-db.catInstancias.hasMany(db.catInstanciaFondos, { foreignKey: 'idInstancia', as: 'fondos' })
-db.catInstanciaFondos.belongsTo(db.catFondos, { foreignKey: 'idFondo', as: 'fondo' })
-db.catFondos.hasMany(db.catInstanciaFondos, { foreignKey: 'idFondo', as: 'instanciaFondos' })
+db.catInstanciaEntes.belongsTo(db.catInstancias, { foreignKey: 'idInstancia', as: 'instancia' })
 
+db.catInstancias.hasMany(db.catInstanciaFondos, { foreignKey: 'idInstancia', as: 'fondos' })
+db.catInstancias.hasMany(db.catInstanciaEntes, { foreignKey: 'idInstancia', as: 'entes' })
+
+db.catInstanciaFondos.belongsTo(db.catFondos, { foreignKey: 'idFondo', as: 'fondo' })
+db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, { foreignKey: 'idEnte', as: 'ente' })
+
+db.catFondos.hasMany(db.catInstanciaFondos, { foreignKey: 'idFondo', as: 'instanciaFondos' })
+db.catEntesFiscalizadores.hasMany(db.catInstanciaEntes, { foreignKey: 'idEnte', as: 'instanciaEnte' })
 
 //catalogo_instancia_entes/catalogo_instancias/catalogo_entes_fiscalizadores(id_instancia/id_ente)
-db.catInstanciaEntes.belongsTo(db.catInstancias, { foreignKey: 'idInstancia', as: 'instancia' })
-db.catInstancias.hasMany(db.catInstanciaEntes, { foreignKey: 'idInstancia', as: 'entes' })
-db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, { foreignKey: 'idEnte', as: 'ente' })
-db.catEntesFiscalizadores.hasMany(db.catInstanciaEntes, { foreignKey: 'idEnte', as: 'instanciaEnte' })
+
+
+
+
 
 //! UniAdm
 //catalogo_uniadm/catalogo_instancia(id_instancia)

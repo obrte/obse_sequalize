@@ -94,19 +94,15 @@ exports.actualizar = async (req, res) => {
 		nombre: req.body.instancia.nombre,
 		activo: req.body.instancia.activo
 	}
-	console.log('ANTES DE DESTRUIR')
 	await destruirRelaciones(idInstancia)
-	console.log('DESPUES DE DESTRUIR')
 	db.catInstancias.update(instancia, {
 		where: {
 			idInstancia: idInstancia
 		}
 	})
 		.then(async () => {
-			//await fondos(req.body.instancia.fondos, idInstancia)
-			console.log('ANTES DE ENTES')
+			await fondos(req.body.instancia.fondos, idInstancia)
 			await entes(req.body.instancia.entes, idInstancia)
-			console.log('DESPUES DE ENTES')
 			buscar.instancia(idInstancia)
 				.then(instancia => {
 					res.status(200).json(instancia)
@@ -190,11 +186,11 @@ async function destruirRelaciones(id) {
 	})
 		.then(() => true)
 		.catch((err) => console.log('CATCH DESTRUIR', err))
-	// await db.catInstanciaFondos.destroy({
-	// 	where: {
-	// 		idInstancia: id
-	// 	}
-	// })
-	// 	.then(() => true)
-	// 	.catch((err) => console.log(err))
+	await db.catInstanciaFondos.destroy({
+		where: {
+			idInstancia: id
+		}
+	})
+		.then(() => true)
+		.catch((err) => console.log(err))
 }
