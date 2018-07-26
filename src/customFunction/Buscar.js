@@ -67,24 +67,20 @@ const instancia = (id) => {
 			include: [
 				{
 					model: db.catInstanciaEntes,
-					attributes: ['idEnte'],
 					as: 'entes',
 					include: [
 						{
 							model: db.catEntesFiscalizadores,
-							attributes: ['nombre'],
 							as: 'ente'
 						}
 					]
 				},
 				{
 					model: db.catInstanciaFondos,
-					attributes: ['idFondo'],
 					as: 'fondos',
 					include: [
 						{
 							model: db.catFondos,
-							attributes: ['nombre', 'origen'],
 							as: 'fondo'
 						}
 					]
@@ -92,7 +88,6 @@ const instancia = (id) => {
 			]
 		})
 			.then(instancia => {
-				console.log(instancia)
 				resolve(instancia)
 			})
 			.catch((err) => reject(err))

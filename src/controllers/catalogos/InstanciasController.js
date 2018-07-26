@@ -28,7 +28,30 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.instancias = (req, res) => {
-	db.catInstancias.findAll()
+	db.catInstancias.findAll({
+		include: [
+			{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [
+					{
+						model: db.catEntesFiscalizadores,
+						as: 'ente'
+					}
+				]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [
+					{
+						model: db.catFondos,
+						as: 'fondo'
+					}
+				]
+			}
+		]
+	})
 		.then(instancias => {
 			res.status(200).json(instancias)
 		})
@@ -44,16 +67,9 @@ exports.instancias = (req, res) => {
 
 // GET one por id
 exports.instancia = (req, res) => {
-	buscar.idInstancia(req.params.id)
+	buscar.instancia(req.params.id)
 		.then(instancia => {
-			if (instancia) {
-				res.status(200).json(instancia)
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'No encontrado'
-				})
-			}
+			res.status(200).json(instancia)
 		})
 		.catch(err => {
 			console.log(err)
@@ -120,7 +136,6 @@ exports.eliminar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al elimiar',

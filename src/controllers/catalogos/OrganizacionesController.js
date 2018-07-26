@@ -17,85 +17,40 @@ exports.guardar = (req, res) => {
 		})
 }
 
-// GET all
-exports.organizaciones = (req, res) => {
-	db.catOrganizaciones.findAll()
-		.then(organizaciones => {
-			res.status(200).json(organizaciones)
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: 'No encontrado',
-				error: err
-			})
-		})
-}
-
 // GET one por id
 exports.organizacion = (req, res) => {
-	buscar.idOrganizacion(req.params.id)
-		.then(organizacion => {
-			if (organizacion) {
-				res.status(200).json(organizacion)
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'No encontrado'
-				})
-			}
-		})
-		.catch(err => {
-			console.log(err)
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
-				error: err
-			})
-		})
-}
-
-// GET one por id
-exports.organizacionAll = (req, res) => {
-	db.catOrganizaciones.findAll({
+	db.catOrganizaciones.find({
 		where: {
 			idOrganizacion: req.params.id
 		},
 		include: [{
 			model: db.catEntesFiscalizadores,
-			attributes: ['nombre'],
 			as: 'entes'
 		},
 		{
 			model: db.catFondos,
-			attributes: ['nombre', 'origen'],
 			as: 'fondos'
 		},
 		{
 			model: db.catInstancias,
-			attributes: ['nombre'],
 			as: 'instancias',
 			include: [
 				{
 					model: db.catInstanciaEntes,
-					attributes: ['idEnte',],
 					as: 'entes',
 					include: [
 						{
 							model: db.catEntesFiscalizadores,
-							attributes: ['nombre'],
 							as: 'ente'
 						}
 					]
 				},
 				{
 					model: db.catInstanciaFondos,
-					attributes: ['idFondo'],
 					as: 'fondos',
 					include: [
 						{
 							model: db.catFondos,
-							attributes: ['nombre', 'origen'],
 							as: 'fondo'
 						}
 					]
@@ -110,25 +65,53 @@ exports.organizacionAll = (req, res) => {
 			console.log(err)
 			res.json(err)
 		})
-	// buscar.idOrganizacion(req.params.id)
-	// 	.then(organizacion => {
-	// 		if (organizacion) {
-	// 			res.status(200).json(organizacion)
-	// 		} else {
-	// 			res.status(400).json({
-	// 				status: 'error',
-	// 				msg: 'No encontrado'
-	// 			})
-	// 		}
-	// 	})
-	// 	.catch(err => {
-	// 		console.log(err)
-	// 		res.status(400).json({
-	// 			status: 'error',
-	// 			msg: 'Error al buscar',
-	// 			error: err
-	// 		})
-	// 	})
+}
+
+// GET all con TODO
+exports.organizaciones = (req, res) => {
+	db.catOrganizaciones.findAll({
+		include: [{
+			model: db.catEntesFiscalizadores,
+			as: 'entes'
+		},
+		{
+			model: db.catFondos,
+			as: 'fondos'
+		},
+		{
+			model: db.catInstancias,
+			as: 'instancias',
+			include: [
+				{
+					model: db.catInstanciaEntes,
+					as: 'entes',
+					include: [
+						{
+							model: db.catEntesFiscalizadores,
+							as: 'ente'
+						}
+					]
+				},
+				{
+					model: db.catInstanciaFondos,
+					as: 'fondos',
+					include: [
+						{
+							model: db.catFondos,
+							as: 'fondo'
+						}
+					]
+				}
+			]
+		}]
+	})
+		.then(entes => {
+			res.json(entes)
+		})
+		.catch(err => {
+			console.log(err)
+			res.json(err)
+		})
 }
 
 // PATCH single
