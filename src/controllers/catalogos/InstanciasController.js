@@ -88,24 +88,25 @@ exports.instancia = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catInstancias.update(req.body.instancia, {
+	const idInstancia = req.params.id
+	const instancia = {
+		idOrganizacion: req.body.instancia.idOrganizacion,
+		nombre: req.body.instancia.nombre,
+		activo: req.body.instancia.activo
+	}
+	destruirRelaciones(idInstancia)
+	db.catInstancias.update(instancia, {
 		where: {
-			idInstancia: req.params.id
+			idInstancia: idInstancia
 		}
 	})
-		.then(instanciaActualizado => {
-			if (instanciaActualizado > 0) {
-				res.status(200).json({
-					status: 'success',
-					id: req.params.id,
-					datos: req.instancia
+		.then(async () => {
+			await fondos(req.body.instancia.fondos, idInstancia)
+			await entes(req.body.instancia.entes, idInstancia)
+			buscar.instancia(idInstancia)
+				.then(instancia => {
+					res.status(200).json(instancia)
 				})
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'Error al actualizar'
-				})
-			}
 		})
 		.catch(err => {
 			console.log(err)
@@ -174,4 +175,21 @@ async function entes(entes, idInstancia) {
 			.then(() => console.log('Entes Agregados'))
 			.catch(err => console.log(err))
 	}
+}
+
+async function destruirRelaciones(id) {
+	await db.catInstanciaEntes.destroy({
+		where: {
+			idInstancia: id
+		}
+	})
+		.then(() => true)
+		.catch((err) => console.log(err))
+	await db.catInstanciaFondos.destroy({
+		where: {
+			idInstancia: id
+		}
+	})
+		.then(() => true)
+		.catch((err) => console.log(err))
 }

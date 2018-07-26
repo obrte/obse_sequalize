@@ -61,10 +61,10 @@ exports.actualizar = (req, res, next) => {
 		db.catInstancias.findOne({
 			where: {
 				idOrganizacion: instancia.idOrganizacion,
-				nombre: instancia.nombre
-			},
-			idInstancia: {
-				[Op.ne]: req.params.id
+				nombre: instancia.nombre,
+				idInstancia: {
+					[Op.ne]: req.params.id
+				}
 			}
 		})
 			.then(conflictoNombre => {
