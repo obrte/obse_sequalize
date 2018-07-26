@@ -84,6 +84,11 @@ const instancia = (id) => {
 							as: 'fondo'
 						}
 					]
+				},
+				{
+					model: db.catOrganizaciones,
+					attributes: ['nombre'],
+					as: 'organizacion'
 				}
 			]
 		})

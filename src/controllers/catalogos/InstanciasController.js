@@ -49,6 +49,11 @@ exports.instancias = (req, res) => {
 						as: 'fondo'
 					}
 				]
+			},
+			{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
 			}
 		]
 	})
