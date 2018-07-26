@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
 	const catalogoUniAdm = sequelize.define('catalogoUniAdm', {
-		idUniadm: {
+		idUniAdm: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			unique: true,

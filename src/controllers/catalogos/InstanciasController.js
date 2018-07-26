@@ -87,22 +87,26 @@ exports.instancia = (req, res) => {
 }
 
 // PATCH single
-exports.actualizar = (req, res) => {
+exports.actualizar = async (req, res) => {
 	const idInstancia = req.params.id
 	const instancia = {
 		idOrganizacion: req.body.instancia.idOrganizacion,
 		nombre: req.body.instancia.nombre,
 		activo: req.body.instancia.activo
 	}
-	destruirRelaciones(idInstancia)
+	console.log('ANTES DE DESTRUIR')
+	await destruirRelaciones(idInstancia)
+	console.log('DESPUES DE DESTRUIR')
 	db.catInstancias.update(instancia, {
 		where: {
 			idInstancia: idInstancia
 		}
 	})
 		.then(async () => {
-			await fondos(req.body.instancia.fondos, idInstancia)
+			//await fondos(req.body.instancia.fondos, idInstancia)
+			console.log('ANTES DE ENTES')
 			await entes(req.body.instancia.entes, idInstancia)
+			console.log('DESPUES DE ENTES')
 			buscar.instancia(idInstancia)
 				.then(instancia => {
 					res.status(200).json(instancia)
@@ -173,23 +177,24 @@ async function entes(entes, idInstancia) {
 		})
 		await db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
 			.then(() => console.log('Entes Agregados'))
-			.catch(err => console.log(err))
+			.catch((err) => console.log(err))
 	}
 }
 
 async function destruirRelaciones(id) {
+	console.log('FUNCION DESTRUIR')
 	await db.catInstanciaEntes.destroy({
 		where: {
 			idInstancia: id
 		}
 	})
 		.then(() => true)
-		.catch((err) => console.log(err))
-	await db.catInstanciaFondos.destroy({
-		where: {
-			idInstancia: id
-		}
-	})
-		.then(() => true)
-		.catch((err) => console.log(err))
+		.catch((err) => console.log('CATCH DESTRUIR', err))
+	// await db.catInstanciaFondos.destroy({
+	// 	where: {
+	// 		idInstancia: id
+	// 	}
+	// })
+	// 	.then(() => true)
+	// 	.catch((err) => console.log(err))
 }

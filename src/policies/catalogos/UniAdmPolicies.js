@@ -1,87 +1,77 @@
 const Joi = require('joi')
-const buscar = require('../../customFunction/Buscar')
+const db = require('../../config/db')
+const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
-const existe = require('../../customFunction/Existe')
 
 const schema = {
 	idInstancia: Joi.string().required(),
-	nombre: Joi.string().required()
+	nombre: Joi.string().required(),
+	activo: Joi.number().integer()
+}
+
+const datosUniAdm = (req) => {
+	return {
+		idInstancia: req.body.uniAdm.idInstancia,
+		nombre: req.body.uniAdm.nombre,
+		activo: req.body.uniAdm.activo
+	}
 }
 
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
-	const nuevaUniAdm = datosCuerpo(req)
+	const uniAdm = datosUniAdm(req)
 	const {
 		error
-	} = Joi.validate(nuevaUniAdm, schema)
+	} = Joi.validate(uniAdm, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		existe.idInstancia(nuevaUniAdm.id_instancia)
-			.then(existeID => {
-				if (existeID) {
-					req.nuevaUniAdm = nuevaUniAdm
-					next()
-				} else {
+		db.catUniAdm.findOne({
+			where: {
+				idInstancia: uniAdm.idInstancia,
+				nombre: uniAdm.nombre
+			}
+		})
+			.then(conflictoNombre => {
+				if (conflictoNombre) {
 					res.status(400).json({
 						status: 'error',
-						msg: 'Instancia no encontrada'
+						msg: 'La Unidad Administrativa ya existe en esta Instancia.'
 					})
+				} else {
+					next()
 				}
-			})
-			.catch(err => {
-				console.log(err)
-				res.status(400).json({
-					status: 'error',
-					msg: err
-				})
 			})
 	}
 }
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	const updateUniAdm = datosCuerpo(req)
+	const uniAdm = datosUniAdm(req)
 	const {
 		error
-	} = Joi.validate(updateUniAdm, schema)
+	} = Joi.validate(uniAdm, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		buscar.idUniAdm(req.params.id)
-			.then(oldUniAdm => {
-				if (oldUniAdm) {
-					existe.idInstancia(updateUniAdm.idInstancia)
-						.then(existeID => {
-							if (existeID) {
-								req.updateUniAdm = updateUniAdm
-								req.oldUniAdm = oldUniAdm
-								next()
-							} else {
-								res.status(400).json({
-									status: 'error',
-									msg: 'Instancia no encontrada'
-								})
-							}
-						})
-				} else {
+		db.catUniAdm.findOne({
+			where: {
+				idInstancia: uniAdm.idOrganizacion,
+				nombre: uniAdm.nombre,
+				idUniAdm: {
+					[Op.ne]: req.params.id
+				}
+			}
+		})
+			.then(conflictoNombre => {
+				if (conflictoNombre) {
 					res.status(400).json({
 						status: 'error',
-						msg: 'Unidad Administrativa no encontrada.'
+						msg: 'El nombre de la Unidad Administrativa ya existe en esta Instancia.'
 					})
+				} else {
+					next()
 				}
 			})
 	}
-}
-
-const datosCuerpo = (req) => {
-	const idInstancia = req.body.uniadm.idInstancia,
-		nombre = req.body.uniadm.nombre,
-		activo = req.body.uniadm.activo
-	const datosUniAdm = {
-		idInstancia: idInstancia,
-		nombre: nombre,
-		activo: activo
-	}
-	return datosUniAdm
 }

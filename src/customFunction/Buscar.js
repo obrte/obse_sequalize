@@ -137,17 +137,20 @@ const instanciaEntes = (id) => {
 
 const uniAdm = (id) => {
 	return new Promise((resolve, reject) => {
+		console.log(3)
 		db.catUniAdm.find({
 			where: {
-				idUniadm: id
-			}
+				idUniAdm: id
+			},
+			include: [{
+				model: db.catInstancias,
+				attributes: ['nombre'],
+				as: 'instancia'
+			}],
 		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
+			.then(uniAdm => {
+				console.log(4)
+				resolve(uniAdm)
 			})
 			.catch((err) => reject(err))
 	})
