@@ -64,16 +64,28 @@ const instancia = (id) => {
 			where: {
 				idInstancia: id
 			},
-			include: [{
-				model: db.catEntesFiscalizadores,
-				attributes: ['nombre'],
-				as: 'entes'
-			},
-			{
-				model: db.catFondos,
-				attributes: ['nombre', 'origen'],
-				as: 'fondos'
-			}]
+			include: [
+				{
+					model: db.catInstanciaEntes,
+					as: 'entes',
+					include: [
+						{
+							model: db.catEntesFiscalizadores,
+							as: 'ente'
+						}
+					]
+				},
+				{
+					model: db.catInstanciaFondos,
+					as: 'fondos',
+					include: [
+						{
+							model: db.catFondos,
+							as: 'fondo'
+						}
+					]
+				}
+			]
 		})
 			.then(instancia => {
 				resolve(instancia)

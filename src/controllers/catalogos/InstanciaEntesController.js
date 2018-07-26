@@ -19,7 +19,15 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.entes = (req, res) => {
-	db.catInstanciaEntes.findAll()
+	db.catInstanciaEntes.findAll({
+		include: [
+			{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre'],
+				as: 'ente'
+			}
+		]
+	})
 		.then(instanciasEntes => {
 			res.status(200).json(instanciasEntes)
 		})
