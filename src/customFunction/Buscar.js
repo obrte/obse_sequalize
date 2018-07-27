@@ -144,7 +144,7 @@ const uniAdm = (id) => {
 			},
 			include: [{
 				model: db.catInstancias,
-				attributes: ['nombre'],
+				attributes: ['nombre', 'idOrganizacion'],
 				as: 'instancia'
 			}],
 		})

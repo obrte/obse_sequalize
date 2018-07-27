@@ -25,7 +25,7 @@ exports.uniAdms = (req, res) => {
 	db.catUniAdm.findAll({
 		include: [{
 			model: db.catInstancias,
-			attributes: ['nombre'],
+			attributes: ['nombre', 'idOrganizacion'],
 			as: 'instancia'
 		}],
 	})

@@ -126,7 +126,7 @@ const datosCuerpo = (req) => {
 	const tipo = req.body.usuario.tipo,
 		idOrganizacion = req.body.usuario.idOrganizacion,
 		idInstancia = req.body.usuario.idInstancia,
-		idUniadm = req.body.usuario.idUniadm,
+		idUniadm = req.body.usuario.idUniAdm,
 		nombre = req.body.usuario.nombre,
 		email = req.body.usuario.email,
 		password = req.body.usuario.password,
