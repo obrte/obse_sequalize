@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
-		idUniadm: {
+		idUniAdm: {
 			type: DataTypes.UUID,
 			allowNull: false
 		},

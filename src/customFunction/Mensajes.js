@@ -42,6 +42,12 @@ const switchError = (error, res) => {
 			msg: 'Debe introducir un password.'
 		})
 		break
+	case 'rePassword':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe confirmar el password.'
+		})
+		break
 	case 'activo':
 		res.status(400).json({
 			status: 'error',

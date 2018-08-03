@@ -3,12 +3,11 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catUsuarios.create(req.nuevoUsuario)
-		.then(nuevoUsuario => {
-			res.status(200).json(nuevoUsuario)
+	db.catUsuarios.create(req.usuario)
+		.then(usuario => {
+			res.status(201).json(usuario)
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al crear',
@@ -19,15 +18,31 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.usuarios = (req, res) => {
-	db.catUsuarios.findAll()
+	db.catUsuarios.findAll({
+		include: [{
+			model: db.catOrganizaciones,
+			attributes: ['idOrganizacion', 'nombre'],
+			as: 'organizacion'
+		},
+		{
+			model: db.catInstancias,
+			attributes: ['idInstancia', 'nombre'],
+			as: 'instancia'
+		},
+		{
+			model: db.catUniAdm,
+			attributes: ['idUniAdm', 'nombre'],
+			as: 'uniAdm'
+		}
+		]
+	})
 		.then(usuarios => {
 			res.status(200).json(usuarios)
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
 				error: err
 			})
 		})
@@ -35,22 +50,38 @@ exports.usuarios = (req, res) => {
 
 // GET one por id
 exports.usuario = (req, res) => {
-	buscar.idUsuario(req.params.id)
+	db.catUsuarios.find({
+		where: {
+			idUsuario: req.params.id
+		},
+		include: [{
+			model: db.catOrganizaciones,
+			attributes: ['idOrganizacion', 'nombre'],
+			as: 'organizacion'
+		},
+		{
+			model: db.catInstancias,
+			attributes: ['idInstancia', 'nombre'],
+			as: 'instancia'
+		},
+		{
+			model: db.catUniAdm,
+			attributes: ['idUniAdm', 'nombre'],
+			as: 'uniAdm'
+		}
+		]
+	})
 		.then(usuario => {
-			if (usuario) {
-				res.status(200).json(usuario)
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'No encontrado'
+			buscar.usuario(usuario.idUsuarioCreacion)
+				.then(creador => {
+					usuario.nombreCreador = creador.nombre
+					res.status(200).json(usuario)
 				})
-			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
 				error: err
 			})
 		})
@@ -58,14 +89,27 @@ exports.usuario = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	req.oldUsuario.updateAttributes(req.updateUsuario)
+	db.catUsuarios.update(req.usuario, {
+		where: {
+			idUsuario: req.params.id
+		}
+	})
 		.then(usuarioActualizado => {
-			res.json(usuarioActualizado)
+			if (usuarioActualizado > 0) {
+				buscar.usuario(req.params.id)
+					.then(usuario => {
+						res.status(200).json(usuario)
+					})
+			} else {
+				res.status(400).json({
+					status: 'Alerta',
+					msg: 'Usuario no actualizado.'
+				})
+			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
+				status: 'Alerta',
 				msg: 'Fallo al actualizar',
 				error: err
 			})
@@ -87,17 +131,19 @@ exports.eliminar = (req, res) => {
 				})
 			} else {
 				res.status(400).json({
-					status: 'error',
+					status: 'Alerta',
 					msg: 'No encontrado'
 				})
 			}
 		})
-		.catch(err => {
-			console.log(err)
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al eliminar',
-				error: err
+				status: 'Alerta',
+				msg: 'Error al eliminar, verifica que no tenga dependencias',
+				error: {
+					name: err.name,
+					code: err.parent.code
+				}
 			})
 		})
 }

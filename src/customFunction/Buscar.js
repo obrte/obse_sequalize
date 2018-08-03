@@ -64,72 +64,31 @@ const instancia = (id) => {
 			where: {
 				idInstancia: id
 			},
-			include: [
-				{
-					model: db.catInstanciaEntes,
-					as: 'entes',
-					include: [
-						{
-							model: db.catEntesFiscalizadores,
-							as: 'ente'
-						}
-					]
-				},
-				{
-					model: db.catInstanciaFondos,
-					as: 'fondos',
-					include: [
-						{
-							model: db.catFondos,
-							as: 'fondo'
-						}
-					]
-				},
-				{
-					model: db.catOrganizaciones,
-					attributes: ['nombre'],
-					as: 'organizacion'
-				}
+			include: [{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			},
+			{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}
 			]
 		})
 			.then(instancia => {
 				resolve(instancia)
-			})
-			.catch((err) => reject(err))
-	})
-}
-
-const instanciaFondos = (id) => {
-	return new Promise((resolve, reject) => {
-		db.catInstanciaFondos.find({
-			where: {
-				id: id
-			}
-		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
-			})
-			.catch((err) => reject(err))
-	})
-}
-
-const instanciaEntes = (id) => {
-	return new Promise((resolve, reject) => {
-		db.catInstanciaEntes.find({
-			where: {
-				id: id
-			}
-		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
 			})
 			.catch((err) => reject(err))
 	})
@@ -181,8 +140,6 @@ buscar.organizacion = organizacion
 buscar.ente = ente
 buscar.fondo = fondo
 buscar.instancia = instancia
-buscar.instanciaFondos = instanciaFondos
-buscar.instanciaEntes = instanciaEntes
 buscar.uniAdm = uniAdm
 buscar.usuario = usuario
 

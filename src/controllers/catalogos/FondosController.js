@@ -3,11 +3,11 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catFondos.create(req.body.fondo)
+	db.catFondos.create(req.fondo)
 		.then(fondo => {
 			buscar.fondo(fondo.idFondo)
 				.then(datosFondo => {
-					res.status(200).json(datosFondo)
+					res.status(201).json(datosFondo)
 				})
 				.catch(err => res.status(400).json({
 					status: 'error',
@@ -65,7 +65,7 @@ exports.fondo = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catFondos.update(req.body.fondo, {
+	db.catFondos.update(req.fondo, {
 		where: {
 			idFondo: req.params.id
 		}

@@ -3,13 +3,10 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	console.log(1)
-	db.catUniAdm.create(req.body.uniAdm)
+	db.catUniAdm.create(req.uniAdm)
 		.then(uniAdm => {
-			console.log(2)
 			buscar.uniAdm(uniAdm.idUniAdm)
 				.then(datosUniAdm => {
-					console.log(5)
 					res.status(201).json(datosUniAdm)
 				})
 				.catch(err => res.status(400).json({
@@ -62,7 +59,7 @@ exports.uniAdm = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catUniAdm.update(req.body.uniAdm, {
+	db.catUniAdm.update(req.uniAdm, {
 		where: {
 			idUniAdm: req.params.id
 		}
@@ -115,7 +112,6 @@ exports.eliminar = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al eliminar',

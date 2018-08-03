@@ -13,7 +13,7 @@ const schema = {
 const datosFondo = (req) => {
 	return {
 		idOrganizacion: req.body.fondo.idOrganizacion,
-		nombre: req.body.fondo.nombre,
+		nombre: req.body.fondo.nombre.toUpperCase().trim(),
 		origen: req.body.fondo.origen,
 		activo: req.body.fondo.activo
 	}
@@ -22,6 +22,7 @@ const datosFondo = (req) => {
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const fondo = datosFondo(req)
+	req.fondo = fondo
 	const {
 		error
 	} = Joi.validate(fondo, schema)
@@ -51,6 +52,7 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const fondo = datosFondo(req)
+	req.fondo = fondo
 	const {
 		error
 	} = Joi.validate(fondo, schema)
