@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
 exports.decodificar = (req, res, next) => {
 	/* try {
