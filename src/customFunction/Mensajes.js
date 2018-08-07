@@ -18,7 +18,7 @@ const switchError = (error, res) => {
 			msg: 'Debe introducir el ente.'
 		})
 		break
-	case 'idUniadm':
+	case 'idUniAdm':
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe introducir la Unidad Administrativa'

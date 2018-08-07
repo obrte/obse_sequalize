@@ -12,15 +12,15 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		idOrganizacion: {
 			type: DataTypes.UUID,
-			allowNull: false
+			allowNull: true
 		},
 		idInstancia: {
 			type: DataTypes.UUID,
-			allowNull: false
+			allowNull: true
 		},
 		idUniAdm: {
 			type: DataTypes.UUID,
-			allowNull: false
+			allowNull: true
 		},
 		nombre: {
 			type: DataTypes.STRING(255),
@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		idUsuarioCreacion: {
 			type: DataTypes.UUID,
-			allowNull: false
+			allowNull: true
 		},
 		// Timestamps
 		created_at: DataTypes.DATE,

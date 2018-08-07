@@ -30,7 +30,8 @@ exports.login = (req, res) => {
 						tipo: usuario.tipo
 					},
 					process.env.JWT_KEY, {
-						expiresIn: 120
+						//expiresIn: '1h' = 1hr / es igual que 60 * 60
+						expiresIn: process.env.expiresIn
 					}
 					)
 					const headerToken = 'Bearer ' + token
@@ -67,7 +68,7 @@ exports.refrescar = (req, res) => {
 		tipo: req.userData.tipo
 	},
 	process.env.JWT_KEY, {
-		expiresIn: 120
+		expiresIn: process.env.expiresIn
 	}
 	)
 	const headerToken = 'Bearer ' + tokenNew

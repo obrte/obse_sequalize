@@ -4,7 +4,7 @@ const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
 const bcrypt = require('bcrypt')
 
-const schema = {
+const schemaNormal = {
 	tipo: Joi.string().required(),
 	idOrganizacion: Joi.string().required(),
 	idInstancia: Joi.string().required(),
@@ -14,10 +14,17 @@ const schema = {
 	activo: Joi.number().integer(),
 	idUsuarioCreacion: Joi.string().required()
 }
+const schemaSuperAdmin = {
+	tipo: Joi.string().required(),
+	nombre: Joi.string().required(),
+	email: Joi.string().email().required(),
+	activo: Joi.number().integer(),
+	idUsuarioCreacion: Joi.string()
+}
 
-const datosUsuario = (req) => {
+const usuarioNormal = (req) => {
 	return {
-		tipo: req.body.usuario.tipo,
+		tipo: req.body.usuario.tipo.toUpperCase().trim(),
 		idOrganizacion: req.body.usuario.idOrganizacion,
 		idInstancia: req.body.usuario.idInstancia,
 		idUniAdm: req.body.usuario.idUniAdm,
@@ -28,8 +35,28 @@ const datosUsuario = (req) => {
 	}
 }
 
+const usuarioSuperAdmin = (req) => {
+	return {
+		tipo: req.body.usuario.tipo.toUpperCase().trim(),
+		nombre: req.body.usuario.nombre.toUpperCase().trim(),
+		email: req.body.usuario.email.trim(),
+		activo: req.body.usuario.activo
+	}
+}
+
 exports.guardar = (req, res, next) => {
-	const usuario = datosUsuario(req)
+	let schema
+	let usuario
+	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
+		usuario = usuarioSuperAdmin(req)
+	} else {
+		usuario = usuarioNormal(req)
+	}
+	if (usuario.tipo == 'SUPERADMIN') {
+		schema = schemaSuperAdmin
+	} else {
+		schema = schemaNormal
+	}
 	const {
 		error
 	} = Joi.validate(usuario, schema)
@@ -88,7 +115,18 @@ exports.guardar = (req, res, next) => {
 }
 
 exports.actualizar = (req, res, next) => {
-	const usuario = datosUsuario(req)
+	let schema
+	let usuario
+	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
+		usuario = usuarioSuperAdmin(req)
+	} else {
+		usuario = usuarioNormal(req)
+	}
+	if (usuario.tipo == 'SUPERADMIN') {
+		schema = schemaSuperAdmin
+	} else {
+		schema = schemaNormal
+	}
 	const {
 		error
 	} = Joi.validate(usuario, schema)
