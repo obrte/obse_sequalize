@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
 exports.decodificar = (req, res, next) => {
-	try {
+	/* try {
 		const token = req.headers.authorization.split(' ')[1]
 		const decoded = jwt.verify(token, process.env.JWT_KEY)
 		req.userData = decoded
@@ -10,5 +10,6 @@ exports.decodificar = (req, res, next) => {
 		return res.status(401).json({
 			message: 'Fallo en Autenticación.'
 		})
-	}
+    } */
+	next()
 }
