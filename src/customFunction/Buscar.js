@@ -121,7 +121,7 @@ const usuario = (id) => {
 			where: {
 				idUsuario: id
 			},
-			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion'],
+			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion', 'created_at', 'updated_at'],
 			include: [{
 				model: db.catOrganizaciones,
 				attributes: ['idOrganizacion', 'nombre'],
