@@ -14,6 +14,17 @@ const schemaNormal = {
 	activo: Joi.number().integer(),
 	idUsuarioCreacion: Joi.string().required()
 }
+
+const schemaAdministrador = {
+	tipo: Joi.string().required(),
+	idOrganizacion: Joi.string().required(),
+	idInstancia: Joi.string().required(),
+	nombre: Joi.string().required(),
+	email: Joi.string().email().required(),
+	activo: Joi.number().integer(),
+	idUsuarioCreacion: Joi.string().required()
+}
+
 const schemaSuperAdmin = {
 	tipo: Joi.string().required(),
 	nombre: Joi.string().required(),
@@ -35,6 +46,18 @@ const usuarioNormal = (req) => {
 	}
 }
 
+const usuarioAdmin = (req) => {
+	return {
+		tipo: req.body.usuario.tipo.toUpperCase().trim(),
+		idOrganizacion: req.body.usuario.idOrganizacion,
+		idInstancia: req.body.usuario.idInstancia,
+		nombre: req.body.usuario.nombre.toUpperCase().trim(),
+		email: req.body.usuario.email.trim(),
+		activo: req.body.usuario.activo,
+		idUsuarioCreacion: req.body.usuario.idUsuarioCreacion
+	}
+}
+
 const usuarioSuperAdmin = (req) => {
 	return {
 		tipo: req.body.usuario.tipo.toUpperCase().trim(),
@@ -49,13 +72,15 @@ exports.guardar = (req, res, next) => {
 	let usuario
 	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
 		usuario = usuarioSuperAdmin(req)
-	} else {
-		usuario = usuarioNormal(req)
-	}
-	if (usuario.tipo == 'SUPERADMIN') {
 		schema = schemaSuperAdmin
 	} else {
-		schema = schemaNormal
+		if (req.body.usuario.tipo.toUpperCase().trim() == 'ADMINISTRADOR') {
+			usuario = usuarioAdmin(req)
+			schema = schemaAdministrador
+		} else {
+			usuario = usuarioNormal(req)
+			schema = schemaNormal
+		}
 	}
 	const {
 		error
