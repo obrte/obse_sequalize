@@ -5,7 +5,10 @@ const buscar = require('../../customFunction/Buscar')
 exports.guardar = (req, res) => {
 	db.catUsuarios.create(req.usuario)
 		.then(usuario => {
-			res.status(201).json(usuario)
+			buscar.usuario(usuario.idUsuario)
+				.then(usuario => {
+					res.status(201).json(usuario)
+				})
 		})
 		.catch((err) => {
 			res.status(400).json({
@@ -19,6 +22,7 @@ exports.guardar = (req, res) => {
 // GET all
 exports.usuarios = (req, res) => {
 	db.catUsuarios.findAll({
+		attributes: ['idUsuario', 'tipo', 'nombre', 'activo', 'idUsuarioCreacion'],
 		include: [{
 			model: db.catOrganizaciones,
 			attributes: ['idOrganizacion', 'nombre'],
@@ -50,33 +54,10 @@ exports.usuarios = (req, res) => {
 
 // GET one por id
 exports.usuario = (req, res) => {
-	db.catUsuarios.find({
-		where: {
-			idUsuario: req.params.id
-		},
-		include: [{
-			model: db.catOrganizaciones,
-			attributes: ['idOrganizacion', 'nombre'],
-			as: 'organizacion'
-		},
-		{
-			model: db.catInstancias,
-			attributes: ['idInstancia', 'nombre'],
-			as: 'instancia'
-		},
-		{
-			model: db.catUniAdm,
-			attributes: ['idUniAdm', 'nombre'],
-			as: 'uniAdm'
-		}
-		]
-	})
+	buscar.usuario(req.params.id)
 		.then(usuario => {
-			buscar.usuario(usuario.idUsuarioCreacion)
-				.then(creador => {
-					usuario.nombreCreador = creador.nombre
-					res.status(200).json(usuario)
-				})
+			console.log(usuario)
+			res.status(200).json(usuario)
 		})
 		.catch((err) => {
 			res.status(400).json({

@@ -120,14 +120,52 @@ const usuario = (id) => {
 		db.catUsuarios.find({
 			where: {
 				idUsuario: id
+			},
+			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion'],
+			include: [{
+				model: db.catOrganizaciones,
+				attributes: ['idOrganizacion', 'nombre'],
+				as: 'organizacion'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['idInstancia', 'nombre'],
+				as: 'instancia'
+			},
+			{
+				model: db.catUniAdm,
+				attributes: ['idUniAdm', 'nombre'],
+				as: 'uniAdm'
 			}
+			]
 		})
 			.then(datos => {
 				if (datos) {
-					resolve(datos)
+					console.log('antes')
+					nombreCreador(datos.idUsuarioCreacion)
+						.then(creador => {
+							datos.dataValues.nombreCreacion = creador.nombre
+							resolve(datos)
+						})
+						.catch((err) => reject(err))
 				} else {
 					resolve(false)
 				}
+			})
+			.catch((err) => reject(err))
+	})
+}
+
+function nombreCreador(id) {
+	return new Promise((resolve, reject) => {
+		console.log('dentro')
+		db.catUsuarios.find({
+			where: {
+				idUsuario: id
+			}
+		})
+			.then(creador => {
+				resolve(creador)
 			})
 			.catch((err) => reject(err))
 	})
