@@ -22,7 +22,7 @@ exports.guardar = (req, res) => {
 // GET all
 exports.usuarios = (req, res) => {
 	db.catUsuarios.findAll({
-		attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion', 'created_at', 'updated_at'],
+		attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'created_at', 'updated_at'],
 		include: [{
 			model: db.catOrganizaciones,
 			attributes: ['idOrganizacion', 'nombre'],
@@ -37,6 +37,11 @@ exports.usuarios = (req, res) => {
 			model: db.catUniAdm,
 			attributes: ['idUniAdm', 'nombre'],
 			as: 'uniAdm'
+		},
+		{
+			model: db.catUsuarios,
+			attributes: ['idUsuarioCreacion', 'nombre'],
+			as: 'creador'
 		}
 		]
 	})
@@ -56,7 +61,6 @@ exports.usuarios = (req, res) => {
 exports.usuario = (req, res) => {
 	buscar.usuario(req.params.id)
 		.then(usuario => {
-			console.log(usuario)
 			res.status(200).json(usuario)
 		})
 		.catch((err) => {

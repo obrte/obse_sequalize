@@ -113,10 +113,6 @@ db.catEntesFiscalizadores.hasMany(db.catInstanciaEntes, {
 
 //catalogo_instancia_entes/catalogo_instancias/catalogo_entes_fiscalizadores(id_instancia/id_ente)
 
-
-
-
-
 //! UniAdm
 //catalogo_uniadm/catalogo_instancia(id_instancia)
 db.catUniAdm.belongsTo(db.catInstancias, {
@@ -142,6 +138,10 @@ db.catUsuarios.belongsTo(db.catInstancias, {
 db.catUsuarios.belongsTo(db.catUniAdm, {
 	foreignKey: 'idUniAdm',
 	as: 'uniAdm'
+})
+db.catUsuarios.belongsTo(db.catUsuarios, {
+	foreignKey: 'idUsuarioCreacion',
+	as: 'creador'
 })
 
 module.exports = db

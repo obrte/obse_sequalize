@@ -121,7 +121,7 @@ const usuario = (id) => {
 			where: {
 				idUsuario: id
 			},
-			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion', 'created_at', 'updated_at'],
+			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'created_at', 'updated_at'],
 			include: [{
 				model: db.catOrganizaciones,
 				attributes: ['idOrganizacion', 'nombre'],
@@ -136,18 +136,17 @@ const usuario = (id) => {
 				model: db.catUniAdm,
 				attributes: ['idUniAdm', 'nombre'],
 				as: 'uniAdm'
+			},
+			{
+				model: db.catUsuarios,
+				attributes: ['idUsuarioCreacion', 'nombre'],
+				as: 'creador'
 			}
 			]
 		})
 			.then(datos => {
 				if (datos) {
-					console.log('antes')
-					nombreCreador(datos.idUsuarioCreacion)
-						.then(creador => {
-							datos.dataValues.nombreCreacion = creador.nombre
-							resolve(datos)
-						})
-						.catch((err) => reject(err))
+					resolve(datos)
 				} else {
 					resolve(false)
 				}
@@ -155,22 +154,6 @@ const usuario = (id) => {
 			.catch((err) => reject(err))
 	})
 }
-
-function nombreCreador(id) {
-	return new Promise((resolve, reject) => {
-		console.log('dentro')
-		db.catUsuarios.find({
-			where: {
-				idUsuario: id
-			}
-		})
-			.then(creador => {
-				resolve(creador)
-			})
-			.catch((err) => reject(err))
-	})
-}
-
 
 const buscar = {}
 
