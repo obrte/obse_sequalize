@@ -22,7 +22,7 @@ exports.guardar = (req, res) => {
 // GET all
 exports.usuarios = (req, res) => {
 	db.catUsuarios.findAll({
-		attributes: ['idUsuario', 'tipo', 'nombre', 'activo', 'idUsuarioCreacion'],
+		attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'idUsuarioCreacion'],
 		include: [{
 			model: db.catOrganizaciones,
 			attributes: ['idOrganizacion', 'nombre'],
