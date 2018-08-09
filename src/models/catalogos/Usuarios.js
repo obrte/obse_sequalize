@@ -40,11 +40,6 @@ module.exports = (sequelize, DataTypes) => {
 			allowNull: false,
 			defaultValue: 1
 		},
-		// idUsuarioCreacion: {
-		// 	type: DataTypes.UUID,
-		// 	allowNull: true
-		// },
-		// Timestamps
 		created_at: DataTypes.DATE,
 		updated_at: DataTypes.DATE
 	}, {

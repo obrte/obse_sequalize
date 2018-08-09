@@ -144,13 +144,15 @@ exports.actualizar = (req, res, next) => {
 	let usuario
 	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
 		usuario = usuarioSuperAdmin(req)
-	} else {
-		usuario = usuarioNormal(req)
-	}
-	if (usuario.tipo == 'SUPERADMIN') {
 		schema = schemaSuperAdmin
 	} else {
-		schema = schemaNormal
+		if (req.body.usuario.tipo.toUpperCase().trim() == 'ADMINISTRADOR') {
+			usuario = usuarioAdmin(req)
+			schema = schemaAdministrador
+		} else {
+			usuario = usuarioNormal(req)
+			schema = schemaNormal
+		}
 	}
 	const {
 		error
