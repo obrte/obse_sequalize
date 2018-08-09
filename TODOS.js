@@ -8,11 +8,11 @@
  * ! Crear un usuario directamente en la BD
  * *EJEMPLO
  "idUsuario": "09f53ea0-7a42-42e1-9b77-0d33d17698d7"
- "tipo": "SuperAdmin"
+ "tipo": "SUPERADMIN"
  "idOrganizacion": "1",
  "idInstancia": "1",
  "idUniAdm": "1",
- "nombre": "SuperAdm",
+ "nombre": "SUPERADMIN",
  "email": "super@admin.com",
  "password": "$2b$10$tr4bhD1uPvwKO57ssSSzBe9BWoFlNrdec5t66DuZNsWgbdOMOGRLq", este password es "123"
  "activo": 1,
