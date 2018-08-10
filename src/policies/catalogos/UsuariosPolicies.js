@@ -3,6 +3,8 @@ const db = require('../../config/db')
 const Op = db.Sequelize.Op
 const mensajes = require('../../customFunction/Mensajes')
 const bcrypt = require('bcrypt')
+var schema
+var usuario
 
 const schemaNormal = {
 	tipo: Joi.string().required(),
@@ -68,8 +70,6 @@ const usuarioSuperAdmin = (req) => {
 }
 
 exports.guardar = (req, res, next) => {
-	let schema
-	let usuario
 	if (req.body.usuario.tipo.toLowerCase().trim() == 'superadmin') {
 		usuario = usuarioSuperAdmin(req)
 		schema = schemaSuperAdmin
@@ -90,58 +90,48 @@ exports.guardar = (req, res, next) => {
 	} else {
 		usuario.password = req.body.usuario.password.trim(),
 		usuario.rePassword = req.body.usuario.rePassword.trim()
+		req.usuario = usuario
 		if (!usuario.password) {
 			res.status(400).json({
 				status: 'Alerta',
 				msg: 'Debe introducir un Password valido.'
 			})
 		} else {
-			if (usuario.password == usuario.rePassword) {
-				db.catUsuarios.findOne({
-					where: {
-						email: usuario.email
-					}
-				})
-					.then(conflictoEmail => {
-						if (conflictoEmail) {
-							res.status(400).json({
-								status: 'Alerta',
-								msg: 'El correo ya esta en uso.'
-							})
-						} else {
-							bcrypt.hash(usuario.password, 10, (err, hash) => {
-								if (err) {
-									return res.status(400).json({
-										error: err
-									})
-								} else {
-									usuario.password = hash
-									req.usuario = usuario
-									next()
-								}
-							})
+			hashPass(usuario.password, usuario.rePassword)
+				.then(hash => {
+					db.catUsuarios.findOne({
+						where: {
+							email: usuario.email
 						}
 					})
-					.catch((err) => {
-						res.status(400).json({
-							status: 'Alerta',
-							msg: err
+						.then(conflictoEmail => {
+							if (conflictoEmail) {
+								res.status(400).json({
+									status: 'Alerta',
+									msg: 'El correo ya esta en uso.'
+								})
+							} else {
+								req.usuario.password = hash
+								next()
+							}
 						})
-					})
-			} else {
-				res.status(400).json({
-					status: 'Alerta',
-					msg: 'Las contraseñas no son iguales.'
+						.catch((err) => {
+							res.status(400).json({
+								status: 'Alerta',
+								msg: err
+							})
+						})
 				})
-			}
+				.catch(msg => {
+					res.status(400).json({
+						msg
+					})
+				})
 		}
-
 	}
 }
 
 exports.actualizar = (req, res, next) => {
-	let schema
-	let usuario
 	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
 		usuario = usuarioSuperAdmin(req)
 		schema = schemaSuperAdmin
@@ -163,39 +153,85 @@ exports.actualizar = (req, res, next) => {
 		usuario.password = req.body.usuario.password.trim(),
 		usuario.rePassword = req.body.usuario.rePassword.trim()
 		req.usuario = usuario
-		if (usuario.password == usuario.rePassword) {
-			if (!usuario.password) {
-				delete req.usuario['password']
-			}
-			db.catUsuarios.findOne({
-				where: {
-					email: usuario.email,
-					idUsuario: {
-						[Op.ne]: req.params.id
-					}
-				}
-			})
-				.then(conflictoEmail => {
-					if (conflictoEmail) {
-						res.status(400).json({
-							status: 'Alerta',
-							msg: 'El correo ya esta en uso.'
-						})
-					} else {
-						next()
-					}
+		if (usuario.password == null) {
+			emailValido(req.params.id, usuario.email)
+				.then(() => {
+					next()
 				})
-				.catch((err) => {
+				.catch(msg => {
 					res.status(400).json({
-						status: 'Alerta',
-						msg: err
+						msg
 					})
 				})
 		} else {
-			res.status(400).json({
+			hashPass(usuario.password, usuario.rePassword)
+				.then(hash => {
+					emailValido(req.params.id, usuario.email)
+						.then(() => {
+							req.usuario.password = hash
+							next()
+						})
+						.catch(msg => {
+							res.status(400).json({
+								msg
+							})
+						})
+				})
+				.catch(msg => {
+					res.status(400).json({
+						msg
+					})
+				})
+		}
+	}
+}
+
+function emailValido(id, correo) {
+	return new Promise((resolve, reject) => {
+		db.catUsuarios.findOne({
+			where: {
+				email: correo,
+				idUsuario: {
+					[Op.ne]: id
+				}
+			}
+		})
+			.then(conflictoEmail => {
+				if (conflictoEmail) {
+					reject({
+						status: 'Alerta',
+						msg: 'El correo ya esta en uso.'
+					})
+				} else {
+					resolve(true)
+				}
+			})
+			.catch((err) => {
+				reject({
+					status: 'Alerta',
+					msg: err
+				})
+			})
+	})
+}
+
+function hashPass(password, rePassword) {
+	return new Promise((resolve, reject) => {
+		if (password == rePassword) {
+			bcrypt.hash(password, 10, (err, hash) => {
+				if (err) {
+					reject({
+						msg: err
+					})
+				} else {
+					resolve(hash)
+				}
+			})
+		} else {
+			reject({
 				status: 'Alerta',
 				msg: 'Las contraseñas no son iguales.'
 			})
 		}
-	}
+	})
 }
