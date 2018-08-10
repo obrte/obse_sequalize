@@ -3,7 +3,7 @@
  ! USANDO MySQL-Sequalize
 */
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize('observaciones', 'root', '', {
+const sequelize = new Sequelize('observaciones', 'root', '12345678', {
 	host: 'localhost',
 	dialect: 'mysql',
 	operatorsAliases: false,
@@ -19,7 +19,6 @@ const sequelize = new Sequelize('observaciones', 'root', '', {
 	}
 })
 
-
 //Objeto db que contendrá todos los modelos/tablas de la Base de Datos
 const db = {}
 
@@ -27,17 +26,32 @@ db.Sequelize = Sequelize
 db.sequelize = sequelize
 
 //modelos
-db.catOrganizaciones = require('../models/catalogos/Organizaciones')(sequelize, Sequelize)
+db.catOrganizaciones = require('../models/catalogos/Organizaciones')(
+	sequelize,
+	Sequelize
+)
 db.catFondos = require('../models/catalogos/Fondos')(sequelize, Sequelize)
-db.catEntesFiscalizadores = require('../models/catalogos/EntesFiscalizadores')(sequelize, Sequelize)
-db.catInstancias = require('../models/catalogos/Instancias')(sequelize, Sequelize)
-db.catInstanciaFondos = require('../models/catalogos/InstanciaFondos')(sequelize, Sequelize)
-db.catInstanciaEntes = require('../models/catalogos/InstanciaEntes')(sequelize, Sequelize)
+db.catEntesFiscalizadores = require('../models/catalogos/EntesFiscalizadores')(
+	sequelize,
+	Sequelize
+)
+db.catInstancias = require('../models/catalogos/Instancias')(
+	sequelize,
+	Sequelize
+)
+db.catInstanciaFondos = require('../models/catalogos/InstanciaFondos')(
+	sequelize,
+	Sequelize
+)
+db.catInstanciaEntes = require('../models/catalogos/InstanciaEntes')(
+	sequelize,
+	Sequelize
+)
 db.catUniAdm = require('../models/catalogos/UniAdm')(sequelize, Sequelize)
 db.catUsuarios = require('../models/catalogos/Usuarios')(sequelize, Sequelize)
 db.informes = require('../models/Informes')(sequelize, Sequelize)
 
-/** 
+/**
  *!Relaciones
  **/
 //! Organizaciones/Fondos
@@ -127,22 +141,18 @@ db.catUsuarios.belongsTo(db.catUsuarios, {
 	as: 'creador'
 })
 
-// //! Informes
-// db.catUsuarios.belongsTo(db.catOrganizaciones, {
-// 	foreignKey: 'idOrganizacion',
-// 	as: 'organizacion'
-// })
-// db.catUsuarios.belongsTo(db.catInstancias, {
-// 	foreignKey: 'idInstancia',
-// 	as: 'instancia'
-// })
-// db.catUsuarios.belongsTo(db.catUniAdm, {
-// 	foreignKey: 'idUniAdm',
-// 	as: 'uniAdm'
-// })
-// db.catUsuarios.belongsTo(db.catUsuarios, {
-// 	foreignKey: 'idUsuarioCreacion',
-// 	as: 'creador'
-// })
+//! Informes
+db.informes.belongsTo(db.catUsuarios, {
+	foreignKey: 'idUsuarioCreacion',
+	as: 'usuarioCreacion'
+})
+db.informes.belongsTo(db.catEntesFiscalizadores, {
+	foreignKey: 'idEnte',
+	as: 'ente'
+})
+db.informes.belongsTo(db.catFondos, {
+	foreignKey: 'idFondo',
+	as: 'fondo'
+})
 
 module.exports = db

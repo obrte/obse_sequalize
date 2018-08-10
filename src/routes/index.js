@@ -5,12 +5,13 @@ const routes = [
 	require('./catalogos/Organizaciones'),
 	require('./catalogos/UniAdm'),
 	require('./catalogos//Usuarios'),
-	require('./Auth')
+	require('./Auth'),
+	require('./Informes')
 ]
 
 // Add access to the app and db objects to each route
 module.exports = function router(app) {
-	return routes.forEach((route) => {
+	return routes.forEach(route => {
 		route(app)
 	})
 }

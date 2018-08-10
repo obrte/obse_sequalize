@@ -1,15 +1,15 @@
 const db = require('../config/db')
 //const Op = db.Sequelize.Op
 
-
 //Regresa todos los datos del ID encontrado
-const organizacion = (id) => {
+const organizacion = id => {
 	return new Promise((resolve, reject) => {
-		db.catOrganizaciones.find({
-			where: {
-				idOrganizacion: id
-			}
-		})
+		db.catOrganizaciones
+			.find({
+				where: {
+					idOrganizacion: id
+				}
+			})
 			.then(datos => {
 				if (datos) {
 					resolve(datos)
@@ -20,130 +20,155 @@ const organizacion = (id) => {
 	})
 }
 
-const ente = (id) => {
+const ente = id => {
 	return new Promise((resolve, reject) => {
-		db.catEntesFiscalizadores.find({
-			where: {
-				idEnte: id
-			},
-			include: [{
-				model: db.catOrganizaciones,
-				attributes: ['nombre'],
-				as: 'organizacion'
-			}],
-		})
+		db.catEntesFiscalizadores
+			.find({
+				where: {
+					idEnte: id
+				},
+				include: [
+					{
+						model: db.catOrganizaciones,
+						attributes: ['nombre'],
+						as: 'organizacion'
+					}
+				]
+			})
 			.then(ente => {
 				resolve(ente)
 			})
-			.catch((err) => reject(err))
+			.catch(err => reject(err))
 	})
 }
 
-const fondo = (id) => {
+const fondo = id => {
 	return new Promise((resolve, reject) => {
-		db.catFondos.find({
-			where: {
-				idFondo: id
-			},
-			include: [{
-				model: db.catOrganizaciones,
-				attributes: ['nombre'],
-				as: 'organizacion'
-			}],
-		})
+		db.catFondos
+			.find({
+				where: {
+					idFondo: id
+				},
+				include: [
+					{
+						model: db.catOrganizaciones,
+						attributes: ['nombre'],
+						as: 'organizacion'
+					}
+				]
+			})
 			.then(fondo => {
 				resolve(fondo)
 			})
-			.catch((err) => reject(err))
+			.catch(err => reject(err))
 	})
 }
 
-const instancia = (id) => {
+const instancia = id => {
 	return new Promise((resolve, reject) => {
-		db.catInstancias.find({
-			where: {
-				idInstancia: id
-			},
-			include: [{
-				model: db.catInstanciaEntes,
-				as: 'entes',
-				include: [{
-					model: db.catEntesFiscalizadores,
-					as: 'ente'
-				}]
-			},
-			{
-				model: db.catInstanciaFondos,
-				as: 'fondos',
-				include: [{
-					model: db.catFondos,
-					as: 'fondo'
-				}]
-			},
-			{
-				model: db.catOrganizaciones,
-				attributes: ['nombre'],
-				as: 'organizacion'
-			}
-			]
-		})
+		db.catInstancias
+			.find({
+				where: {
+					idInstancia: id
+				},
+				include: [
+					{
+						model: db.catInstanciaEntes,
+						as: 'entes',
+						include: [
+							{
+								model: db.catEntesFiscalizadores,
+								as: 'ente'
+							}
+						]
+					},
+					{
+						model: db.catInstanciaFondos,
+						as: 'fondos',
+						include: [
+							{
+								model: db.catFondos,
+								as: 'fondo'
+							}
+						]
+					},
+					{
+						model: db.catOrganizaciones,
+						attributes: ['nombre'],
+						as: 'organizacion'
+					}
+				]
+			})
 			.then(instancia => {
 				resolve(instancia)
 			})
-			.catch((err) => reject(err))
+			.catch(err => reject(err))
 	})
 }
 
-const uniAdm = (id) => {
+const uniAdm = id => {
 	return new Promise((resolve, reject) => {
 		console.log(3)
-		db.catUniAdm.find({
-			where: {
-				idUniAdm: id
-			},
-			include: [{
-				model: db.catInstancias,
-				attributes: ['nombre', 'idOrganizacion'],
-				as: 'instancia'
-			}],
-		})
+		db.catUniAdm
+			.find({
+				where: {
+					idUniAdm: id
+				},
+				include: [
+					{
+						model: db.catInstancias,
+						attributes: ['nombre', 'idOrganizacion'],
+						as: 'instancia'
+					}
+				]
+			})
 			.then(uniAdm => {
 				console.log(4)
 				resolve(uniAdm)
 			})
-			.catch((err) => reject(err))
+			.catch(err => reject(err))
 	})
 }
 
-const usuario = (id) => {
+const usuario = id => {
 	return new Promise((resolve, reject) => {
-		db.catUsuarios.find({
-			where: {
-				idUsuario: id
-			},
-			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'created_at', 'updated_at'],
-			include: [{
-				model: db.catOrganizaciones,
-				attributes: ['idOrganizacion', 'nombre'],
-				as: 'organizacion'
-			},
-			{
-				model: db.catInstancias,
-				attributes: ['idInstancia', 'nombre'],
-				as: 'instancia'
-			},
-			{
-				model: db.catUniAdm,
-				attributes: ['idUniAdm', 'nombre'],
-				as: 'uniAdm'
-			},
-			{
-				model: db.catUsuarios,
-				attributes: ['idUsuarioCreacion', 'nombre'],
-				as: 'creador'
-			}
-			]
-		})
+		db.catUsuarios
+			.find({
+				where: {
+					idUsuario: id
+				},
+				attributes: [
+					'idUsuario',
+					'tipo',
+					'nombre',
+					'email',
+					'activo',
+					'created_at',
+					'updated_at'
+				],
+				include: [
+					{
+						model: db.catOrganizaciones,
+						attributes: ['idOrganizacion', 'nombre'],
+						as: 'organizacion'
+					},
+					{
+						model: db.catInstancias,
+						attributes: ['idInstancia', 'nombre'],
+						as: 'instancia'
+					},
+					{
+						model: db.catUniAdm,
+						attributes: ['idUniAdm', 'nombre'],
+						as: 'uniAdm'
+					},
+					{
+						model: db.catUsuarios,
+						attributes: ['idUsuarioCreacion', 'nombre'],
+						as: 'creador'
+					}
+				]
+			})
 			.then(datos => {
 				if (datos) {
 					resolve(datos)
@@ -151,7 +176,50 @@ const usuario = (id) => {
 					resolve(false)
 				}
 			})
-			.catch((err) => reject(err))
+			.catch(err => reject(err))
+	})
+}
+
+const informe = id => {
+	return new Promise((resolve, reject) => {
+		db.informes
+			.find({
+				where: {
+					idInforme: id
+				},
+				attributes: [
+					'idInforme',
+					'ejercicio',
+					'delMes',
+					'alMes',
+					'numero',
+					'numeroAuditoria',
+					'activo',
+					'created_at',
+					'updated_at'
+				],
+				include: [
+					{
+						model: db.catUsuarios,
+						attributes: ['nombre', 'idUsuario'],
+						as: 'usuarioCreacion'
+					},
+					{
+						model: db.catEntesFiscalizadores,
+						attributes: ['nombre', 'idEnte'],
+						as: 'ente'
+					},
+					{
+						model: db.catFondos,
+						attributes: ['nombre', 'idFondo'],
+						as: 'fondo'
+					}
+				]
+			})
+			.then(informe => {
+				resolve(informe)
+			})
+			.catch(err => reject(err))
 	})
 }
 
@@ -163,5 +231,6 @@ buscar.fondo = fondo
 buscar.instancia = instancia
 buscar.uniAdm = uniAdm
 buscar.usuario = usuario
+buscar.informe = informe
 
 module.exports = buscar
