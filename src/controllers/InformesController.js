@@ -3,89 +3,107 @@ const buscar = require('../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.informes.create(req.informe)
-		.then(informe => {
-			buscar.informe(informe.idInforme)
-				.then(datosInforme => {
-					res.status(201).json(datosInforme)
-				})
-				.catch(err => res.status(400).json({
-					status: 'error',
-					msg: 'Error al crear(buscar).',
+	db.informes.create(req.informe).then(informe => {
+		buscar
+			.informe(informe.idInforme)
+			.then(datosInforme => {
+				res.status(201).json(datosInforme)
+			})
+			.catch(err =>
+				res.status(400).json({
+					status: 'Alerta',
+					msg: 'Fallo al crear(buscar).',
 					error: err
-				}))
-		})
+				})
+			)
+	})
 }
 
 // GET all
-exports.uniAdms = (req, res) => {
-	db.catUniAdm.findAll({
-		include: [{
-			model: db.catInstancias,
-			attributes: ['nombre', 'idOrganizacion'],
-			as: 'instancia'
-		}],
-	})
-		.then(uniAdm => {
-			res.json(uniAdm)
+exports.informes = (req, res) => {
+	db.informes
+		.findAll({
+			attributes: [
+				'idInforme',
+				'ejercicio',
+				'delMes',
+				'alMes',
+				'numero',
+				'numeroAuditoria',
+				'activo',
+				'created_at',
+				'updated_at'
+			],
+			include: [
+				{
+					model: db.catUsuarios,
+					attributes: ['nombre', 'idUsuario'],
+					as: 'usuarioCreacion'
+				},
+				{
+					model: db.catEntesFiscalizadores,
+					attributes: ['nombre', 'idEnte'],
+					as: 'ente'
+				},
+				{
+					model: db.catFondos,
+					attributes: ['nombre', 'idFondo'],
+					as: 'fondo'
+				}
+			]
 		})
-		.catch((err) => {
-			res.json(err)
-		})
-}
-
-// GET one por id
-exports.uniAdm = (req, res) => {
-	buscar.uniAdm(req.params.id)
-		.then(uniAdm => {
-			if (uniAdm) {
-				res.status(200).json(uniAdm)
-			} else {
-				res.status(400).json({
-					status: 'error',
-					msg: 'No encontrado'
-				})
-			}
+		.then(informes => {
+			res.status(200).json(informes)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
 				error: err
 			})
 		})
 }
 
+// GET one por id
+exports.informe = (req, res) => {
+	buscar
+		.informe(req.params.id)
+		.then(datosInforme => {
+			res.status(201).json(datosInforme)
+		})
+		.catch(err =>
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'Fallo al crear(buscar).',
+				error: err
+			})
+		)
+}
+
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catUniAdm.update(req.uniAdm, {
-		where: {
-			idUniAdm: req.params.id
-		}
-	})
-		.then(uniAdmActualizada => {
-			if (uniAdmActualizada > 0) {
-				buscar.uniAdm(req.params.id)
-					.then(datosUniAdm => {
-						res.status(200).json(datosUniAdm)
-					})
-					.catch(err => res.status(400).json({
-						status: 'error',
-						msg: 'Error al actualizar.',
-						error: err
-					}))
+	db.informes
+		.update(req.informe, {
+			where: {
+				idInforme: req.params.id
+			}
+		})
+		.then(InformeActualizado => {
+			if (InformeActualizado > 0) {
+				buscar.informe(req.params.id).then(informe => {
+					res.status(200).json(informe)
+				})
 			} else {
 				res.status(400).json({
-					status: 'error',
-					msg: 'Error al actualizar'
+					status: 'Alerta',
+					msg: 'Usuario no actualizado.'
 				})
 			}
 		})
-		.catch((err) => {
+		.catch(err => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al actualizar',
+				status: 'Alerta',
+				msg: 'Fallo al actualizar',
 				error: err
 			})
 		})
@@ -93,29 +111,33 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-	db.catUniAdm.destroy({
-		where: {
-			idUniadm: req.params.id
-		}
-	})
-		.then(uniAdmEliminada => {
-			if (uniAdmEliminada == 1) {
+	db.informes
+		.destroy({
+			where: {
+				idInforme: req.params.id
+			}
+		})
+		.then(informeEliminado => {
+			if (informeEliminado == 1) {
 				res.status(200).json({
 					status: 'success',
 					msg: 'Eliminación exitosa'
 				})
 			} else {
 				res.status(400).json({
-					status: 'error',
+					status: 'Alerta',
 					msg: 'No encontrado'
 				})
 			}
 		})
 		.catch(err => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al eliminar',
-				error: err
+				status: 'Alerta',
+				msg: 'Error al eliminar, verifica que no tenga dependencias',
+				error: {
+					name: err.name,
+					code: err.parent.code
+				}
 			})
 		})
 }
