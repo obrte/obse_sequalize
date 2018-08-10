@@ -4,14 +4,14 @@ const buscar = require('../../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catOrganizaciones.create(req.body.organizacion)
+	db.catOrganizaciones.create(req.organizacion)
 		.then(organizacion => {
-			res.status(200).json(organizacion)
+			res.status(201).json(organizacion)
 		})
-		.catch(err => {
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al crear',
+				status: 'Alerta',
+				msg: 'Fallo al crear',
 				error: err
 			})
 		})
@@ -34,36 +34,35 @@ exports.organizacion = (req, res) => {
 		{
 			model: db.catInstancias,
 			as: 'instancias',
-			include: [
-				{
-					model: db.catInstanciaEntes,
-					as: 'entes',
-					include: [
-						{
-							model: db.catEntesFiscalizadores,
-							as: 'ente'
-						}
-					]
-				},
-				{
-					model: db.catInstanciaFondos,
-					as: 'fondos',
-					include: [
-						{
-							model: db.catFondos,
-							as: 'fondo'
-						}
-					]
-				}
+			include: [{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			}
 			]
-		}]
+		}
+		]
 	})
 		.then(entes => {
 			res.json(entes)
 		})
-		.catch(err => {
-			console.log(err)
-			res.json(err)
+		.catch((err) => {
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
+				error: err
+			})
 		})
 }
 
@@ -81,42 +80,41 @@ exports.organizaciones = (req, res) => {
 		{
 			model: db.catInstancias,
 			as: 'instancias',
-			include: [
-				{
-					model: db.catInstanciaEntes,
-					as: 'entes',
-					include: [
-						{
-							model: db.catEntesFiscalizadores,
-							as: 'ente'
-						}
-					]
-				},
-				{
-					model: db.catInstanciaFondos,
-					as: 'fondos',
-					include: [
-						{
-							model: db.catFondos,
-							as: 'fondo'
-						}
-					]
-				}
+			include: [{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			}
 			]
-		}]
+		}
+		]
 	})
-		.then(entes => {
-			res.json(entes)
+		.then(organizaciones => {
+			res.status(200).json(organizaciones)
 		})
-		.catch(err => {
-			console.log(err)
-			res.json(err)
+		.catch((err) => {
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
+				error: err
+			})
 		})
 }
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.catOrganizaciones.update(req.body.organizacion, {
+	db.catOrganizaciones.update(req.organizacion, {
 		where: {
 			idOrganizacion: req.params.id
 		}
@@ -129,15 +127,15 @@ exports.actualizar = (req, res) => {
 					})
 			} else {
 				res.status(400).json({
-					status: 'error',
+					status: 'Alerta',
 					msg: 'Organización no actualizada.'
 				})
 			}
 		})
-		.catch(err => {
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
-				msg: 'Error al actualizar',
+				status: 'Alerta',
+				msg: 'Fallo al actualizar',
 				error: err
 			})
 		})
@@ -159,14 +157,14 @@ exports.eliminar = (req, res) => {
 				})
 			} else {
 				res.status(400).json({
-					status: 'error',
+					status: 'Alerta',
 					msg: 'No encontrado'
 				})
 			}
 		})
-		.catch(err => {
+		.catch((err) => {
 			res.status(400).json({
-				status: 'error',
+				status: 'Alerta',
 				msg: 'Error al eliminar, verifica que no tenga dependencias',
 				error: {
 					name: err.name,

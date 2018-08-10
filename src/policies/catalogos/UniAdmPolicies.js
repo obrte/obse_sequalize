@@ -12,7 +12,7 @@ const schema = {
 const datosUniAdm = (req) => {
 	return {
 		idInstancia: req.body.uniAdm.idInstancia,
-		nombre: req.body.uniAdm.nombre,
+		nombre: req.body.uniAdm.nombre.toUpperCase().trim(),
 		activo: req.body.uniAdm.activo
 	}
 }
@@ -20,6 +20,7 @@ const datosUniAdm = (req) => {
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const uniAdm = datosUniAdm(req)
+	req.uniAdm = uniAdm
 	const {
 		error
 	} = Joi.validate(uniAdm, schema)
@@ -48,6 +49,7 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const uniAdm = datosUniAdm(req)
+	req.uniAdm = uniAdm
 	const {
 		error
 	} = Joi.validate(uniAdm, schema)

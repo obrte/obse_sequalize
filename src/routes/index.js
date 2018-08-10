@@ -1,12 +1,11 @@
 const routes = [
 	require('./catalogos/EntesFiscalizadores'),
 	require('./catalogos/Fondos'),
-	require('./catalogos/InstanciaEntes'),
-	// require('./catalogos/InstanciaFondos'),
 	require('./catalogos/Instancias'),
 	require('./catalogos/Organizaciones'),
 	require('./catalogos/UniAdm'),
-	require('./catalogos//Usuarios')
+	require('./catalogos//Usuarios'),
+	require('./Auth')
 ]
 
 // Add access to the app and db objects to each route

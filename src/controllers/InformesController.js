@@ -1,13 +1,13 @@
-const db = require('../../config/db')
-const buscar = require('../../customFunction/Buscar')
+const db = require('../config/db')
+const buscar = require('../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.catUniAdm.create(req.uniAdm)
-		.then(uniAdm => {
-			buscar.uniAdm(uniAdm.idUniAdm)
-				.then(datosUniAdm => {
-					res.status(201).json(datosUniAdm)
+	db.informes.create(req.informe)
+		.then(informe => {
+			buscar.informe(informe.idInforme)
+				.then(datosInforme => {
+					res.status(201).json(datosInforme)
 				})
 				.catch(err => res.status(400).json({
 					status: 'error',

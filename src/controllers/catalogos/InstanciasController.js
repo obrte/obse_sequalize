@@ -4,16 +4,16 @@ const buscar = require('../../customFunction/Buscar')
 //POST single
 exports.guardar = (req, res) => {
 	const instancia = {
-		idOrganizacion: req.body.instancia.idOrganizacion,
-		nombre: req.body.instancia.nombre
+		idOrganizacion: req.instancia.idOrganizacion,
+		nombre: req.instancia.nombre
 	}
 	db.catInstancias.create(instancia)
 		.then(async instancia => {
-			await fondos(req.body.instancia.fondos, instancia.idInstancia)
-			await entes(req.body.instancia.entes, instancia.idInstancia)
+			await fondos(req.instancia.fondos, instancia.idInstancia)
+			await entes(req.instancia.entes, instancia.idInstancia)
 			buscar.instancia(instancia.idInstancia)
 				.then(instancia => {
-					res.status(200).json(instancia)
+					res.status(201).json(instancia)
 				})
 		})
 		.catch(err => {
@@ -29,32 +29,27 @@ exports.guardar = (req, res) => {
 // GET all
 exports.instancias = (req, res) => {
 	db.catInstancias.findAll({
-		include: [
-			{
-				model: db.catInstanciaEntes,
-				as: 'entes',
-				include: [
-					{
-						model: db.catEntesFiscalizadores,
-						as: 'ente'
-					}
-				]
-			},
-			{
-				model: db.catInstanciaFondos,
-				as: 'fondos',
-				include: [
-					{
-						model: db.catFondos,
-						as: 'fondo'
-					}
-				]
-			},
-			{
-				model: db.catOrganizaciones,
-				attributes: ['nombre'],
-				as: 'organizacion'
-			}
+		include: [{
+			model: db.catInstanciaEntes,
+			as: 'entes',
+			include: [{
+				model: db.catEntesFiscalizadores,
+				as: 'ente'
+			}]
+		},
+		{
+			model: db.catInstanciaFondos,
+			as: 'fondos',
+			include: [{
+				model: db.catFondos,
+				as: 'fondo'
+			}]
+		},
+		{
+			model: db.catOrganizaciones,
+			attributes: ['nombre'],
+			as: 'organizacion'
+		}
 		]
 	})
 		.then(instancias => {
@@ -90,9 +85,9 @@ exports.instancia = (req, res) => {
 exports.actualizar = async (req, res) => {
 	const idInstancia = req.params.id
 	const instancia = {
-		idOrganizacion: req.body.instancia.idOrganizacion,
-		nombre: req.body.instancia.nombre,
-		activo: req.body.instancia.activo
+		idOrganizacion: req.instancia.idOrganizacion,
+		nombre: req.instancia.nombre,
+		activo: req.instancia.activo
 	}
 	await destruirRelaciones(idInstancia)
 	db.catInstancias.update(instancia, {
@@ -101,8 +96,8 @@ exports.actualizar = async (req, res) => {
 		}
 	})
 		.then(async () => {
-			await fondos(req.body.instancia.fondos, idInstancia)
-			await entes(req.body.instancia.entes, idInstancia)
+			await fondos(req.instancia.fondos, idInstancia)
+			await entes(req.instancia.entes, idInstancia)
 			buscar.instancia(idInstancia)
 				.then(instancia => {
 					res.status(200).json(instancia)
@@ -157,10 +152,15 @@ async function fondos(fondos, idInstancia) {
 	if (fondos.length > 0) {
 		var instanciaFondos = []
 		fondos.forEach((item) => {
-			instanciaFondos.push({ idInstancia: idInstancia, idFondo: item })
+			instanciaFondos.push({
+				idInstancia: idInstancia,
+				idFondo: item
+			})
 		})
-		await db.catInstanciaFondos.bulkCreate(instanciaFondos, { individualHooks: true })
-			.then(() => console.log('Fondos Agregados'))
+		await db.catInstanciaFondos.bulkCreate(instanciaFondos, {
+			individualHooks: true
+		})
+			.then(() => true)
 			.catch((err) => console.log(err))
 	}
 }
@@ -169,23 +169,27 @@ async function entes(entes, idInstancia) {
 	if (entes.length > 0) {
 		var instanciaEntes = []
 		entes.forEach((item) => {
-			instanciaEntes.push({ idInstancia: idInstancia, idEnte: item })
+			instanciaEntes.push({
+				idInstancia: idInstancia,
+				idEnte: item
+			})
 		})
-		await db.catInstanciaEntes.bulkCreate(instanciaEntes, { individualHooks: true })
-			.then(() => console.log('Entes Agregados'))
+		await db.catInstanciaEntes.bulkCreate(instanciaEntes, {
+			individualHooks: true
+		})
+			.then(() => true)
 			.catch((err) => console.log(err))
 	}
 }
 
 async function destruirRelaciones(id) {
-	console.log('FUNCION DESTRUIR')
 	await db.catInstanciaEntes.destroy({
 		where: {
 			idInstancia: id
 		}
 	})
 		.then(() => true)
-		.catch((err) => console.log('CATCH DESTRUIR', err))
+		.catch((err) => console.log(err))
 	await db.catInstanciaFondos.destroy({
 		where: {
 			idInstancia: id

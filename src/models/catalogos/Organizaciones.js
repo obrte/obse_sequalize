@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
 		activo: {
 			type: DataTypes.INTEGER(11),
 			allowNull: false,
-			defaultValue: true
+			defaultValue: 1
 		},
 		// Timestamps
 		created_at: DataTypes.DATE,

@@ -14,7 +14,7 @@ const schema = {
 const datosInstancia = (req) => {
 	return {
 		idOrganizacion: req.body.instancia.idOrganizacion,
-		nombre: req.body.instancia.nombre,
+		nombre: req.body.instancia.nombre.toUpperCase().trim(),
 		activo: req.body.instancia.activo,
 		entes: req.body.instancia.entes,
 		fondos: req.body.instancia.fondos
@@ -24,6 +24,7 @@ const datosInstancia = (req) => {
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const instancia = datosInstancia(req)
+	req.instancia = instancia
 	const {
 		error
 	} = Joi.validate(instancia, schema)
@@ -52,6 +53,7 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const instancia = datosInstancia(req)
+	req.instancia = instancia
 	const {
 		error
 	} = Joi.validate(instancia, schema)

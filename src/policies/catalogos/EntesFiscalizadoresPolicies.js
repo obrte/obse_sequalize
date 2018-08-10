@@ -12,7 +12,7 @@ const schema = {
 const datosEnte = (req) => {
 	return {
 		idOrganizacion: req.body.ente.idOrganizacion,
-		nombre: req.body.ente.nombre,
+		nombre: req.body.ente.nombre.toUpperCase().trim(),
 		activo: req.body.ente.activo
 	}
 }
@@ -20,6 +20,7 @@ const datosEnte = (req) => {
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const ente = datosEnte(req)
+	req.ente = ente
 	const {
 		error
 	} = Joi.validate(ente, schema)
@@ -48,6 +49,7 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const ente = datosEnte(req)
+	req.ente = ente
 	const {
 		error
 	} = Joi.validate(ente, schema)

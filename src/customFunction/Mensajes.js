@@ -18,7 +18,7 @@ const switchError = (error, res) => {
 			msg: 'Debe introducir el ente.'
 		})
 		break
-	case 'idUniadm':
+	case 'idUniAdm':
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe introducir la Unidad Administrativa'
@@ -40,6 +40,12 @@ const switchError = (error, res) => {
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe introducir un password.'
+		})
+		break
+	case 'rePassword':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe confirmar el password.'
 		})
 		break
 	case 'activo':
@@ -64,6 +70,36 @@ const switchError = (error, res) => {
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe proporcionar el origen.'
+		})
+		break
+	case 'ejercicio':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el ejercicio.'
+		})
+		break
+	case 'delMes':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el mes de Inicio.'
+		})
+		break
+	case 'alMes':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el mes de Termino.'
+		})
+		break
+	case 'numero':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero.'
+		})
+		break
+	case 'numeroAuditoria':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero de auditoria.'
 		})
 		break
 	default:

@@ -11,14 +11,16 @@ const schema = {
 
 const datosOrganizacion = (req) => {
 	return {
-		nombre: req.body.organizacion.nombre,
-		nombreCorto: req.body.organizacion.nombreCorto,
+		nombre: req.body.organizacion.nombre.toUpperCase().trim(),
+		nombreCorto: req.body.organizacion.nombreCorto.toUpperCase().trim(),
 		activo: req.body.organizacion.activo
 	}
 }
 
 exports.guardar = (req, res, next) => {
+	console.log(req.body.organizacion.nombre.toUpperCase())
 	const organizacion = datosOrganizacion(req)
+	req.organizacion = organizacion
 	const {
 		error
 	} = Joi.validate(organizacion, schema)
@@ -52,6 +54,7 @@ exports.guardar = (req, res, next) => {
 exports.actualizar = (req, res, next) => {
 	const id = req.params.id
 	const organizacion = datosOrganizacion(req)
+	req.organizacion = organizacion
 	const {
 		error
 	} = Joi.validate(organizacion, schema)

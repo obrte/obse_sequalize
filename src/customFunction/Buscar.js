@@ -64,72 +64,31 @@ const instancia = (id) => {
 			where: {
 				idInstancia: id
 			},
-			include: [
-				{
-					model: db.catInstanciaEntes,
-					as: 'entes',
-					include: [
-						{
-							model: db.catEntesFiscalizadores,
-							as: 'ente'
-						}
-					]
-				},
-				{
-					model: db.catInstanciaFondos,
-					as: 'fondos',
-					include: [
-						{
-							model: db.catFondos,
-							as: 'fondo'
-						}
-					]
-				},
-				{
-					model: db.catOrganizaciones,
-					attributes: ['nombre'],
-					as: 'organizacion'
-				}
+			include: [{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			},
+			{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}
 			]
 		})
 			.then(instancia => {
 				resolve(instancia)
-			})
-			.catch((err) => reject(err))
-	})
-}
-
-const instanciaFondos = (id) => {
-	return new Promise((resolve, reject) => {
-		db.catInstanciaFondos.find({
-			where: {
-				id: id
-			}
-		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
-			})
-			.catch((err) => reject(err))
-	})
-}
-
-const instanciaEntes = (id) => {
-	return new Promise((resolve, reject) => {
-		db.catInstanciaEntes.find({
-			where: {
-				id: id
-			}
-		})
-			.then(datos => {
-				if (datos) {
-					resolve(datos)
-				} else {
-					resolve(false)
-				}
 			})
 			.catch((err) => reject(err))
 	})
@@ -161,7 +120,29 @@ const usuario = (id) => {
 		db.catUsuarios.find({
 			where: {
 				idUsuario: id
+			},
+			attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'created_at', 'updated_at'],
+			include: [{
+				model: db.catOrganizaciones,
+				attributes: ['idOrganizacion', 'nombre'],
+				as: 'organizacion'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['idInstancia', 'nombre'],
+				as: 'instancia'
+			},
+			{
+				model: db.catUniAdm,
+				attributes: ['idUniAdm', 'nombre'],
+				as: 'uniAdm'
+			},
+			{
+				model: db.catUsuarios,
+				attributes: ['idUsuarioCreacion', 'nombre'],
+				as: 'creador'
 			}
+			]
 		})
 			.then(datos => {
 				if (datos) {
@@ -174,6 +155,41 @@ const usuario = (id) => {
 	})
 }
 
+const informe = (id) => {
+	return new Promise((resolve, reject) => {
+		db.informes.find({
+			where: {
+				idInfome: id
+			},
+			include: [{
+				model: db.catUsuarios,
+				attributes: ['nombre', 'idUsuario'],
+				as: 'usuarioCreacion'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			},
+			{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre', 'idEnte'],
+				as: 'ente'
+			},
+			{
+				model: db.catFondos,
+				attributes: ['nombre', 'idFondo'],
+				as: 'fondo'
+			}
+			]
+		})
+			.then(informe => {
+				resolve(informe)
+			})
+			.catch((err) => reject(err))
+	})
+}
+
 
 const buscar = {}
 
@@ -181,9 +197,8 @@ buscar.organizacion = organizacion
 buscar.ente = ente
 buscar.fondo = fondo
 buscar.instancia = instancia
-buscar.instanciaFondos = instanciaFondos
-buscar.instanciaEntes = instanciaEntes
 buscar.uniAdm = uniAdm
 buscar.usuario = usuario
+buscar.informe = informe
 
 module.exports = buscar
