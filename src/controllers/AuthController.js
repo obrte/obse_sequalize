@@ -32,14 +32,12 @@ exports.login = (req, res) => {
 					if (result) {
 						await datosUsuario(usuario.idUsuario)
 						if (data) {
-							const token = jwt.sign(
-								{
-									data
-								},
-								process.env.JWT_KEY,
-								{
-									expiresIn: process.env.expiresIn
-								}
+							const token = jwt.sign({
+								data
+							},
+							process.env.JWT_KEY, {
+								expiresIn: process.env.expiresIn
+							}
 							)
 							const headerToken = 'Bearer ' + token
 							return (
@@ -73,23 +71,20 @@ exports.login = (req, res) => {
 }
 
 exports.refrescar = (req, res) => {
-	let usuario = req.userData.data
-	const tokenNew = jwt.sign(
-		{
-			usuario
-		},
-		process.env.JWT_KEY,
-		{
-			expiresIn: process.env.expiresIn
-		}
+	data = req.userData.data
+	const tokenNew = jwt.sign({
+		data
+	},
+	process.env.JWT_KEY, {
+		expiresIn: process.env.expiresIn
+	}
 	)
 	const headerToken = 'Bearer ' + tokenNew
 	return (
 		res.setHeader('Authorization', headerToken),
 		res.setHeader('Access-Control-Expose-Headers', 'Authorization'),
 		res.status(200).json({
-			status: 'success',
-			data: req.userData.data
+			status: 'success'
 		})
 	)
 }
