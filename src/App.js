@@ -26,7 +26,7 @@ db.sequelize.sync({
 }).then(() => {
 	db.catUsuarios.findOrCreate({
 		where: {
-			tipo: 'SUPERADMIN'
+			tipo: 'superadmin'
 		},
 		defaults: {
 			nombre: 'SUPER ADMINISTRADOR INICIAL',
