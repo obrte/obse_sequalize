@@ -7,7 +7,8 @@ exports.decodificar = (req, res, next) => {
 		next()
 	} catch (error) {
 		return res.status(401).json({
-			message: 'Fallo en Autenticación.'
+			status: 'InvalidToken',
+			msg: 'Fallo en Autenticación.'
 		})
 	}
 }

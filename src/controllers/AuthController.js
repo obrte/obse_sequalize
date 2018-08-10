@@ -14,8 +14,8 @@ exports.login = (req, res) => {
 		})
 		.then(usuario => {
 			if (!usuario) {
-				return res.status(401).json({
-					status: 'Alerta',
+				return res.status(400).json({
+					status: 'warning',
 					msg: 'El correo electrónico o contraseña no coiciden.'
 				})
 			}
@@ -24,8 +24,8 @@ exports.login = (req, res) => {
 				usuario.password,
 				async (err, result) => {
 					if (err) {
-						return res.status(401).json({
-							status: 'Alerta',
+						return res.status(400).json({
+							status: 'warning',
 							msg: 'El correo electrónico o contraseña no coiciden.'
 						})
 					}
@@ -36,7 +36,7 @@ exports.login = (req, res) => {
 								data
 							},
 							process.env.JWT_KEY, {
-								expiresIn: process.env.expiresIn
+								expiresIn: process.env.expiresIn || 60
 							}
 							)
 							const headerToken = 'Bearer ' + token
@@ -45,18 +45,17 @@ exports.login = (req, res) => {
 								res.setHeader('Access-Control-Expose-Headers', 'Authorization'),
 								res.status(200).json({
 									status: 'success',
-									data
 								})
 							)
 						} else {
-							return res.status(401).json({
-								status: 'Alerta',
+							return res.status(400).json({
+								status: 'warning',
 								msg: dataAlert
 							})
 						}
 					}
-					return res.status(401).json({
-						status: 'Alerta',
+					return res.status(400).json({
+						status: 'warning',
 						msg: 'El correo electrónico o contraseña no coiciden.'
 					})
 				}
