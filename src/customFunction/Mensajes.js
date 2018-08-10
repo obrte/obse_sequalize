@@ -72,6 +72,36 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar el origen.'
 		})
 		break
+	case 'ejercicio':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el ejercicio.'
+		})
+		break
+	case 'delMes':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el mes de Inicio.'
+		})
+		break
+	case 'alMes':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el mes de Termino.'
+		})
+		break
+	case 'numero':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero.'
+		})
+		break
+	case 'numeroAuditoria':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero de auditoria.'
+		})
+		break
 	default:
 		res.status(500).json({
 			status: 'error',

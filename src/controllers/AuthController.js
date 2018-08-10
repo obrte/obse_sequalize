@@ -26,20 +26,29 @@ exports.login = (req, res) => {
 				}
 				if (result) {
 					await datosUsuario(usuario.idUsuario)
-					const token = jwt.sign({
-						data
-					},
-					process.env.JWT_KEY, {
-						expiresIn: process.env.expiresIn
+					if (data) {
+						const token = jwt.sign({
+							data
+						},
+						process.env.JWT_KEY, {
+							expiresIn: process.env.expiresIn
+						}
+						)
+						const headerToken = 'Bearer ' + token
+						return res.setHeader('Authorization', headerToken),
+						res.setHeader('Access-Control-Expose-Headers', 'Authorization'),
+						res.status(200).json({
+							status: 'success',
+							data
+						})
+					} else {
+						return res.status(401).json({
+							status: 'Alerta',
+							msg: 'Datos del token corruptos.',
+							error: err
+						})
 					}
-					)
-					const headerToken = 'Bearer ' + token
-					return res.setHeader('Authorization', headerToken),
-					res.setHeader('Access-Control-Expose-Headers', 'Authorization'),
-					res.status(200).json({
-						status: 'success',
-						data
-					})
+
 				}
 				return res.status(401).json({
 					status: 'Alerta',
@@ -83,51 +92,56 @@ exports.usuario = (req, res) => {
 async function datosUsuario(id) {
 	await buscar.usuario(id)
 		.then(usuario => {
-			switch (usuario.tipo) {
-			case 'superadmin':
-				data = {
-					idUsuario: usuario.idUsuario,
-					nombre: usuario.nombre,
-					email: usuario.email,
-					roles: usuario.tipo
-				}
-				return
-			case 'administrador':
-				data = {
-					idUsuario: usuario.idUsuario,
-					nombre: usuario.nombre,
-					email: usuario.email,
-					roles: usuario.tipo,
-					organizacion: {
-						idOrganizacion: usuario.organizacion.idOrganizacion,
-						nombre: usuario.organizacion.nombre
-					},
-					instancia: {
-						idInstancia: usuario.instancia.idInstancia,
-						nombre: usuario.instancia.nombre
+			try {
+				switch (usuario.tipo) {
+				case 'superadmin':
+					data = {
+						idUsuario: usuario.idUsuario,
+						nombre: usuario.nombre,
+						email: usuario.email,
+						roles: usuario.tipo
 					}
-				}
-				return
-			default:
-				data = {
-					idUsuario: usuario.idUsuario,
-					nombre: usuario.nombre,
-					email: usuario.email,
-					roles: usuario.tipo,
-					organizacion: {
-						idOrganizacion: usuario.organizacion.idOrganizacion,
-						nombre: usuario.organizacion.nombre
-					},
-					instancia: {
-						idInstancia: usuario.instancia.idInstancia,
-						nombre: usuario.instancia.nombre
-					},
-					uniAdm: {
-						idInstancia: usuario.uniAdm.idUniAdm,
-						nombre: usuario.uniAdm.nombre
+					break
+				case 'administrador':
+					data = {
+						idUsuario: usuario.idUsuario,
+						nombre: usuario.nombre,
+						email: usuario.email,
+						roles: usuario.tipo,
+						organizacion: {
+							idOrganizacion: usuario.organizacion.idOrganizacion,
+							nombre: usuario.organizacion.nombre
+						},
+						instancia: {
+							idInstancia: usuario.instancia.idInstancia,
+							nombre: usuario.instancia.nombre
+						}
 					}
+					break
+				default:
+					data = {
+						idUsuario: usuario.idUsuario,
+						nombre: usuario.nombre,
+						email: usuario.email,
+						roles: usuario.tipo,
+						organizacion: {
+							idOrganizacion: usuario.organizacion.idOrganizacion,
+							nombre: usuario.organizacion.nombre
+						},
+						instancia: {
+							idInstancia: usuario.instancia.idInstancia,
+							nombre: usuario.instancia.nombre
+						},
+						uniAdm: {
+							idInstancia: usuario.uniAdm.idUniAdm,
+							nombre: usuario.uniAdm.nombre
+						}
+					}
+					break
 				}
-				return
+			} catch (error) {
+				data = false
+				return data
 			}
 		})
 }

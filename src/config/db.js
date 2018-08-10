@@ -127,22 +127,22 @@ db.catUsuarios.belongsTo(db.catUsuarios, {
 	as: 'creador'
 })
 
-// //! Informes
-// db.catUsuarios.belongsTo(db.catOrganizaciones, {
-// 	foreignKey: 'idOrganizacion',
-// 	as: 'organizacion'
-// })
-// db.catUsuarios.belongsTo(db.catInstancias, {
-// 	foreignKey: 'idInstancia',
-// 	as: 'instancia'
-// })
-// db.catUsuarios.belongsTo(db.catUniAdm, {
-// 	foreignKey: 'idUniAdm',
-// 	as: 'uniAdm'
-// })
-// db.catUsuarios.belongsTo(db.catUsuarios, {
-// 	foreignKey: 'idUsuarioCreacion',
-// 	as: 'creador'
-// })
+//! Informes
+db.informes.belongsTo(db.catUsuarios, {
+	foreignKey: 'idUsuario',
+	as: 'usuarioCreacion'
+})
+db.informes.belongsTo(db.catInstancias, {
+	foreignKey: 'idInstancia',
+	as: 'instancia'
+})
+db.informes.belongsTo(db.catEntesFiscalizadores, {
+	foreignKey: 'idEnte',
+	as: 'ente'
+})
+db.informes.belongsTo(db.catFondos, {
+	foreignKey: 'idFondo',
+	as: 'fondo'
+})
 
 module.exports = db

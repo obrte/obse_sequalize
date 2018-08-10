@@ -155,6 +155,42 @@ const usuario = (id) => {
 	})
 }
 
+const informe = (id) => {
+	return new Promise((resolve, reject) => {
+		db.informes.find({
+			where: {
+				idInfome: id
+			},
+			include: [{
+				model: db.catUsuarios,
+				attributes: ['nombre', 'idUsuario'],
+				as: 'usuarioCreacion'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			},
+			{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre', 'idEnte'],
+				as: 'ente'
+			},
+			{
+				model: db.catFondos,
+				attributes: ['nombre', 'idFondo'],
+				as: 'fondo'
+			}
+			]
+		})
+			.then(informe => {
+				resolve(informe)
+			})
+			.catch((err) => reject(err))
+	})
+}
+
+
 const buscar = {}
 
 buscar.organizacion = organizacion
@@ -163,5 +199,6 @@ buscar.fondo = fondo
 buscar.instancia = instancia
 buscar.uniAdm = uniAdm
 buscar.usuario = usuario
+buscar.informe = informe
 
 module.exports = buscar
