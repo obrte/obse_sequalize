@@ -35,12 +35,12 @@ db.catInstanciaFondos = require('../models/catalogos/InstanciaFondos')(sequelize
 db.catInstanciaEntes = require('../models/catalogos/InstanciaEntes')(sequelize, Sequelize)
 db.catUniAdm = require('../models/catalogos/UniAdm')(sequelize, Sequelize)
 db.catUsuarios = require('../models/catalogos/Usuarios')(sequelize, Sequelize)
+db.informes = require('../models/Informes')(sequelize, Sequelize)
 
 /** 
  *!Relaciones
  **/
 //! Organizaciones/Fondos
-//catalogo_fondos/catalogo_organizacion(id_organizacion)
 db.catFondos.belongsTo(db.catOrganizaciones, {
 	foreignKey: 'idOrganizacion',
 	as: 'organizacion'
@@ -51,7 +51,6 @@ db.catOrganizaciones.hasMany(db.catFondos, {
 })
 
 //! Organizaciones/Entes
-//catalogo_entes_fiscalizadores/catalogo_organizacion(id_organizacion)
 db.catEntesFiscalizadores.belongsTo(db.catOrganizaciones, {
 	foreignKey: 'idOrganizacion',
 	as: 'organizacion'
@@ -62,7 +61,6 @@ db.catOrganizaciones.hasMany(db.catEntesFiscalizadores, {
 })
 
 //!Organizaciones/Instancias
-//catalogo_instancias/catalogo_organizacion(id_organizacion)
 db.catInstancias.belongsTo(db.catOrganizaciones, {
 	foreignKey: 'idOrganizacion',
 	as: 'organizacion'
@@ -74,47 +72,34 @@ db.catOrganizaciones.hasMany(db.catInstancias, {
 
 //!  Instancias
 //** InstanciaFondos
-//catalogo_instancia_fondos/catalogo_instancias/catalogo_fondos(id_instancia/id_fondo)
 db.catInstanciaFondos.belongsTo(db.catInstancias, {
 	foreignKey: 'idInstancia',
 	as: 'instancia'
 })
+db.catInstanciaFondos.belongsTo(db.catFondos, {
+	foreignKey: 'idFondo',
+	as: 'fondo'
+})
+db.catInstancias.hasMany(db.catInstanciaFondos, {
+	foreignKey: 'idInstancia',
+	as: 'fondos'
+})
+
+//** InstanciaEntes
 db.catInstanciaEntes.belongsTo(db.catInstancias, {
 	foreignKey: 'idInstancia',
 	as: 'instancia'
 })
-
-db.catInstancias.hasMany(db.catInstanciaFondos, {
-	foreignKey: 'idInstancia',
-	as: 'fondos'
+db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, {
+	foreignKey: 'idEnte',
+	as: 'ente'
 })
 db.catInstancias.hasMany(db.catInstanciaEntes, {
 	foreignKey: 'idInstancia',
 	as: 'entes'
 })
 
-db.catInstanciaFondos.belongsTo(db.catFondos, {
-	foreignKey: 'idFondo',
-	as: 'fondo'
-})
-db.catInstanciaEntes.belongsTo(db.catEntesFiscalizadores, {
-	foreignKey: 'idEnte',
-	as: 'ente'
-})
-
-db.catFondos.hasMany(db.catInstanciaFondos, {
-	foreignKey: 'idFondo',
-	as: 'instanciaFondos'
-})
-db.catEntesFiscalizadores.hasMany(db.catInstanciaEntes, {
-	foreignKey: 'idEnte',
-	as: 'instanciaEnte'
-})
-
-//catalogo_instancia_entes/catalogo_instancias/catalogo_entes_fiscalizadores(id_instancia/id_ente)
-
 //! UniAdm
-//catalogo_uniadm/catalogo_instancia(id_instancia)
 db.catUniAdm.belongsTo(db.catInstancias, {
 	foreignKey: 'idInstancia',
 	as: 'instancia'
@@ -123,10 +108,8 @@ db.catInstancias.hasMany(db.catUniAdm, {
 	foreignKey: 'idInstancia',
 	as: 'uniAdm'
 })
-/**
- * catalogo_usuarios/catalogo_organizaciones/catalogo_instancia/catalogo_uniadm
- * (id_organizacion/id_instancia/id_uniadm)
- **/
+
+//! Unsuarios
 db.catUsuarios.belongsTo(db.catOrganizaciones, {
 	foreignKey: 'idOrganizacion',
 	as: 'organizacion'
@@ -143,5 +126,23 @@ db.catUsuarios.belongsTo(db.catUsuarios, {
 	foreignKey: 'idUsuarioCreacion',
 	as: 'creador'
 })
+
+// //! Informes
+// db.catUsuarios.belongsTo(db.catOrganizaciones, {
+// 	foreignKey: 'idOrganizacion',
+// 	as: 'organizacion'
+// })
+// db.catUsuarios.belongsTo(db.catInstancias, {
+// 	foreignKey: 'idInstancia',
+// 	as: 'instancia'
+// })
+// db.catUsuarios.belongsTo(db.catUniAdm, {
+// 	foreignKey: 'idUniAdm',
+// 	as: 'uniAdm'
+// })
+// db.catUsuarios.belongsTo(db.catUsuarios, {
+// 	foreignKey: 'idUsuarioCreacion',
+// 	as: 'creador'
+// })
 
 module.exports = db

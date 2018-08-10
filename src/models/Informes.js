@@ -1,37 +1,44 @@
 module.exports = (sequelize, DataTypes) => {
-	const catalogoUsuarios = sequelize.define('catalogoUsuarios', {
-		idUsuario: {
+	const informes = sequelize.define('informes', {
+		idInforme: {
 			type: DataTypes.UUID,
 			defaultValue: DataTypes.UUIDV4,
 			unique: true,
 			primaryKey: true
 		},
-		tipo: {
-			type: DataTypes.STRING(25),
+		idUsuarioCreacion: {
+			type: DataTypes.UUID,
 			allowNull: false
 		},
-		idOrganizacion: {
+		idEnte: {
 			type: DataTypes.UUID,
-			allowNull: true
+			allowNull: false
 		},
-		idInstancia: {
+		idFondo: {
 			type: DataTypes.UUID,
-			allowNull: true
+			allowNull: false
 		},
-		idUniAdm: {
-			type: DataTypes.UUID,
-			allowNull: true
+		ejercicio: {
+			type: DataTypes.INTEGER(11),
+			allowNull: false
+		},
+		delMes: {
+			type: DataTypes.STRING(50),
+			allowNull: false
+		},
+		alMes: {
+			type: DataTypes.STRING(50),
+			allowNull: false
+		},
+		numero: {
+			type: DataTypes.STRING(255),
+			allowNull: false
+		},
+		numeroAuditoria: {
+			type: DataTypes.STRING(255),
+			allowNull: false
 		},
 		nombre: {
-			type: DataTypes.STRING(255),
-			allowNull: false
-		},
-		email: {
-			type: DataTypes.STRING(255),
-			allowNull: false,
-			unique: true
-		},
-		password: {
 			type: DataTypes.STRING(255),
 			allowNull: false
 		},
@@ -46,5 +53,5 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: false,
 		underscored: true
 	})
-	return catalogoUsuarios
+	return informes
 }

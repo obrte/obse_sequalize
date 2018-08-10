@@ -3,11 +3,11 @@ const AuthController = require('../controllers/AuthController')
 
 module.exports = (router) => {
 	//login, variable => status = success, header => Authorization = Bearer jkfbd97v9fd8vyf98dv9fduvifhd0v
-	router.post('/login', AuthController.login)
+	router.post('/auth/login', AuthController.login)
 
 	// Refrescar
-	router.get('/refrescar', AuthMiddleware.decodificar, AuthController.refrescar)
+	router.get('/auth/refrescar', AuthMiddleware.decodificar, AuthController.refrescar)
 
 	//Datos TOKEN
-	router.get('/token', AuthMiddleware.decodificar, AuthController.token)
+	router.get('/auth/usuario', AuthMiddleware.decodificar, AuthController.usuario)
 }

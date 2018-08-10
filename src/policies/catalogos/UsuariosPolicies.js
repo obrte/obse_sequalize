@@ -35,7 +35,7 @@ const schemaSuperAdmin = {
 
 const usuarioNormal = (req) => {
 	return {
-		tipo: req.body.usuario.tipo.toUpperCase().trim(),
+		tipo: req.body.usuario.tipo.toLowerCase().trim(),
 		idOrganizacion: req.body.usuario.idOrganizacion,
 		idInstancia: req.body.usuario.idInstancia,
 		idUniAdm: req.body.usuario.idUniAdm,
@@ -48,7 +48,7 @@ const usuarioNormal = (req) => {
 
 const usuarioAdmin = (req) => {
 	return {
-		tipo: req.body.usuario.tipo.toUpperCase().trim(),
+		tipo: req.body.usuario.tipo.toLowerCase().trim(),
 		idOrganizacion: req.body.usuario.idOrganizacion,
 		idInstancia: req.body.usuario.idInstancia,
 		nombre: req.body.usuario.nombre.toUpperCase().trim(),
@@ -60,7 +60,7 @@ const usuarioAdmin = (req) => {
 
 const usuarioSuperAdmin = (req) => {
 	return {
-		tipo: req.body.usuario.tipo.toUpperCase().trim(),
+		tipo: req.body.usuario.tipo.toLowerCase().trim(),
 		nombre: req.body.usuario.nombre.toUpperCase().trim(),
 		email: req.body.usuario.email.trim(),
 		activo: req.body.usuario.activo
@@ -70,11 +70,11 @@ const usuarioSuperAdmin = (req) => {
 exports.guardar = (req, res, next) => {
 	let schema
 	let usuario
-	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
+	if (req.body.usuario.tipo.toLowerCase().trim() == 'superadmin') {
 		usuario = usuarioSuperAdmin(req)
 		schema = schemaSuperAdmin
 	} else {
-		if (req.body.usuario.tipo.toUpperCase().trim() == 'ADMINISTRADOR') {
+		if (req.body.usuario.tipo.toLowerCase().trim() == 'administrador') {
 			usuario = usuarioAdmin(req)
 			schema = schemaAdministrador
 		} else {
@@ -144,13 +144,15 @@ exports.actualizar = (req, res, next) => {
 	let usuario
 	if (req.body.usuario.tipo.toUpperCase().trim() == 'SUPERADMIN') {
 		usuario = usuarioSuperAdmin(req)
-	} else {
-		usuario = usuarioNormal(req)
-	}
-	if (usuario.tipo == 'SUPERADMIN') {
 		schema = schemaSuperAdmin
 	} else {
-		schema = schemaNormal
+		if (req.body.usuario.tipo.toUpperCase().trim() == 'ADMINISTRADOR') {
+			usuario = usuarioAdmin(req)
+			schema = schemaAdministrador
+		} else {
+			usuario = usuarioNormal(req)
+			schema = schemaNormal
+		}
 	}
 	const {
 		error

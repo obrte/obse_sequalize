@@ -21,9 +21,30 @@ db.sequelize
 		console.error('Unable to connect to the database:', err)
 	})
 
-// db.sequelize.sync().then(() => {
-// 	console.log('Connected...')
-// })
+db.sequelize.sync({
+	logging: false
+}).then(() => {
+	db.catUsuarios.findOrCreate({
+		where: {
+			tipo: 'superadmin'
+		},
+		defaults: {
+			nombre: 'SUPER ADMINISTRADOR INICIAL',
+			email: 'super@admin.com',
+			//pwd = 123
+			password: '$2b$10$tr4bhD1uPvwKO57ssSSzBe9BWoFlNrdec5t66DuZNsWgbdOMOGRLq'
+		}
+	})
+		.then((existe, creado) => {
+			if (creado) {
+				console.log('SUPERADMIN inicial Creado')
+			} else {
+				console.log('SUPERADMIN ya existe')
+			}
+
+		})
+	console.log('Sync successfully...')
+})
 
 /*
  ! OPCIONES DE APP
