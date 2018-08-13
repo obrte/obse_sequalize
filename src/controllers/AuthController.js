@@ -44,7 +44,7 @@ exports.login = (req, res) => {
 								res.setHeader('Authorization', headerToken),
 								res.setHeader('Access-Control-Expose-Headers', 'Authorization'),
 								res.status(200).json({
-									status: 'success',
+									status: 'success'
 								})
 							)
 						} else {

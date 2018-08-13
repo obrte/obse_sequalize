@@ -31,8 +31,8 @@ db.sequelize.sync({
 		defaults: {
 			nombre: 'SUPER ADMINISTRADOR INICIAL',
 			email: 'super@admin.com',
-			//pwd = Pa$$w0rd*
-			password: '$2b$10$fkVYnyVxMJmvRqwy4gieFenHQnn/q82imSzLpiCbdWIBTTyYLuGxe'
+			//pwd = 12345678
+			password: '$2b$10$aBtwvgBEu6ccruaOIbPR9u12ZLCE18McMo.CWgfhxU4ZvYTOujEpq'
 		}
 	})
 		.then((existe, creado) => {
