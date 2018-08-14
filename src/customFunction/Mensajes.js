@@ -39,13 +39,13 @@ const switchError = (error, res) => {
 	case 'password':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe introducir un password.'
+			msg: 'Debe introducir un password valido.'
 		})
 		break
 	case 'rePassword':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe confirmar el password.'
+			msg: 'Las contraseñas no coinciden.'
 		})
 		break
 	case 'activo':
@@ -110,8 +110,6 @@ const switchError = (error, res) => {
 		break
 	}
 }
-
-
 
 const mensajes = {}
 
