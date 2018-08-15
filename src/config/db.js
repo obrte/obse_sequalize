@@ -3,7 +3,7 @@
  ! USANDO MySQL-Sequalize
 */
 const Sequelize = require('sequelize')
-const sequelize = new Sequelize('observaciones', 'root', '12345678', {
+const sequelize = new Sequelize('observaciones', 'root', '', {
 	host: 'localhost',
 	dialect: 'mysql',
 	operatorsAliases: false,
