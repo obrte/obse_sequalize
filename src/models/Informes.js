@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
-		idEnte: {
+		idInstancia: {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
-		idInstancia: {
+		idEnte: {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
