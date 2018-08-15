@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
+		idInstancia: {
+			type: DataTypes.UUID,
+			allowNull: false
+		},
 		idFondo: {
 			type: DataTypes.UUID,
 			allowNull: false

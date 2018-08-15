@@ -27,13 +27,11 @@ const ente = id => {
 				where: {
 					idEnte: id
 				},
-				include: [
-					{
-						model: db.catOrganizaciones,
-						attributes: ['nombre'],
-						as: 'organizacion'
-					}
-				]
+				include: [{
+					model: db.catOrganizaciones,
+					attributes: ['nombre'],
+					as: 'organizacion'
+				}]
 			})
 			.then(ente => {
 				resolve(ente)
@@ -49,13 +47,11 @@ const fondo = id => {
 				where: {
 					idFondo: id
 				},
-				include: [
-					{
-						model: db.catOrganizaciones,
-						attributes: ['nombre'],
-						as: 'organizacion'
-					}
-				]
+				include: [{
+					model: db.catOrganizaciones,
+					attributes: ['nombre'],
+					as: 'organizacion'
+				}]
 			})
 			.then(fondo => {
 				resolve(fondo)
@@ -71,32 +67,27 @@ const instancia = id => {
 				where: {
 					idInstancia: id
 				},
-				include: [
-					{
-						model: db.catInstanciaEntes,
-						as: 'entes',
-						include: [
-							{
-								model: db.catEntesFiscalizadores,
-								as: 'ente'
-							}
-						]
-					},
-					{
-						model: db.catInstanciaFondos,
-						as: 'fondos',
-						include: [
-							{
-								model: db.catFondos,
-								as: 'fondo'
-							}
-						]
-					},
-					{
-						model: db.catOrganizaciones,
-						attributes: ['nombre'],
-						as: 'organizacion'
-					}
+				include: [{
+					model: db.catInstanciaEntes,
+					as: 'entes',
+					include: [{
+						model: db.catEntesFiscalizadores,
+						as: 'ente'
+					}]
+				},
+				{
+					model: db.catInstanciaFondos,
+					as: 'fondos',
+					include: [{
+						model: db.catFondos,
+						as: 'fondo'
+					}]
+				},
+				{
+					model: db.catOrganizaciones,
+					attributes: ['nombre'],
+					as: 'organizacion'
+				}
 				]
 			})
 			.then(instancia => {
@@ -114,13 +105,11 @@ const uniAdm = id => {
 				where: {
 					idUniAdm: id
 				},
-				include: [
-					{
-						model: db.catInstancias,
-						attributes: ['nombre', 'idOrganizacion'],
-						as: 'instancia'
-					}
-				]
+				include: [{
+					model: db.catInstancias,
+					attributes: ['nombre', 'idOrganizacion'],
+					as: 'instancia'
+				}]
 			})
 			.then(uniAdm => {
 				console.log(4)
@@ -146,27 +135,26 @@ const usuario = id => {
 					'created_at',
 					'updated_at'
 				],
-				include: [
-					{
-						model: db.catOrganizaciones,
-						attributes: ['idOrganizacion', 'nombre'],
-						as: 'organizacion'
-					},
-					{
-						model: db.catInstancias,
-						attributes: ['idInstancia', 'nombre'],
-						as: 'instancia'
-					},
-					{
-						model: db.catUniAdm,
-						attributes: ['idUniAdm', 'nombre'],
-						as: 'uniAdm'
-					},
-					{
-						model: db.catUsuarios,
-						attributes: ['idUsuarioCreacion', 'nombre'],
-						as: 'creador'
-					}
+				include: [{
+					model: db.catOrganizaciones,
+					attributes: ['idOrganizacion', 'nombre'],
+					as: 'organizacion'
+				},
+				{
+					model: db.catInstancias,
+					attributes: ['idInstancia', 'nombre'],
+					as: 'instancia'
+				},
+				{
+					model: db.catUniAdm,
+					attributes: ['idUniAdm', 'nombre'],
+					as: 'uniAdm'
+				},
+				{
+					model: db.catUsuarios,
+					attributes: ['idUsuarioCreacion', 'nombre'],
+					as: 'creador'
+				}
 				]
 			})
 			.then(datos => {
@@ -198,22 +186,26 @@ const informe = id => {
 					'created_at',
 					'updated_at'
 				],
-				include: [
-					{
-						model: db.catUsuarios,
-						attributes: ['nombre', 'idUsuario'],
-						as: 'usuarioCreacion'
-					},
-					{
-						model: db.catEntesFiscalizadores,
-						attributes: ['nombre', 'idEnte'],
-						as: 'ente'
-					},
-					{
-						model: db.catFondos,
-						attributes: ['nombre', 'idFondo'],
-						as: 'fondo'
-					}
+				include: [{
+					model: db.catUsuarios,
+					attributes: ['nombre', 'idUsuario'],
+					as: 'usuarioCreacion'
+				},
+				{
+					model: db.catEntesFiscalizadores,
+					attributes: ['nombre', 'idEnte'],
+					as: 'ente'
+				},
+				{
+					model: db.catFondos,
+					attributes: ['nombre', 'idFondo'],
+					as: 'fondo'
+				},
+				{
+					model: db.catInstancias,
+					attributes: ['nombre', 'idInstancia'],
+					as: 'instancia'
+				}
 				]
 			})
 			.then(informe => {

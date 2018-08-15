@@ -34,22 +34,26 @@ exports.informes = (req, res) => {
 				'created_at',
 				'updated_at'
 			],
-			include: [
-				{
-					model: db.catUsuarios,
-					attributes: ['nombre', 'idUsuario'],
-					as: 'usuarioCreacion'
-				},
-				{
-					model: db.catEntesFiscalizadores,
-					attributes: ['nombre', 'idEnte'],
-					as: 'ente'
-				},
-				{
-					model: db.catFondos,
-					attributes: ['nombre', 'idFondo'],
-					as: 'fondo'
-				}
+			include: [{
+				model: db.catUsuarios,
+				attributes: ['nombre', 'idUsuario'],
+				as: 'usuarioCreacion'
+			},
+			{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre', 'idEnte'],
+				as: 'ente'
+			},
+			{
+				model: db.catFondos,
+				attributes: ['nombre', 'idFondo'],
+				as: 'fondo'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			}
 			]
 		})
 		.then(informes => {

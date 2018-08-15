@@ -155,5 +155,9 @@ db.informes.belongsTo(db.catFondos, {
 	foreignKey: 'idFondo',
 	as: 'fondo'
 })
+db.informes.belongsTo(db.catInstancias, {
+	foreignKey: 'idInstancia',
+	as: 'instancia'
+})
 
 module.exports = db
