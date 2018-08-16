@@ -36,6 +36,9 @@ const datosInforme = (req) => {
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const informe = datosInforme(req)
+	if (informe.idFondo == '' || informe.idFondo == null) {
+		delete informe['idFondo']
+	}
 	req.informe = informe
 	const {
 		error
@@ -72,6 +75,9 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const informe = datosInforme(req)
+	if (informe.idFondo == '' || informe.idFondo == null) {
+		delete informe['idFondo']
+	}
 	req.informe = informe
 	const {
 		error
