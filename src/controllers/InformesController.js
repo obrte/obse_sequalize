@@ -25,6 +25,7 @@ exports.informes = (req, res) => {
 		.findAll({
 			attributes: [
 				'idInforme',
+				'nombre',
 				'ejercicio',
 				'delMes',
 				'alMes',

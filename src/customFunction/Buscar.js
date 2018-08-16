@@ -177,6 +177,7 @@ const informe = id => {
 				},
 				attributes: [
 					'idInforme',
+					'nombre',
 					'ejercicio',
 					'delMes',
 					'alMes',

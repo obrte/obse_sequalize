@@ -19,7 +19,7 @@ const schema = {
 
 const datosInforme = (req) => {
 	return {
-		idUsuarioCreacion: req.body.informe.idUsuarioCreacion,
+		idUsuarioCreacion: req.userData.data.idUsuario,
 		idEnte: req.body.informe.idEnte,
 		idFondo: req.body.informe.idFondo,
 		idInstancia: req.body.informe.idInstancia,
