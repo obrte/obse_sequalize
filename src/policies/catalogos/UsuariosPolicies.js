@@ -47,7 +47,9 @@ exports.guardar = (req, res, next) => {
 		}
 	}
 	req.usuario = usuario
-	const { error } = Joi.validate(usuario, schema)
+	const {
+		error
+	} = Joi.validate(usuario, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
@@ -102,7 +104,9 @@ exports.actualizar = (req, res, next) => {
 	}
 	console.log(usuario)
 	req.usuario = usuario
-	const { error } = Joi.validate(usuario, schema)
+	const {
+		error
+	} = Joi.validate(usuario, schema)
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {

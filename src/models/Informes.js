@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		idFondo: {
 			type: DataTypes.UUID,
-			allowNull: false
+			allowNull: true
 		},
 		ejercicio: {
 			type: DataTypes.INTEGER(11),
