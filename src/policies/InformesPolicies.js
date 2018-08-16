@@ -6,7 +6,7 @@ const mensajes = require('../customFunction/Mensajes')
 const schema = {
 	idUsuarioCreacion: Joi.string().required(),
 	idEnte: Joi.string().required(),
-	idFondo: Joi.string().required(),
+	idFondo: Joi.string(),
 	idInstancia: Joi.string().required(),
 	ejercicio: Joi.number().integer().required(),
 	delMes: Joi.string().required(),
