@@ -18,6 +18,12 @@ const switchError = (error, res) => {
 			msg: 'Debe introducir el ente.'
 		})
 		break
+	case 'idFondo':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir el Fondo.'
+		})
+		break
 	case 'idUniAdm':
 		res.status(400).json({
 			status: 'error',
