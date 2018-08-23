@@ -46,5 +46,24 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: false,
 		underscored: true
 	})
+	//! Asociaciones
+	catalogoUsuarios.associate = function (db) {
+		catalogoUsuarios.belongsTo(db.catOrganizaciones, {
+			foreignKey: 'idOrganizacion',
+			as: 'organizacion'
+		})
+		catalogoUsuarios.belongsTo(db.catInstancias, {
+			foreignKey: 'idInstancia',
+			as: 'instancia'
+		})
+		catalogoUsuarios.belongsTo(db.catUniAdm, {
+			foreignKey: 'idUniAdm',
+			as: 'uniAdm'
+		})
+		catalogoUsuarios.belongsTo(db.catUsuarios, {
+			foreignKey: 'idUsuarioCreacion',
+			as: 'creador'
+		})
+	}
 	return catalogoUsuarios
 }

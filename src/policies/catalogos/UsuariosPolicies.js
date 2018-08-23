@@ -31,7 +31,7 @@ const usuarioBody = req => {
 		password: req.body.usuario.password,
 		rePassword: req.body.usuario.rePassword,
 		activo: req.body.usuario.activo,
-		idUsuarioCreacion: req.body.usuario.idUsuarioCreacion
+		idUsuarioCreacion: req.userData.data.idUsuario
 	}
 }
 

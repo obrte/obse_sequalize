@@ -24,10 +24,10 @@ const datosInforme = (req) => {
 		idFondo: req.body.informe.idFondo,
 		idInstancia: req.body.informe.idInstancia,
 		ejercicio: req.body.informe.ejercicio,
-		delMes: req.body.informe.delMes,
-		alMes: req.body.informe.alMes,
-		numero: req.body.informe.numero,
-		numeroAuditoria: req.body.informe.numeroAuditoria,
+		delMes: req.body.informe.delMes.toUpperCase().trim(),
+		alMes: req.body.informe.alMes.toUpperCase().trim(),
+		numero: req.body.informe.numero.toUpperCase().trim(),
+		numeroAuditoria: req.body.informe.numeroAuditoria.trim(),
 		nombre: req.body.informe.nombre.toUpperCase().trim(),
 		activo: req.body.informe.activo
 	}

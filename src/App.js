@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000
 */
 const db = require('./config/db')
 //prueba de conección
-db.sequelize
+db.conn
 	.authenticate()
 	.then(() => {
 		console.log('Connection successfully.')
@@ -21,7 +21,7 @@ db.sequelize
 		console.error('Unable to connect to the database:', err)
 	})
 
-db.sequelize.sync({
+db.conn.sync({
 	logging: false
 }).then(() => {
 	db.catUsuarios.findOrCreate({
@@ -63,6 +63,7 @@ var corsOptions = {
 app.use(cors(corsOptions))
 app.use(bodyParser.json())
 
+app.use('/docs', express.static('src/docs'))
 
 /*
  ! RUTAS
