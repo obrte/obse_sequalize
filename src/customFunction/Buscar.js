@@ -85,7 +85,7 @@ const instancia = id => {
 				},
 				{
 					model: db.catOrganizaciones,
-					attributes: ['nombre'],
+					attributes: ['nombre', 'nombreCorto'],
 					as: 'organizacion'
 				}
 				]
@@ -216,6 +216,39 @@ const informe = id => {
 	})
 }
 
+const oficio = id => {
+	return new Promise((resolve, reject) => {
+		db.informes
+			.find({
+				where: {
+					idOficio: id
+				},
+				attributes: [
+					'idOficio',
+					'numero',
+					'fecha',
+					'fechaRecepcion',
+					'fechaVencimiento',
+					'observaciones',
+					'pathPdfFile',
+					'notificaResultados',
+					'esUltimo',
+					'created_at',
+					'updated_at'
+				],
+				include: [{
+					model: db.informes,
+					attributes: ['idInforme', 'nombre'],
+					as: 'informe'
+				}]
+			})
+			.then(oficio => {
+				resolve(oficio)
+			})
+			.catch(err => reject(err))
+	})
+}
+
 const buscar = {}
 
 buscar.organizacion = organizacion
@@ -225,5 +258,6 @@ buscar.instancia = instancia
 buscar.uniAdm = uniAdm
 buscar.usuario = usuario
 buscar.informe = informe
+buscar.oficio = oficio
 
 module.exports = buscar

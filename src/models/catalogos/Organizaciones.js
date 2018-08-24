@@ -28,5 +28,20 @@ module.exports = (sequelize, DataTypes) => {
 		paranoid: false,
 		underscored: true
 	})
+	//! Asociaciones
+	catalogoOrganizaciones.associate = function (db) {
+		catalogoOrganizaciones.hasMany(db.catEntesFiscalizadores, {
+			foreignKey: 'idOrganizacion',
+			as: 'entes'
+		})
+		catalogoOrganizaciones.hasMany(db.catInstancias, {
+			foreignKey: 'idOrganizacion',
+			as: 'instancias'
+		})
+		catalogoOrganizaciones.hasMany(db.catFondos, {
+			foreignKey: 'idOrganizacion',
+			as: 'fondos'
+		})
+	}
 	return catalogoOrganizaciones
 }

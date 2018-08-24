@@ -108,6 +108,30 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar el numero de auditoria.'
 		})
 		break
+	case 'notificaResultados':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el campo Notifica Resultados.'
+		})
+		break
+	case 'fecha':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar la fecha.'
+		})
+		break
+	case 'fechaRecepcion':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar la fecha de recepcion.'
+		})
+		break
+	case 'fechaVencimiento':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar la fecha de vencimiento.'
+		})
+		break
 	default:
 		res.status(500).json({
 			status: 'error',
