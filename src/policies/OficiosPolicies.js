@@ -28,6 +28,7 @@ const datosOficio = (req) => {
 }
 
 exports.test = (req, res, next) => {
+	console.log('POLICIES')
 	console.log('Policies', req.body)
 	req.oficio = req.body
 	next()

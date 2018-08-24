@@ -5,6 +5,6 @@ const OficiosController = require('../controllers/OficiosController')
 
 
 module.exports = (router) => {
-	router.post('/oficios', UploadMiddleware.cuerpo, OficiosPolicies.guardar, UploadMiddleware.upload, OficiosController.test)
-	router.post('/oficios/test')
+	router.post('/oficios', UploadMiddleware.upload, OficiosPolicies.guardar, OficiosController.test)
+	router.post('/oficios/test', UploadMiddleware.cuerpo, OficiosPolicies.test, OficiosController.test)
 }

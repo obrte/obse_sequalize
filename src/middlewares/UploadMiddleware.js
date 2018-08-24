@@ -1,38 +1,74 @@
 const multer = require('multer')
 const buscar = require('../customFunction/Buscar')
-var archivo
+const fs = require('fs-extra')
+var moment = require('moment')
+var archivo = 'vacio'
 var organizacion
 var instancia
 var ente
 
 exports.cuerpo = (req, res, next) => {
-	const cuerpoM = multer().single('adjunto')
+	const storageA = multer.diskStorage({
+		destination: function (req, file, cb) {
+			cb(null, 'src/tmp')
+		},
+		filename: function (req, file, cb) {
+			cb(null, 'oficio' + '-' + file.originalname)
+		}
+	})
+	const fileFilterA = (req, file, cb) => {
+		if (file) {
+			if (file.mimetype === 'application/pdf') {
+				archivo = 'ok'
+				cb(null, true)
+			} else {
+				archivo = 'fallo'
+				cb(null, false)
+			}
+		}
+	}
+	const uploadA = multer({
+		storage: storageA,
+		fileFilter: fileFilterA
+	}).single('adjunto')
 
-	cuerpoM(req, res, (err) => {
-		console.log('CUERPO', req.body)
-		console.log('CUERPO', req.file)
+
+	uploadA(req, res, async (err) => {
+		await datosOficio(req.body.idInforme)
 		if (err) {
 			res.json({
 				msgs: err
 			})
 		} else {
+			console.log(req.file.filename)
+			var rut = 'src/docs/' + organizacion + '/' + instancia + '/' + '/' + ente
+			console.log(rut, req.file.filename)
+			fs.rename('src/tmp/' + req.file.filename, rut + '/' + req.file.filename, (err) => {
+				if (err) {
+					console.log(err)
+				}
+			})
 			next()
 		}
 	})
 }
 
-exports.upload = async (req, res, next) => {
+exports.upload = (req, res, next) => {
 	console.log('UPLOAD')
-	archivo = 'vacio'
-	await datosOficio(req.body.idInforme)
-	const yr = req.body.fecha.split('/')[2]
+	//var fecha = new Date().toISOString().replace(/T/, ' ').replace(/\..+/, '')
+	var fecha = moment().format('YYYY-MM-DD HH:mm:ss')
 	const storage = multer.diskStorage({
-		destination: 'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente,
-		filename: 'oficio-' + req.file.originalname
+		destination: async function (req, file, cb) {
+			await datosOficio(req.body.idInforme)
+			const yr = req.body.fecha.split('/')[2]
+			var ruta = 'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente
+			cb(null, ruta)
+		},
+		filename: function (req, file, cb) {
+			cb(null, fecha + '-' + 'oficio' + '-' + file.originalname)
+		}
 	})
 	const fileFilter = (req, file, cb) => {
-		console.log('FILTER FILE')
-		console.log(file)
 		if (file) {
 			if (file.mimetype === 'application/pdf') {
 				archivo = 'ok'
@@ -46,11 +82,13 @@ exports.upload = async (req, res, next) => {
 	const upload = multer({
 		storage: storage,
 		fileFilter: fileFilter
-	}).single(req.file)
+	}).single('adjunto')
 
 	upload(req, res, (err) => {
-		console.log('UPLOAD FUNC', req.file)
+		console.log('Antes IFFFF', path)
+		console.log(err)
 		if (err) {
+			archivo = 'vacio'
 			res.json({
 				msg: err
 			})
@@ -79,10 +117,10 @@ exports.upload = async (req, res, next) => {
 
 async function datosOficio(idInforme) {
 	await buscar.informe(idInforme)
-		.then(async informe => {
-			ente = informe.ente.nombre
-			instancia = informe.instancia.nombre
-			await buscar.instancia(informe.instancia.idInstancia)
+		.then(async datosInforme => {
+			ente = datosInforme.ente.nombre
+			instancia = datosInforme.instancia.nombre
+			await buscar.instancia(datosInforme.instancia.idInstancia)
 				.then(async datosInstancia => {
 					organizacion = datosInstancia.organizacion.nombreCorto
 					ente = await short(ente)

@@ -4,8 +4,6 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const router = require('./routes/index')
 const http = require('http').Server(app)
-var multer = require('multer')
-var upload = multer()
 app.http = http
 const PORT = process.env.PORT || 3000
 
@@ -63,9 +61,10 @@ var corsOptions = {
 	credentials: true
 }
 app.use(cors(corsOptions))
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({
+	extended: false
+}))
 app.use(bodyParser.json())
-app.use(upload.array())
 
 app.use('/docs', express.static('src/docs'))
 
