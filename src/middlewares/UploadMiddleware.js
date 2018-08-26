@@ -6,15 +6,16 @@ var archivo = 'vacio'
 var organizacion
 var instancia
 var ente
+var ruta
 
 exports.cuerpo = (req, res, next) => {
 	const storageA = multer.diskStorage({
-		destination: async function(req, file, cb) {
+		destination: async function (req, file, cb) {
 			await datosOficio(req.body.idInforme)
 			var rut = 'src/docs/' + req.body.carpetaA + '/' + req.body.carpetaB + '/'
 			mkdirp(rut, err => cb(err, rut))
 		},
-		filename: function(req, file, cb) {
+		filename: function (req, file, cb) {
 			cb(null, 'oficio' + '-' + file.originalname)
 		}
 	})
@@ -47,16 +48,16 @@ exports.cuerpo = (req, res, next) => {
 
 exports.upload = (req, res, next) => {
 	console.log('UPLOAD')
-	var fecha = moment().format('YYYY-MM-DD HH:mm:ss')
+	const fecha = moment().format('YYYY-MM-DD HH:mm').replace(':', '')
+	console.log(fecha)
 	const storage = multer.diskStorage({
-		destination: async function(req, file, cb) {
+		destination: async function (req, file, cb) {
 			await datosOficio(req.body.idInforme)
 			const yr = req.body.fecha.split('/')[2]
-			var ruta =
-				'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente
+			ruta = 'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente + '/'
 			mkdirp(ruta, err => cb(err, ruta))
 		},
-		filename: function(req, file, cb) {
+		filename: function (req, file, cb) {
 			cb(null, fecha + '-' + 'oficio' + '-' + file.originalname)
 		}
 	})
@@ -90,7 +91,7 @@ exports.upload = (req, res, next) => {
 			switch (archivo) {
 			case 'ok':
 				archivo = 'vacio'
-				req.oficio.pathPdfFile = req.file.path
+				console.log(req.file)
 				next()
 				break
 			case 'fallo':

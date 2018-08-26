@@ -3,6 +3,8 @@ const buscar = require('../customFunction/Buscar')
 
 exports.test = (req, res) => {
 	console.log('TEST')
+	console.log(req.oficio)
+
 
 	res.json(req.oficio)
 }

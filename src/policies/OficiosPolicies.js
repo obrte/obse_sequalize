@@ -29,8 +29,11 @@ const datosOficio = (req) => {
 
 exports.test = (req, res, next) => {
 	console.log('POLICIES')
-	console.log('Policies', req.body)
 	req.oficio = req.body
+	// if (req.file) {
+	// 	req.oficio.pathPdfFile = (req.file.destination + req.file.filename).replace('src', '')
+	// }
+
 	next()
 }
 
