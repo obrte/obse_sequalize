@@ -50,7 +50,7 @@ exports.upload = (req, res, next) => {
 	const fecha = moment().format('YYYY-MM-DD HH:mm:ss').split('-').join('').split(':').join('').replace(' ', '')
 	const storage = multer.diskStorage({
 		destination: async function (req, file, cb) {
-			await datosOficio(req.body.idInforme)
+			await datosOficio(req.body.idInforme, res)
 			const yr = req.body.fecha.split('/')[2]
 			ruta = 'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente + '/'
 			mkdirp(ruta, err => cb(err, ruta))
@@ -101,19 +101,33 @@ exports.upload = (req, res, next) => {
 	})
 }
 
-async function datosOficio(idInforme) {
-	await buscar.informe(idInforme).then(async datosInforme => {
-		ente = datosInforme.ente.nombre
-		instancia = datosInforme.instancia.nombre
-		await buscar
-			.instancia(datosInforme.instancia.idInstancia)
-			.then(async datosInstancia => {
-				organizacion = datosInstancia.organizacion.nombreCorto
-				ente = await short(ente)
-				instancia = await short(instancia)
+async function datosOficio(idInforme, res) {
+	await buscar.informe(idInforme)
+		.then(async datosInforme => {
+			ente = datosInforme.ente.nombre
+			instancia = datosInforme.instancia.nombre
+			await buscar
+				.instancia(datosInforme.instancia.idInstancia)
+				.then(async datosInstancia => {
+					organizacion = datosInstancia.organizacion.nombreCorto
+					ente = await short(ente)
+					instancia = await short(instancia)
+				})
+				.catch((err) => {
+					res.status(400).json({
+						status: 'fallo',
+						msg: 'Conflicto con los datos en la BD',
+						error: err
+					})
+				})
+		})
+		.catch((err) => {
+			res.status(400).json({
+				status: 'fallo',
+				msg: 'Conflicto con los datos en la BD',
+				error: err
 			})
-			.catch(err => console.log(err))
-	})
+		})
 }
 
 function short(nombre) {

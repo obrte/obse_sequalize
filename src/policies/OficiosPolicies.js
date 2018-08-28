@@ -25,7 +25,7 @@ const datosOficio = (req) => {
 		fechaRecepcion: req.body.fechaRecepcion.split('/').join('-'),
 		fechaVencimiento: req.body.fechaVencimiento.split('/').join('-'),
 		observaciones: req.body.observaciones.toUpperCase().trim(),
-		notificaResultados: req.body.notificaResultados.toUpperCase().trim()
+		notificaResultados: req.body.notificaResultados
 	}
 }
 
@@ -69,7 +69,7 @@ exports.guardar = (req, res, next) => {
 						eliminarArchivo(req.file.path)
 					}
 					res.status(400).json({
-						status: 'error',
+						status: 'Fallo',
 						msg: 'El numero de oficio ya existe.'
 					})
 				} else {
@@ -79,6 +79,13 @@ exports.guardar = (req, res, next) => {
 					}
 					next()
 				}
+			})
+			.catch((err) => {
+				res.status(400).json({
+					status: 'fallo',
+					msg: 'Conflicto con los datos en la BD',
+					error: err
+				})
 			})
 	}
 }
@@ -123,6 +130,13 @@ exports.actualizar = (req, res, next) => {
 					}
 					next()
 				}
+			})
+			.catch((err) => {
+				res.status(400).json({
+					status: 'fallo',
+					msg: 'Conflicto con los datos en la BD',
+					error: err
+				})
 			})
 	}
 }
