@@ -78,7 +78,7 @@ exports.upload = (req, res, next) => {
 	upload(req, res, err => {
 		if (err) {
 			archivo = 'vacio'
-			res.json({
+			res.status(409).json({
 				msg: err
 			})
 		} else {
@@ -89,7 +89,7 @@ exports.upload = (req, res, next) => {
 				break
 			case 'fallo':
 				archivo = 'vacio'
-				res.json({
+				res.status(400).json({
 					msg: 'Tipo de archivo no valido.'
 				})
 				break
