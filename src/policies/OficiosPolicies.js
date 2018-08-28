@@ -10,11 +10,11 @@ const mensajes = require('../customFunction/Mensajes')
 const schema = {
 	idInforme: Joi.string().required(),
 	numero: Joi.string().required(),
-	fecha: Joi.date().format('DD-MM-YYYY').require(),
-	fechaRecepcion: Joi.date().format('DD-MM-YYYY').require(),
-	fechaVencimiento: Joi.date().format('DD-MM-YYYY').require(),
+	fecha: Joi.date().format('DD-MM-YYYY').required(),
+	fechaRecepcion: Joi.date().format('DD-MM-YYYY').required(),
+	fechaVencimiento: Joi.date().format('DD-MM-YYYY').required(),
 	observaciones: Joi.string(),
-	notificaResultados: Joi.number().integer().require()
+	notificaResultados: BaseJoi.number().integer().required()
 }
 
 const datosOficio = (req) => {
