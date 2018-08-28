@@ -47,9 +47,7 @@ exports.cuerpo = (req, res, next) => {
 }
 
 exports.upload = (req, res, next) => {
-	console.log('UPLOAD')
-	const fecha = moment().format('YYYY-MM-DD HH:mm').replace(':', '')
-	console.log(fecha)
+	const fecha = moment().format('YYYY-MM-DD HH:mm:ss').split('-').join('').split(':').join('').replace(' ', '')
 	const storage = multer.diskStorage({
 		destination: async function (req, file, cb) {
 			await datosOficio(req.body.idInforme)
@@ -58,7 +56,7 @@ exports.upload = (req, res, next) => {
 			mkdirp(ruta, err => cb(err, ruta))
 		},
 		filename: function (req, file, cb) {
-			cb(null, fecha + '-' + 'oficio' + '-' + file.originalname)
+			cb(null, fecha + '-' + file.originalname)
 		}
 	})
 	const fileFilter = (req, file, cb) => {
@@ -78,20 +76,15 @@ exports.upload = (req, res, next) => {
 	}).single('adjunto')
 
 	upload(req, res, err => {
-		console.log('Antes IFFFF')
-		console.log(err)
 		if (err) {
 			archivo = 'vacio'
 			res.json({
 				msg: err
 			})
 		} else {
-			console.log('UPLOAD ESLEEEEEEEEEEEEE')
-			console.log(archivo)
 			switch (archivo) {
 			case 'ok':
 				archivo = 'vacio'
-				console.log(req.file)
 				next()
 				break
 			case 'fallo':

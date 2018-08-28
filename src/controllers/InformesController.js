@@ -21,42 +21,41 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.informes = (req, res) => {
-	db.informes
-		.findAll({
-			attributes: [
-				'idInforme',
-				'nombre',
-				'ejercicio',
-				'delMes',
-				'alMes',
-				'numero',
-				'numeroAuditoria',
-				'activo',
-				'created_at',
-				'updated_at'
-			],
-			include: [{
-				model: db.catUsuarios,
-				attributes: ['nombre', 'idUsuario'],
-				as: 'usuarioCreacion'
-			},
-			{
-				model: db.catEntesFiscalizadores,
-				attributes: ['nombre', 'idEnte'],
-				as: 'ente'
-			},
-			{
-				model: db.catFondos,
-				attributes: ['nombre', 'idFondo'],
-				as: 'fondo'
-			},
-			{
-				model: db.catInstancias,
-				attributes: ['nombre', 'idInstancia'],
-				as: 'instancia'
-			}
-			]
-		})
+	db.informes.findAll({
+		attributes: [
+			'idInforme',
+			'nombre',
+			'ejercicio',
+			'delMes',
+			'alMes',
+			'numero',
+			'numeroAuditoria',
+			'activo',
+			'created_at',
+			'updated_at'
+		],
+		include: [{
+			model: db.catUsuarios,
+			attributes: ['nombre', 'idUsuario'],
+			as: 'usuarioCreacion'
+		},
+		{
+			model: db.catEntesFiscalizadores,
+			attributes: ['nombre', 'idEnte'],
+			as: 'ente'
+		},
+		{
+			model: db.catFondos,
+			attributes: ['nombre', 'idFondo'],
+			as: 'fondo'
+		},
+		{
+			model: db.catInstancias,
+			attributes: ['nombre', 'idInstancia'],
+			as: 'instancia'
+		}
+		]
+	})
 		.then(informes => {
 			res.status(200).json(informes)
 		})
@@ -71,10 +70,9 @@ exports.informes = (req, res) => {
 
 // GET one por id
 exports.informe = (req, res) => {
-	buscar
-		.informe(req.params.id)
+	buscar.informe(req.params.id)
 		.then(datosInforme => {
-			res.status(201).json(datosInforme)
+			res.status(200).json(datosInforme)
 		})
 		.catch(err =>
 			res.status(400).json({
@@ -87,12 +85,11 @@ exports.informe = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.informes
-		.update(req.informe, {
-			where: {
-				idInforme: req.params.id
-			}
-		})
+	db.informes.update(req.informe, {
+		where: {
+			idInforme: req.params.id
+		}
+	})
 		.then(InformeActualizado => {
 			if (InformeActualizado > 0) {
 				buscar.informe(req.params.id).then(informe => {
@@ -101,7 +98,7 @@ exports.actualizar = (req, res) => {
 			} else {
 				res.status(400).json({
 					status: 'Alerta',
-					msg: 'Usuario no actualizado.'
+					msg: 'Informe no actualizado.'
 				})
 			}
 		})

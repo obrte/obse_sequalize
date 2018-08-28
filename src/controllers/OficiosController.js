@@ -1,4 +1,6 @@
 const db = require('../config/db')
+const fs = require('fs')
+var path = require('path')
 const buscar = require('../customFunction/Buscar')
 
 exports.test = (req, res) => {
@@ -9,10 +11,8 @@ exports.test = (req, res) => {
 	res.json(req.oficio)
 }
 
-
 //POST single
 exports.guardar = (req, res) => {
-	console.log('CONTROLLER')
 	db.oficios.update({
 		esUltimo: 0
 	}, {
@@ -39,43 +39,27 @@ exports.guardar = (req, res) => {
 }
 
 // GET all
-exports.informes = (req, res) => {
-	db.informes
-		.findAll({
-			attributes: [
-				'idInforme',
-				'nombre',
-				'ejercicio',
-				'delMes',
-				'alMes',
-				'numero',
-				'numeroAuditoria',
-				'activo',
-				'created_at',
-				'updated_at'
-			],
-			include: [{
-				model: db.catUsuarios,
-				attributes: ['nombre', 'idUsuario'],
-				as: 'usuarioCreacion'
-			},
-			{
-				model: db.catEntesFiscalizadores,
-				attributes: ['nombre', 'idEnte'],
-				as: 'ente'
-			},
-			{
-				model: db.catFondos,
-				attributes: ['nombre', 'idFondo'],
-				as: 'fondo'
-			},
-			{
-				model: db.catInstancias,
-				attributes: ['nombre', 'idInstancia'],
-				as: 'instancia'
-			}
-			]
-		})
+exports.oficios = (req, res) => {
+	db.oficios.findAll({
+		attributes: [
+			'idOficio',
+			'numero',
+			'fecha',
+			'fechaRecepcion',
+			'fechaVencimiento',
+			'observaciones',
+			'pathPdfFile',
+			'notificaResultados',
+			'esUltimo',
+			'created_at',
+			'updated_at'
+		],
+		include: [{
+			model: db.informes,
+			attributes: ['idInforme', 'nombre'],
+			as: 'informe'
+		}]
+	})
 		.then(informes => {
 			res.status(200).json(informes)
 		})
@@ -89,11 +73,10 @@ exports.informes = (req, res) => {
 }
 
 // GET one por id
-exports.informe = (req, res) => {
-	buscar
-		.informe(req.params.id)
-		.then(datosInforme => {
-			res.status(201).json(datosInforme)
+exports.oficio = (req, res) => {
+	buscar.oficio(req.params.id)
+		.then(datosOficio => {
+			res.status(200).json(datosOficio)
 		})
 		.catch(err =>
 			res.status(400).json({
@@ -106,62 +89,104 @@ exports.informe = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.informes
-		.update(req.informe, {
-			where: {
-				idInforme: req.params.id
+	buscar.oficio(req.params.id)
+		.then(oficio => {
+			if (oficio.pathPdfFile != null && req.file) {
+				eliminarArchivo(oficio.pathPdfFile)
 			}
-		})
-		.then(InformeActualizado => {
-			if (InformeActualizado > 0) {
-				buscar.informe(req.params.id).then(informe => {
-					res.status(200).json(informe)
-				})
-			} else {
-				res.status(400).json({
-					status: 'Alerta',
-					msg: 'Usuario no actualizado.'
-				})
-			}
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'Alerta',
-				msg: 'Fallo al actualizar',
-				error: err
+			db.oficios.update(req.oficio, {
+				where: {
+					idOficio: req.params.id
+				}
 			})
+				.then(oficioActualizado => {
+					if (oficioActualizado > 0) {
+						buscar.oficio(req.params.id)
+							.then(oficio => {
+								res.status(200).json(oficio)
+							})
+					} else {
+						res.status(400).json({
+							status: 'Alerta',
+							msg: 'Oficio no actualizado.'
+						})
+					}
+				})
+				.catch(err => {
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'Fallo al actualizar',
+						error: err
+					})
+				})
 		})
+
 }
 
 // DELETE single
 exports.eliminar = (req, res) => {
-	db.informes
-		.destroy({
-			where: {
-				idInforme: req.params.id
+	buscar.oficio(req.params.id)
+		.then(oficio => {
+			if (oficio.pathPdfFile != null) {
+				eliminarArchivo(oficio.pathPdfFile)
 			}
-		})
-		.then(informeEliminado => {
-			if (informeEliminado == 1) {
-				res.status(200).json({
-					status: 'success',
-					msg: 'Eliminación exitosa'
-				})
-			} else {
-				res.status(400).json({
-					status: 'Alerta',
-					msg: 'No encontrado'
-				})
-			}
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'Alerta',
-				msg: 'Error al eliminar, verifica que no tenga dependencias',
-				error: {
-					name: err.name,
-					code: err.parent.code
+			db.oficios.destroy({
+				where: {
+					idOficio: req.params.id
 				}
 			})
+				.then(oficioEliminado => {
+					if (oficioEliminado == 1) {
+						db.oficios.max('idOficio', {
+							where: {
+								idInforme: oficio.informe.idInforme
+							}
+						})
+							.then(ultimoAnterior => {
+								db.oficios.update({
+									esUltimo: 1
+								}, {
+									where: {
+										idOficio: ultimoAnterior
+									}
+								})
+							})
+						res.status(200).json({
+							status: 'success',
+							msg: 'Eliminación exitosa'
+						})
+					} else {
+						res.status(400).json({
+							status: 'Alerta',
+							msg: 'No encontrado 1'
+						})
+					}
+				})
+				.catch(err => {
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'Error al eliminar, verifica que no tenga dependencias',
+						error: {
+							name: err.name,
+							code: err.parent.code
+						}
+					})
+				})
 		})
+		.catch(() => {
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'No encontrado 2'
+			})
+		})
+}
+
+function eliminarArchivo(archivo) {
+	var pathArchivo = path.join(__dirname, '..', archivo)
+	fs.stat(pathArchivo, function (err) {
+		if (err) return console.error(err)
+		fs.unlink(pathArchivo, function (err) {
+			if (err) return console.log(err)
+		})
+	})
 }

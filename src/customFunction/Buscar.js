@@ -218,34 +218,33 @@ const informe = id => {
 
 const oficio = id => {
 	return new Promise((resolve, reject) => {
-		db.informes
-			.find({
-				where: {
-					idOficio: id
-				},
-				attributes: [
-					'idOficio',
-					'numero',
-					'fecha',
-					'fechaRecepcion',
-					'fechaVencimiento',
-					'observaciones',
-					'pathPdfFile',
-					'notificaResultados',
-					'esUltimo',
-					'created_at',
-					'updated_at'
-				],
-				include: [{
-					model: db.informes,
-					attributes: ['idInforme', 'nombre'],
-					as: 'informe'
-				}]
-			})
+		db.oficios.find({
+			where: {
+				idOficio: id
+			},
+			attributes: [
+				'idOficio',
+				'numero',
+				'fecha',
+				'fechaRecepcion',
+				'fechaVencimiento',
+				'observaciones',
+				'pathPdfFile',
+				'notificaResultados',
+				'esUltimo',
+				'created_at',
+				'updated_at'
+			],
+			include: [{
+				model: db.informes,
+				attributes: ['idInforme', 'nombre'],
+				as: 'informe'
+			}]
+		})
 			.then(oficio => {
 				resolve(oficio)
 			})
-			.catch(err => reject(err))
+			.catch((err) => reject(err))
 	})
 }
 
