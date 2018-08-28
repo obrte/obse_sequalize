@@ -29,19 +29,6 @@ const datosOficio = (req) => {
 	}
 }
 
-exports.test = (req, res, next) => {
-	console.log('POLICIES')
-	req.oficio = req.body
-	// if (req.file) {
-	// 	req.oficio.pathPdfFile = (req.file.destination + req.file.filename).replace('src', '')
-	// }
-	console.log(req.oficio.fecha)
-	req.oficio.fecha = req.oficio.fecha.split('/').join('-')
-	console.log(req.oficio.fecha)
-	eliminarArchivo(req.file.path)
-	next()
-}
-
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const oficio = datosOficio(req)
@@ -75,7 +62,7 @@ exports.guardar = (req, res, next) => {
 				} else {
 					req.oficio = oficio
 					if (req.file) {
-						req.oficio.pathPdfFile = (req.file.destination + req.file.filename).replace('src', '')
+						req.oficio.pathPdfFile = (req.file.destination + req.file.filename)
 					}
 					next()
 				}

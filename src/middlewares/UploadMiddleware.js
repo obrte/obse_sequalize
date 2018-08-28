@@ -3,56 +3,19 @@ const buscar = require('../customFunction/Buscar')
 const mkdirp = require('mkdirp')
 var moment = require('moment')
 var archivo = 'vacio'
+var msgError = ''
 var organizacion
 var instancia
 var ente
 var ruta
 
-exports.cuerpo = (req, res, next) => {
-	const storageA = multer.diskStorage({
-		destination: async function (req, file, cb) {
-			await datosOficio(req.body.idInforme)
-			var rut = 'src/docs/' + req.body.carpetaA + '/' + req.body.carpetaB + '/'
-			mkdirp(rut, err => cb(err, rut))
-		},
-		filename: function (req, file, cb) {
-			cb(null, 'oficio' + '-' + file.originalname)
-		}
-	})
-	const fileFilterA = (req, file, cb) => {
-		if (file) {
-			if (file.mimetype === 'application/pdf') {
-				archivo = 'ok'
-				cb(null, true)
-			} else {
-				archivo = 'fallo'
-				cb(null, false)
-			}
-		}
-	}
-	const uploadA = multer({
-		storage: storageA,
-		fileFilter: fileFilterA
-	}).single('adjunto')
-
-	uploadA(req, res, err => {
-		if (err) {
-			res.json({
-				msgs: err
-			})
-		} else {
-			next()
-		}
-	})
-}
-
 exports.upload = (req, res, next) => {
 	const fecha = moment().format('YYYY-MM-DD HH:mm:ss').split('-').join('').split(':').join('').replace(' ', '')
 	const storage = multer.diskStorage({
 		destination: async function (req, file, cb) {
-			await datosOficio(req.body.idInforme, res)
+			await datosOficio(req.body.idInforme)
 			const yr = req.body.fecha.split('/')[2]
-			ruta = 'src/docs/' + organizacion + '/' + instancia + '/' + yr + '/' + ente + '/'
+			ruta = 'public/' + organizacion + '/' + instancia + '/' + yr + '/' + ente + '/'
 			mkdirp(ruta, err => cb(err, ruta))
 		},
 		filename: function (req, file, cb) {
@@ -76,10 +39,12 @@ exports.upload = (req, res, next) => {
 	}).single('adjunto')
 
 	upload(req, res, err => {
-		if (err) {
+		if (err || msgError) {
 			archivo = 'vacio'
+			var msgE = msgError
+			msgError = ''
 			res.status(409).json({
-				msg: err
+				msg: err ? err + msgE : msgE
 			})
 		} else {
 			switch (archivo) {
@@ -101,7 +66,7 @@ exports.upload = (req, res, next) => {
 	})
 }
 
-async function datosOficio(idInforme, res) {
+async function datosOficio(idInforme) {
 	await buscar.informe(idInforme)
 		.then(async datosInforme => {
 			ente = datosInforme.ente.nombre
@@ -113,21 +78,9 @@ async function datosOficio(idInforme, res) {
 					ente = await short(ente)
 					instancia = await short(instancia)
 				})
-				.catch((err) => {
-					res.status(400).json({
-						status: 'fallo',
-						msg: 'Conflicto con los datos en la BD',
-						error: err
-					})
-				})
+				.catch((err) => msgError = 'No se puede obtener el directorio destino del archivo, ' + err)
 		})
-		.catch((err) => {
-			res.status(400).json({
-				status: 'fallo',
-				msg: 'Conflicto con los datos en la BD',
-				error: err
-			})
-		})
+		.catch((err) => msgError = 'No se puede obtener el directorio destino del archivo, ' + err)
 }
 
 function short(nombre) {

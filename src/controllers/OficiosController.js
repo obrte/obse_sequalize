@@ -1,14 +1,12 @@
 const db = require('../config/db')
 const fs = require('fs')
-var path = require('path')
 const buscar = require('../customFunction/Buscar')
 
 exports.test = (req, res) => {
-	console.log('TEST')
-	console.log(req.oficio)
-
-
-	res.json(req.oficio)
+	eliminarArchivo('public/oficio-1.pdf')
+	res.json({
+		msgs: 'success'
+	})
 }
 
 //POST single
@@ -182,10 +180,9 @@ exports.eliminar = (req, res) => {
 }
 
 function eliminarArchivo(archivo) {
-	var pathArchivo = path.join(__dirname, '..', archivo)
-	fs.stat(pathArchivo, function (err) {
+	fs.stat(archivo, function (err) {
 		if (err) return console.error(err)
-		fs.unlink(pathArchivo, function (err) {
+		fs.unlink(archivo, function (err) {
 			if (err) return console.log(err)
 		})
 	})
