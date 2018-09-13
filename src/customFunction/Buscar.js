@@ -206,6 +206,11 @@ const informe = id => {
 					model: db.catInstancias,
 					attributes: ['nombre', 'idInstancia'],
 					as: 'instancia'
+				},
+				{
+					model: db.oficios,
+					attributes: ['idOficio', 'numero', 'fecha', 'fechaRecepcion', 'fechaVencimiento', 'observaciones', 'pathPdfFile', 'notificaResultados', 'esUltimo', 'created_at', 'updated_at'],
+					as: 'oficios'
 				}
 				]
 			})

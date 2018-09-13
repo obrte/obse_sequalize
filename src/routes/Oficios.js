@@ -8,7 +8,7 @@ module.exports = router => {
 	router.post('/oficios', AuthMiddleware.decodificar, UploadMiddleware.upload, OficiosPolicies.guardar, OficiosController.guardar)
 
 	// GET all
-	router.get('/oficios', AuthMiddleware.decodificar, OficiosController.oficios)
+	router.get('/oficios/', AuthMiddleware.decodificar, OficiosController.oficios)
 
 	// GET one by id
 	router.get('/oficios/:id', AuthMiddleware.decodificar, OficiosController.oficio)
