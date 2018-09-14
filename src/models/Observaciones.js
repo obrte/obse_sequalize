@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'idInforme',
 			as: 'informe'
 		})
+		observaciones.hasMany(db.observacionesLog, {
+			foreignKey: 'idObservacion',
+			as: 'log'
+		})
 	}
 	return observaciones
 }

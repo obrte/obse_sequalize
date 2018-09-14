@@ -79,6 +79,10 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: 'idInforme',
 			as: 'oficios'
 		})
+		informes.hasMany(db.observaciones, {
+			foreignKey: 'idInforme',
+			as: 'observaciones'
+		})
 	}
 	return informes
 }

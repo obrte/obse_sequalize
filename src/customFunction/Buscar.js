@@ -211,6 +211,14 @@ const informe = id => {
 					model: db.oficios,
 					attributes: ['idOficio', 'numero', 'fecha', 'fechaRecepcion', 'fechaVencimiento', 'observaciones', 'pathPdfFile', 'notificaResultados', 'esUltimo', 'created_at', 'updated_at'],
 					as: 'oficios'
+				},
+				{
+					model: db.observaciones,
+					as: 'observaciones',
+					include: [{
+						model: db.observacionesLog,
+						as: 'log'
+					}]
 				}
 				]
 			})
