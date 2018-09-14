@@ -66,7 +66,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-app.use('/docs', express.static('src/docs'))
+app.use('/public', express.static('public'))
 
 /*
  ! RUTAS

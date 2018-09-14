@@ -38,6 +38,8 @@ db.catUniAdm = require('../models/catalogos/UniAdm')(conn, Sequelize)
 db.catUsuarios = require('../models/catalogos/Usuarios')(conn, Sequelize)
 db.informes = require('../models/Informes')(conn, Sequelize)
 db.oficios = require('../models/Oficios')(conn, Sequelize)
+db.observaciones = require('../models/Observaciones')(conn, Sequelize)
+db.observacionesLog = require('../models/ObservacionesLog')(conn, Sequelize)
 
 
 //! Asociaciones
