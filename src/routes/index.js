@@ -7,7 +7,9 @@ const routes = [
 	require('./catalogos//Usuarios'),
 	require('./Auth'),
 	require('./Informes'),
-	require('./Oficios')
+	require('./Oficios'),
+	require('./Observaciones'),
+	require('./ObservacionesLog')
 ]
 
 // Add access to the app and db objects to each route
