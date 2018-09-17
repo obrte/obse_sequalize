@@ -7,10 +7,10 @@ module.exports = router => {
 	router.post('/observaciones', AuthMiddleware.decodificar, ObservacionesPolicies.guardar, ObservacionesController.guardar)
 
 	// GET all
-	router.get('/observaciones/', AuthMiddleware.decodificar, ObservacionesController.oficios)
+	router.get('/observaciones/', AuthMiddleware.decodificar, ObservacionesController.observaciones)
 
 	// GET one by id
-	router.get('/observaciones/:id', AuthMiddleware.decodificar, ObservacionesController.oficio)
+	router.get('/observaciones/:id', AuthMiddleware.decodificar, ObservacionesController.observacion)
 
 	// PATCH single
 	router.patch('/observaciones/:id', AuthMiddleware.decodificar, ObservacionesPolicies.actualizar, ObservacionesController.actualizar)
