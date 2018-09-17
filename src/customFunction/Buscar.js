@@ -261,6 +261,40 @@ const oficio = id => {
 	})
 }
 
+const observaciones = id => {
+	return new Promise((resolve, reject) => {
+		db.observaciones.find({
+			where: {
+				idObservacion: id
+			},
+			include: [{
+				model: db.observacionesLog,
+				where: {
+					esUltimo: 1
+				},
+				as: 'log',
+				include: [{
+					model: db.oficios,
+					as: 'oficio'
+				},
+				{
+					model: db.catUniAdm,
+					as: 'unidad'
+				},
+				{
+					model: db.catUsuarios,
+					as: 'usuario'
+				},
+				]
+			}]
+		})
+			.then(observacion => {
+				resolve(observacion)
+			})
+			.catch((err) => reject(err))
+	})
+}
+
 const buscar = {}
 
 buscar.organizacion = organizacion
@@ -271,5 +305,6 @@ buscar.uniAdm = uniAdm
 buscar.usuario = usuario
 buscar.informe = informe
 buscar.oficio = oficio
+buscar.observaciones = observaciones
 
 module.exports = buscar

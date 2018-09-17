@@ -1,11 +1,48 @@
 const db = require('../config/db')
-// const buscar = require('../customFunction/Buscar')
+const buscar = require('../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
 	db.observaciones.create(req.observacion)
 		.then(observacion => {
-			res.status(201).json(observacion)
+			req.observacionesLog.idObservacion = observacion.idObservacion
+			db.observacionesLog.update({
+				esUltimo: 0
+			}, {
+				where: {
+					idObservacion: req.observacionesLog.idObservacion
+				}
+			})
+				.then(() => {
+					db.observacionesLog.create(req.observacionesLog)
+						.then(() => {
+							buscar.observaciones(observacion.idObservacion)
+								.then(datosObservacion => {
+									res.status(201).json(datosObservacion)
+								})
+								.catch(err =>
+									res.status(400).json({
+										status: 'Alerta',
+										msg: 'Fallo al crear(Buscar).',
+										error: err
+									})
+								)
+						})
+						.catch(err =>
+							res.status(400).json({
+								status: 'Alerta',
+								msg: 'Fallo al crear.',
+								error: err
+							})
+						)
+				})
+				.catch(err =>
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'Fallo al editar las observaciones (esUltimo).',
+						error: err
+					})
+				)
 		})
 		.catch(err => {
 			res.status(400).json({
@@ -18,7 +55,28 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.observaciones = (req, res) => {
-	db.observaciones.findAll({})
+	db.observaciones.find({
+		include: [{
+			model: db.observacionesLog,
+			where: {
+				esUltimo: 1
+			},
+			as: 'log',
+			include: [{
+				model: db.oficios,
+				as: 'oficio'
+			},
+			{
+				model: db.catUniAdm,
+				as: 'unidad'
+			},
+			{
+				model: db.catUsuarios,
+				as: 'usuario'
+			},
+			]
+		}]
+	})
 		.then(observaciones => {
 			res.status(200).json(observaciones)
 		})
@@ -33,11 +91,7 @@ exports.observaciones = (req, res) => {
 
 // GET one por id
 exports.observacion = (req, res) => {
-	db.observaciones.findAll({
-		where: {
-			idObservacion: req.params.id
-		}
-	})
+	buscar.observaciones(req.params.id)
 		.then(observacion => {
 			res.status(200).json(observacion)
 		})
@@ -59,7 +113,37 @@ exports.actualizar = (req, res) => {
 	})
 		.then(observacionActualizada => {
 			if (observacionActualizada > 0) {
-				res.status(200).json(observacionActualizada)
+				req.observacionesLog.idObservacion = req.params.id
+				db.observacionesLog.update({
+					esUltimo: 0
+				}, {
+					where: {
+						idObservacion: req.observacionesLog.idObservacion
+					}
+				})
+					.then(() => {
+						db.observacionesLog.create(req.observacionesLog)
+							.then(() => {
+								buscar.observaciones(req.params.id)
+									.then(datosObservacion => {
+										res.status(201).json(datosObservacion)
+									})
+									.catch(err =>
+										res.status(400).json({
+											status: 'Alerta',
+											msg: 'Fallo al crear(Buscar).',
+											error: err
+										})
+									)
+							})
+							.catch(err =>
+								res.status(400).json({
+									status: 'Alerta',
+									msg: 'Fallo al crear.',
+									error: err
+								})
+							)
+					})
 			} else {
 				res.status(400).json({
 					status: 'Alerta',
@@ -78,28 +162,45 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-	db.informes.destroy({
+	db.observacionesLog.destroy({
 		where: {
 			idObservacion: req.params.id
 		}
 	})
-		.then(ObservacionEliminada => {
-			if (ObservacionEliminada == 1) {
-				res.status(200).json({
-					status: 'success',
-					msg: 'Eliminación exitosa'
+		.then(() => {
+			db.observaciones.destroy({
+				where: {
+					idObservacion: req.params.id
+				}
+			})
+				.then(observacionEliminada => {
+					if (observacionEliminada == 1) {
+						res.status(200).json({
+							status: 'success',
+							msg: 'Eliminación exitosa'
+						})
+					} else {
+						res.status(400).json({
+							status: 'Alerta',
+							msg: 'No encontrado'
+						})
+					}
 				})
-			} else {
-				res.status(400).json({
-					status: 'Alerta',
-					msg: 'No encontrado'
+				.catch(err => {
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'Error al eliminar, verifica que no tenga dependencias',
+						error: {
+							name: err.name,
+							code: err.parent.code
+						}
+					})
 				})
-			}
 		})
 		.catch(err => {
 			res.status(400).json({
 				status: 'Alerta',
-				msg: 'Error al eliminar, verifica que no tenga dependencias',
+				msg: 'Error al eliminar',
 				error: {
 					name: err.name,
 					code: err.parent.code

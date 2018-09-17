@@ -132,6 +132,42 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar la fecha de vencimiento.'
 		})
 		break
+	case 'idUsuario':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar id del Usuario.'
+		})
+		break
+	case 'monto':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar monto.'
+		})
+		break
+	case 'estatus':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar estatus.'
+		})
+		break
+	case 'comentarios':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar comentarios.'
+		})
+		break
+	case 'idOficio':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar id del Oficio.'
+		})
+		break
+	case 'idUnidad':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar idUnidad.'
+		})
+		break
 	default:
 		res.status(500).json({
 			status: 'error',

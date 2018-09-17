@@ -141,33 +141,25 @@ async function datosOficio(idInforme) {
 		.catch((err) => msgError = 'No se puede obtener el directorio destino del archivo, ' + err)
 }
 
-async function datosAnexo(idObservacion) {
-	await db.observaciones.find({
-		where: {
-			idObservacion: idObservacion
-		}
-	})
-		.then(async observacion => {
-			await buscar.informe(observacion.idInforme)
-				.then(async datosInforme => {
-					ente = datosInforme.ente.nombre
-					instancia = datosInforme.instancia.nombre
+async function datosAnexo(idInforme) {
+	await buscar.informe(idInforme)
+		.then(async datosInforme => {
+			ente = datosInforme.ente.nombre
+			instancia = datosInforme.instancia.nombre
 
-					await db.oficios.find({
-						where: {
-							idInforme: datosInforme.idInforme,
-							esUltimo: 1
-						}
-					})
-						.then(async oficio => {
-							yr = oficio.fecha.split('-')[0]
-							await buscar.instancia(datosInforme.instancia.idInstancia)
-								.then(async datosInstancia => {
-									organizacion = datosInstancia.organizacion.nombreCorto
-									ente = await short(ente)
-									instancia = await short(instancia)
-								})
-								.catch((err) => msgError = 'No se puede obtener el directorio destino del archivo, ' + err)
+			await db.oficios.find({
+				where: {
+					idInforme: datosInforme.idInforme,
+					esUltimo: 1
+				}
+			})
+				.then(async oficio => {
+					yr = oficio.fecha.split('-')[0]
+					await buscar.instancia(datosInforme.instancia.idInstancia)
+						.then(async datosInstancia => {
+							organizacion = datosInstancia.organizacion.nombreCorto
+							ente = await short(ente)
+							instancia = await short(instancia)
 						})
 						.catch((err) => msgError = 'No se puede obtener el directorio destino del archivo, ' + err)
 				})
