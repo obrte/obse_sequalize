@@ -18,4 +18,12 @@ module.exports = router => {
 
 	// DELETE single
 	router.delete('/observaciones/:id', AuthMiddleware.decodificar, ObservacionesController.eliminar)
+
+
+	//! LOGS
+	// GET all (LOG)
+	router.get('/observaciones/log', AuthMiddleware.decodificar, ObservacionesController.observacionesLog)
+
+	// GET one by id (LOG)
+	router.get('/observaciones/log/:id', AuthMiddleware.decodificar, ObservacionesController.observacionLog)
 }

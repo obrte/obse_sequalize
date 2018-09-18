@@ -1,5 +1,7 @@
 const Joi = require('joi')
 const fs = require('fs')
+const db = require('../config/db')
+const Op = db.Sequelize.Op
 const mensajes = require('../customFunction/Mensajes')
 
 const schema = {
@@ -12,7 +14,7 @@ const schema = {
 	monto: Joi.number().positive().precision(2),
 	estatus: Joi.number().integer(),
 	comentarios: Joi.string(),
-	esUltimo: Joi.string().required()
+	esUltimo: Joi.string()
 }
 
 const datosObservacionTodos = (req) => {
@@ -21,7 +23,7 @@ const datosObservacionTodos = (req) => {
 		numero: req.body.numero.toUpperCase().trim(),
 		idOficio: req.body.idOficio,
 		idUnidad: req.body.idUnidad,
-		idUsuario: req.userData.observacionLog.idUsuario,
+		idUsuario: req.userData.data.idUsuario,
 		descripcion: req.body.descripcion.toUpperCase().trim(),
 		monto: req.body.monto,
 		estatus: req.body.estatus,
@@ -48,15 +50,6 @@ exports.guardar = (req, res, next) => {
 	if (observacionTodos.comentarios == '' || observacionTodos.comentarios == null) {
 		delete observacionTodos['comentarios']
 	}
-	delete observacionTodos['estatus']
-
-	req.observacionLog = observacionTodos
-	delete req.observacionLog['idInforme']
-	delete req.observacionLog['numero']
-
-	req.observacion = observacion
-	req.observacionTodos = observacionTodos
-
 	const {
 		error
 	} = Joi.validate(observacionTodos, schema)
@@ -66,10 +59,28 @@ exports.guardar = (req, res, next) => {
 		}
 		mensajes.switchError(error, res)
 	} else {
+		req.observacionLog = observacionTodos
+		delete req.observacionLog['idInforme']
+		delete req.observacionLog['numero']
+		req.observacion = observacion
 		if (req.file) {
 			req.observacionLog.anexo = (req.file.destination + req.file.filename)
 		}
-		next()
+		db.observaciones.find({
+			where: {
+				numero: observacion.numero
+			}
+		})
+			.then(conflictoNumero => {
+				if (conflictoNumero) {
+					res.status(400).json({
+						status: 'error',
+						msg: 'El número de Observacion ya existe.'
+					})
+				} else {
+					next()
+				}
+			})
 	}
 }
 
@@ -84,14 +95,6 @@ exports.actualizar = (req, res, next) => {
 	if (observacionTodos.comentarios == '' || observacionTodos.comentarios == null) {
 		delete observacionTodos['comentarios']
 	}
-
-	req.observacionLog = observacionTodos
-	delete req.observacionLog['idInforme']
-	delete req.observacionLog['numero']
-
-	req.observacion = observacion
-	req.observacionTodos = observacionTodos
-
 	const {
 		error
 	} = Joi.validate(observacionTodos, schema)
@@ -101,10 +104,31 @@ exports.actualizar = (req, res, next) => {
 		}
 		mensajes.switchError(error, res)
 	} else {
+		req.observacionLog = observacionTodos
+		delete req.observacionLog['idInforme']
+		delete req.observacionLog['numero']
+		req.observacion = observacion
 		if (req.file) {
 			req.observacionLog.anexo = (req.file.destination + req.file.filename)
 		}
-		next()
+		db.observaciones.find({
+			where: {
+				numero: observacion.numero,
+				idObservacion: {
+					[Op.ne]: req.params.id
+				}
+			}
+		})
+			.then(conflictoNumero => {
+				if (conflictoNumero) {
+					res.status(400).json({
+						status: 'error',
+						msg: 'El número de Observacion ya existe.'
+					})
+				} else {
+					next()
+				}
+			})
 	}
 }
 

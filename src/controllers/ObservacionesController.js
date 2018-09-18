@@ -5,16 +5,16 @@ const buscar = require('../customFunction/Buscar')
 exports.guardar = (req, res) => {
 	db.observaciones.create(req.observacion)
 		.then(observacion => {
-			req.observacionesLog.idObservacion = observacion.idObservacion
+			req.observacionLog.idObservacion = observacion.idObservacion
 			db.observacionesLog.update({
 				esUltimo: 0
 			}, {
 				where: {
-					idObservacion: req.observacionesLog.idObservacion
+					idObservacion: req.observacionLog.idObservacion
 				}
 			})
 				.then(() => {
-					db.observacionesLog.create(req.observacionesLog)
+					db.observacionesLog.create(req.observacionLog)
 						.then(() => {
 							buscar.observaciones(observacion.idObservacion)
 								.then(datosObservacion => {
@@ -72,6 +72,102 @@ exports.observaciones = (req, res) => {
 			},
 			{
 				model: db.catUsuarios,
+				attributes: [
+					'idUsuario',
+					'tipo',
+					'nombre',
+					'email',
+					'activo',
+					'created_at',
+					'updated_at'
+				],
+				as: 'usuario'
+			},
+			]
+		}]
+	})
+		.then(observaciones => {
+			res.status(200).json(observaciones)
+		})
+		.catch(err => {
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
+				error: err
+			})
+		})
+}
+
+// GET all (LOG)
+exports.observacionesLog = (req, res) => {
+	db.observaciones.findAll({
+		include: [{
+			model: db.observacionesLog,
+			as: 'log',
+			include: [{
+				model: db.oficios,
+				as: 'oficio'
+			},
+			{
+				model: db.catUniAdm,
+				as: 'unidad'
+			},
+			{
+				model: db.catUsuarios,
+				attributes: [
+					'idUsuario',
+					'tipo',
+					'nombre',
+					'email',
+					'activo',
+					'created_at',
+					'updated_at'
+				],
+				as: 'usuario'
+			},
+			]
+		}]
+	})
+		.then(observaciones => {
+			res.status(200).json(observaciones)
+		})
+		.catch(err => {
+			res.status(400).json({
+				status: 'Alerta',
+				msg: 'Fallo al buscar',
+				error: err
+			})
+		})
+}
+
+// GET one por id (LOG)
+exports.observacionLog = (req, res) => {
+	db.observaciones.findAll({
+		where: {
+			idObservacion: req.params.id
+		},
+		include: [{
+			model: db.observacionesLog,
+			as: 'log',
+			include: [{
+				model: db.oficios,
+				as: 'oficio'
+			},
+			{
+				model: db.catUniAdm,
+				as: 'unidad'
+			},
+			{
+				model: db.catUsuarios,
+				attributes: [
+					'idUsuario',
+					'tipo',
+					'nombre',
+					'email',
+					'activo',
+					'created_at',
+					'updated_at'
+				],
 				as: 'usuario'
 			},
 			]
@@ -113,16 +209,16 @@ exports.actualizar = (req, res) => {
 	})
 		.then(observacionActualizada => {
 			if (observacionActualizada > 0) {
-				req.observacionesLog.idObservacion = req.params.id
+				req.observacionLog.idObservacion = req.params.id
 				db.observacionesLog.update({
 					esUltimo: 0
 				}, {
 					where: {
-						idObservacion: req.observacionesLog.idObservacion
+						idObservacion: req.observacionLog.idObservacion
 					}
 				})
 					.then(() => {
-						db.observacionesLog.create(req.observacionesLog)
+						db.observacionesLog.create(req.observacionLog)
 							.then(() => {
 								buscar.observaciones(req.params.id)
 									.then(datosObservacion => {

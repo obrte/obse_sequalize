@@ -72,7 +72,7 @@ exports.anexo = (req, res, next) => {
 	const fecha = moment().format('YYYY-MM-DD HH:mm:ss').split('-').join('').split(':').join('').replace(' ', '')
 	const storage = multer.diskStorage({
 		destination: async function (req, file, cb) {
-			await datosAnexo(req.body.idObservacion)
+			await datosAnexo(req.body.idInforme)
 			ruta = 'public/' + organizacion + '/' + instancia + '/' + yr + '/' + ente + '/'
 			mkdirp(ruta, err => cb(err, ruta))
 		},
@@ -97,6 +97,7 @@ exports.anexo = (req, res, next) => {
 	}).single('adjunto')
 
 	upload(req, res, err => {
+
 		if (err || msgError) {
 			archivo = 'vacio'
 			var msgE = msgError
@@ -154,7 +155,7 @@ async function datosAnexo(idInforme) {
 				}
 			})
 				.then(async oficio => {
-					yr = oficio.fecha.split('-')[0]
+					yr = oficio.fecha.toString().split(' ')[3]
 					await buscar.instancia(datosInforme.instancia.idInstancia)
 						.then(async datosInstancia => {
 							organizacion = datosInstancia.organizacion.nombreCorto

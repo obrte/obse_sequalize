@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		estatus: {
 			type: DataTypes.INTEGER(11),
-			allowNull: false
+			allowNull: false,
+			defaultValue: 1
 		},
 		comentarios: {
 			type: DataTypes.TEXT('long'),

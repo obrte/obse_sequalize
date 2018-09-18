@@ -1,93 +1,9 @@
 const switchError = (error, res) => {
 	switch (error.details[0].context.key) {
-	case 'idOrganizacion':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir la organizacion.'
-		})
-		break
-	case 'idInstancia':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir la instancia.'
-		})
-		break
-	case 'idEnte':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir el ente.'
-		})
-		break
-	case 'idFondo':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir el Fondo.'
-		})
-		break
-	case 'idUniAdm':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir la Unidad Administrativa'
-		})
-		break
-	case 'nombre':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir un nombre.'
-		})
-		break
-	case 'email':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir un correo.'
-		})
-		break
-	case 'password':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir un password valido.'
-		})
-		break
-	case 'rePassword':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Las contraseñas no coinciden.'
-		})
-		break
 	case 'activo':
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe proporcionar el campo activo.'
-		})
-		break
-	case 'idUsuarioCreacion':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir un idUsuarioCreacion.'
-		})
-		break
-	case 'nombreCorto':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe introducir un nombre corto.'
-		})
-		break
-	case 'origen':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe proporcionar el origen.'
-		})
-		break
-	case 'ejercicio':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe proporcionar el ejercicio.'
-		})
-		break
-	case 'delMes':
-		res.status(400).json({
-			status: 'error',
-			msg: 'Debe proporcionar el mes de Inicio.'
 		})
 		break
 	case 'alMes':
@@ -96,22 +12,40 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar el mes de Termino.'
 		})
 		break
-	case 'numero':
+	case 'comentarios':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar el numero.'
+			msg: 'Debe proporcionar comentarios.'
 		})
 		break
-	case 'numeroAuditoria':
+	case 'delMes':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar el numero de auditoria.'
+			msg: 'Debe proporcionar el mes de Inicio.'
 		})
 		break
-	case 'notificaResultados':
+	case 'descripcion':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar el campo Notifica Resultados.'
+			msg: 'Debe proporcionar la descripcion.'
+		})
+		break
+	case 'ejercicio':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el ejercicio.'
+		})
+		break
+	case 'email':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir un correo.'
+		})
+		break
+	case 'estatus':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar estatus.'
 		})
 		break
 	case 'fecha':
@@ -132,28 +66,28 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar la fecha de vencimiento.'
 		})
 		break
-	case 'idUsuario':
+	case 'idEnte':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar id del Usuario.'
+			msg: 'Debe introducir el ente.'
 		})
 		break
-	case 'monto':
+	case 'idFondo':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar monto.'
+			msg: 'Debe introducir el Fondo.'
 		})
 		break
-	case 'estatus':
+	case 'idInforme':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar estatus.'
+			msg: 'Debe introducir idInforme.'
 		})
 		break
-	case 'comentarios':
+	case 'idInstancia':
 		res.status(400).json({
 			status: 'error',
-			msg: 'Debe proporcionar comentarios.'
+			msg: 'Debe introducir la instancia.'
 		})
 		break
 	case 'idOficio':
@@ -162,10 +96,90 @@ const switchError = (error, res) => {
 			msg: 'Debe proporcionar id del Oficio.'
 		})
 		break
+	case 'idOrganizacion':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir la organizacion.'
+		})
+		break
+	case 'idUniAdm':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir la Unidad Administrativa'
+		})
+		break
 	case 'idUnidad':
 		res.status(400).json({
 			status: 'error',
 			msg: 'Debe proporcionar idUnidad.'
+		})
+		break
+	case 'idUsuario':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar id del Usuario.'
+		})
+		break
+	case 'idUsuarioCreacion':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir un idUsuarioCreacion.'
+		})
+		break
+	case 'monto':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar monto.'
+		})
+		break
+	case 'nombre':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir un nombre.'
+		})
+		break
+	case 'nombreCorto':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir un nombre corto.'
+		})
+		break
+	case 'notificaResultados':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el campo Notifica Resultados.'
+		})
+		break
+	case 'numero':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero.'
+		})
+		break
+	case 'numeroAuditoria':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el numero de auditoria.'
+		})
+		break
+	case 'origen':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe proporcionar el origen.'
+		})
+		break
+	case 'password':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Debe introducir un password valido.'
+		})
+		break
+
+
+	case 'rePassword':
+		res.status(400).json({
+			status: 'error',
+			msg: 'Las contraseñas no coinciden.'
 		})
 		break
 	default:

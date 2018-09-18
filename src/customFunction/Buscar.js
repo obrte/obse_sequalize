@@ -170,58 +170,57 @@ const usuario = id => {
 
 const informe = id => {
 	return new Promise((resolve, reject) => {
-		db.informes
-			.find({
-				where: {
-					idInforme: id
-				},
-				attributes: [
-					'idInforme',
-					'nombre',
-					'ejercicio',
-					'delMes',
-					'alMes',
-					'numero',
-					'numeroAuditoria',
-					'activo',
-					'created_at',
-					'updated_at'
-				],
+		db.informes.find({
+			where: {
+				idInforme: id
+			},
+			attributes: [
+				'idInforme',
+				'nombre',
+				'ejercicio',
+				'delMes',
+				'alMes',
+				'numero',
+				'numeroAuditoria',
+				'activo',
+				'created_at',
+				'updated_at'
+			],
+			include: [{
+				model: db.catUsuarios,
+				attributes: ['nombre', 'idUsuario'],
+				as: 'usuarioCreacion'
+			},
+			{
+				model: db.catEntesFiscalizadores,
+				attributes: ['nombre', 'idEnte'],
+				as: 'ente'
+			},
+			{
+				model: db.catFondos,
+				attributes: ['nombre', 'idFondo'],
+				as: 'fondo'
+			},
+			{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			},
+			{
+				model: db.oficios,
+				attributes: ['idOficio', 'numero', 'fecha', 'fechaRecepcion', 'fechaVencimiento', 'observaciones', 'pathPdfFile', 'notificaResultados', 'esUltimo', 'created_at', 'updated_at'],
+				as: 'oficios'
+			},
+			{
+				model: db.observaciones,
+				as: 'observaciones',
 				include: [{
-					model: db.catUsuarios,
-					attributes: ['nombre', 'idUsuario'],
-					as: 'usuarioCreacion'
-				},
-				{
-					model: db.catEntesFiscalizadores,
-					attributes: ['nombre', 'idEnte'],
-					as: 'ente'
-				},
-				{
-					model: db.catFondos,
-					attributes: ['nombre', 'idFondo'],
-					as: 'fondo'
-				},
-				{
-					model: db.catInstancias,
-					attributes: ['nombre', 'idInstancia'],
-					as: 'instancia'
-				},
-				{
-					model: db.oficios,
-					attributes: ['idOficio', 'numero', 'fecha', 'fechaRecepcion', 'fechaVencimiento', 'observaciones', 'pathPdfFile', 'notificaResultados', 'esUltimo', 'created_at', 'updated_at'],
-					as: 'oficios'
-				},
-				{
-					model: db.observaciones,
-					as: 'observaciones',
-					include: [{
-						model: db.observacionesLog,
-						as: 'log'
-					}]
-				}
-				]
-			})
+					model: db.observacionesLog,
+					as: 'log'
+				}]
+			}
+			]
+		})
 			.then(informe => {
 				resolve(informe)
 			})
@@ -283,6 +282,15 @@ const observaciones = id => {
 				},
 				{
 					model: db.catUsuarios,
+					attributes: [
+						'idUsuario',
+						'tipo',
+						'nombre',
+						'email',
+						'activo',
+						'created_at',
+						'updated_at'
+					],
 					as: 'usuario'
 				},
 				]
