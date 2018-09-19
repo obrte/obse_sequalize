@@ -276,7 +276,6 @@ const oficio = id => {
 
 const observaciones = id => {
 	return new Promise((resolve, reject) => {
-		console.log('INICIO PROMESA')
 		db.observaciones.find({
 			where: {
 				idObservacion: id
@@ -307,7 +306,6 @@ const observaciones = id => {
 			}]
 		})
 			.then(dato => {
-				console.log('RESPUESTA BUSQUEDA 1')
 				var observacion = {
 					idObservacion: dato.idObservacion,
 					idInforme: dato.idInforme,
@@ -316,15 +314,26 @@ const observaciones = id => {
 					unidad: dato.log[0].unidad,
 					usuario: dato.log[0].usuario,
 					descripcion: dato.log[0].descripcion,
-					monto: dato.log[0].monto,
-					anexo: dato.log[0].anexo.split('/')[5],
 					estatus: dato.log[0].estatus,
-					comentarios: dato.log[0].comentarios,
 					esUltimo: dato.log[0].esUltimo,
 					created_at: dato.created_at,
 					updated_at: dato.updated_at,
 				}
-				console.log('VARIABLE OBSERVACION')
+				if (dato.log[0].anexo) {
+					observacion.anexo = dato.log[0].anexo.split('/')[5]
+				} else {
+					observacion.anexo = null
+				}
+				if (dato.log[0].monto) {
+					observacion.monto = dato.log[0].monto
+				} else {
+					observacion.monto = null
+				}
+				if (dato.log[0].comentarios) {
+					observacion.comentarios = dato.log[0].comentarios
+				} else {
+					observacion.comentarios = null
+				}
 				db.observacionesLog.findAll({
 					where: {
 						idObservacion: dato.idObservacion
@@ -348,18 +357,14 @@ const observaciones = id => {
 					]
 				})
 					.then(logObservaciones => {
-						console.log('RESPUESTA BUSQUEDA 2')
 						observacion.log = logObservaciones
 						observacion.log.forEach(obj => {
-							obj.anexo = obj.anexo.split('/')[5]
+							if (obj.anexo) obj.anexo = obj.anexo.split('/')[5]
 						})
-						console.log('FOREACH')
 						resolve(observacion)
 					})
 					.catch(() => reject('Fallo en Buscar ObservacionesLOG'))
-				console.log('FIN BUSQUEDA LOG')
 			})
-
 			.catch(() => reject('Fallo en Buscar Observaciones'))
 	})
 }

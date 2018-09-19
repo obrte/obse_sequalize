@@ -25,9 +25,7 @@ const datosObservacionTodos = (req) => {
 		idUnidad: req.body.idUnidad,
 		idUsuario: req.userData.data.idUsuario,
 		descripcion: req.body.descripcion.toUpperCase().trim(),
-		monto: req.body.monto,
 		estatus: req.body.estatus,
-		comentarios: req.body.comentarios.toUpperCase().trim(),
 		esUltimo: req.body.esUltimo
 	}
 }
@@ -44,12 +42,9 @@ exports.guardar = (req, res, next) => {
 	var observacionTodos = datosObservacionTodos(req)
 	var observacion = datosObservacion(req)
 
-	if (observacionTodos.monto == '' || observacionTodos.monto == null) {
-		delete observacionTodos['monto']
-	}
-	if (observacionTodos.comentarios == '' || observacionTodos.comentarios == null) {
-		delete observacionTodos['comentarios']
-	}
+	if (req.body.monto) observacionTodos.monto = req.body.monto
+	if (req.body.comentarios) observacionTodos.comentarios = req.body.comentarios.toUpperCase().trim()
+
 	const {
 		error
 	} = Joi.validate(observacionTodos, schema)
@@ -89,12 +84,9 @@ exports.actualizar = (req, res, next) => {
 	var observacionTodos = datosObservacionTodos(req)
 	var observacion = datosObservacion(req)
 
-	if (observacionTodos.monto == '' || observacionTodos.monto == null) {
-		delete observacionTodos['monto']
-	}
-	if (observacionTodos.comentarios == '' || observacionTodos.comentarios == null) {
-		delete observacionTodos['comentarios']
-	}
+	if (req.body.monto) observacionTodos.monto = req.body.monto
+	if (req.body.comentarios) observacionTodos.comentarios = req.body.comentarios.toUpperCase().trim()
+
 	const {
 		error
 	} = Joi.validate(observacionTodos, schema)

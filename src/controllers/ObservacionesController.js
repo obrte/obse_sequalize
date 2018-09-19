@@ -112,7 +112,7 @@ exports.observaciones = (req, res) => {
 							logObservaciones.forEach(obj => {
 								if (obj.anexo) obj.anexo = obj.anexo.split('/')[5]
 							})
-							datosObservaciones.push({
+							var cuerpo = {
 								idInforme: observacion.idInforme,
 								idObservacion: observacion.idObservacion,
 								numero: observacion.numero,
@@ -120,22 +120,37 @@ exports.observaciones = (req, res) => {
 								unidad: observacion.log[0].unidad,
 								usuario: observacion.log[0].usuario,
 								descripcion: observacion.log[0].descripcion,
-								monto: observacion.log[0].monto,
-								anexo: observacion.log[0].anexo.split('/')[5],
 								estatus: observacion.log[0].estatus,
-								comentarios: observacion.log[0].comentarios,
 								esUltimo: observacion.log[0].esUltimo,
 								log: logObservaciones,
 								created_at: observacion.created_at,
 								updated_at: observacion.updated_at
-							})
+							}
+							if (observacion.log[0].anexo) {
+								cuerpo.anexo = observacion.log[0].anexo.split('/')[5]
+							} else {
+								cuerpo.anexo = null
+							}
+							if (observacion.log[0].monto) {
+								cuerpo.monto = observacion.log[0].monto
+							} else {
+								cuerpo.monto = null
+							}
+							if (observacion.log[0].comentarios) {
+								cuerpo.comentarios = observacion.log[0].comentarios
+							} else {
+								cuerpo.comentarios = null
+							}
+
+							datosObservaciones.push(cuerpo)
+
 							cont++
 							if (cont == dato.length) res.status(200).json(datosObservaciones)
 						})
 						.catch(err => {
 							res.status(400).json({
 								status: 'Alerta',
-								msg: 'Fallo al buscar',
+								msg: 'Fallo al buscar log',
 								error: err
 							})
 						})
@@ -145,7 +160,7 @@ exports.observaciones = (req, res) => {
 		.catch(err => {
 			res.status(400).json({
 				status: 'Alerta',
-				msg: 'Fallo al buscar',
+				msg: 'Fallo al buscar obs',
 				error: err
 			})
 		})
