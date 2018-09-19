@@ -352,10 +352,10 @@ const observaciones = id => {
 						})
 						resolve(observacion)
 					})
-					.catch((err) => reject(err))
+					.catch((err) => reject(err, 'Fallo en Buscar ObservacionesLOG'))
 			})
 
-			.catch((err) => reject(err))
+			.catch((err) => reject(err, 'Fallo en Buscar Observaciones'))
 	})
 }
 
