@@ -1,5 +1,6 @@
 const db = require('../config/db')
 const buscar = require('../customFunction/Buscar')
+var datosObservaciones = []
 
 //POST single
 exports.guardar = (req, res) => {
@@ -55,39 +56,91 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.observaciones = (req, res) => {
-	db.observaciones.find({
+	db.observaciones.findAll({
 		include: [{
 			model: db.observacionesLog,
 			where: {
 				esUltimo: 1
 			},
 			as: 'log',
+			attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo'],
 			include: [{
 				model: db.oficios,
+				attributes: ['idOficio', 'numero'],
 				as: 'oficio'
 			},
 			{
 				model: db.catUniAdm,
+				attributes: ['idUniAdm', 'nombre'],
 				as: 'unidad'
 			},
 			{
 				model: db.catUsuarios,
-				attributes: [
-					'idUsuario',
-					'tipo',
-					'nombre',
-					'email',
-					'activo',
-					'created_at',
-					'updated_at'
-				],
+				attributes: ['idUsuario', 'nombre'],
 				as: 'usuario'
-			},
+			}
 			]
 		}]
 	})
-		.then(observaciones => {
-			res.status(200).json(observaciones)
+		.then(async dato => {
+			var cont = 0
+			dato.forEach(observacion => {
+				if (observacion.log) {
+					db.observacionesLog.findAll({
+						where: {
+							idObservacion: observacion.idObservacion
+						},
+						attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo', 'created_at', 'updated_at'],
+						include: [{
+							model: db.oficios,
+							attributes: ['idOficio', 'numero'],
+							as: 'oficio'
+						},
+						{
+							model: db.catUniAdm,
+							attributes: ['idUniAdm', 'nombre'],
+							as: 'unidad'
+						},
+						{
+							model: db.catUsuarios,
+							attributes: ['idUsuario', 'nombre'],
+							as: 'usuario'
+						}
+						]
+					})
+						.then(logObservaciones => {
+							logObservaciones.forEach(obj => {
+								if (obj.anexo) obj.anexo = obj.anexo.split('/')[5]
+							})
+							datosObservaciones.push({
+								idInforme: observacion.idInforme,
+								idObservacion: observacion.idObservacion,
+								numero: observacion.numero,
+								oficio: observacion.log[0].oficio,
+								unidad: observacion.log[0].unidad,
+								usuario: observacion.log[0].usuario,
+								descripcion: observacion.log[0].descripcion,
+								monto: observacion.log[0].monto,
+								anexo: observacion.log[0].anexo.split('/')[5],
+								estatus: observacion.log[0].estatus,
+								comentarios: observacion.log[0].comentarios,
+								esUltimo: observacion.log[0].esUltimo,
+								log: logObservaciones,
+								created_at: observacion.created_at,
+								updated_at: observacion.updated_at
+							})
+							cont++
+							if (cont == dato.length) res.status(200).json(datosObservaciones)
+						})
+						.catch(err => {
+							res.status(400).json({
+								status: 'Alerta',
+								msg: 'Fallo al buscar',
+								error: err
+							})
+						})
+				}
+			})
 		})
 		.catch(err => {
 			res.status(400).json({

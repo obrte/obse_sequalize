@@ -70,6 +70,22 @@ exports.informes = (req, res) => {
 		]
 	})
 		.then(informes => {
+			informes.forEach(informe => {
+				if (informe.oficios) {
+					informe.oficios.forEach(obj => {
+						if (obj.pathPdfFile) obj.pathPdfFile = obj.pathPdfFile.split('/')[5]
+					})
+				}
+				if (informe.observaciones) {
+					informe.observaciones.forEach(observacion => {
+						if (observacion.log) {
+							observacion.log.forEach(log => {
+								if (log.anexo) log.anexo = log.anexo.split('/')[5]
+							})
+						}
+					})
+				}
+			})
 			res.status(200).json(informes)
 		})
 		.catch(err => {

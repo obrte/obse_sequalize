@@ -12,3 +12,16 @@ exports.decodificar = (req, res, next) => {
 		})
 	}
 }
+
+exports.tokenUrl = (req, res, next) => {
+	try {
+		const token = req.params.token
+		req.userData = jwt.verify(token, process.env.JWT_KEY)
+		next()
+	} catch (error) {
+		return res.status(401).json({
+			status: 'InvalidToken',
+			msg: 'Fallo en Autenticación.'
+		})
+	}
+}

@@ -6,6 +6,7 @@ const router = require('./routes/index')
 const http = require('http').Server(app)
 app.http = http
 const PORT = process.env.PORT || 3000
+const AuthMiddleware = require('./middlewares/AuthMiddleware')
 
 /*
  ! CONECCION A LA DB
@@ -51,7 +52,6 @@ db.conn.sync({
 */
 app.set('port', PORT)
 
-
 /*
  ! MIDDLEWARES
 */
@@ -66,7 +66,7 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-app.use('/public', express.static('public'))
+app.use('/:token/public', AuthMiddleware.tokenUrl, express.static('public'))
 
 /*
  ! RUTAS

@@ -222,6 +222,20 @@ const informe = id => {
 			]
 		})
 			.then(informe => {
+				if (informe.oficios) {
+					informe.oficios.forEach(obj => {
+						if (obj.pathPdfFile) obj.pathPdfFile = obj.pathPdfFile.split('/')[5]
+					})
+				}
+				if (informe.observaciones) {
+					informe.observaciones.forEach(observacion => {
+						if (observacion.log) {
+							observacion.log.forEach(log => {
+								if (log.anexo) log.anexo = log.anexo.split('/')[5]
+							})
+						}
+					})
+				}
 				resolve(informe)
 			})
 			.catch(err => reject(err))
@@ -272,33 +286,75 @@ const observaciones = id => {
 					esUltimo: 1
 				},
 				as: 'log',
+				attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo'],
 				include: [{
 					model: db.oficios,
+					attributes: ['idOficio', 'numero'],
 					as: 'oficio'
 				},
 				{
 					model: db.catUniAdm,
+					attributes: ['idUniAdm', 'nombre'],
 					as: 'unidad'
 				},
 				{
 					model: db.catUsuarios,
-					attributes: [
-						'idUsuario',
-						'tipo',
-						'nombre',
-						'email',
-						'activo',
-						'created_at',
-						'updated_at'
-					],
+					attributes: ['idUsuario', 'nombre'],
 					as: 'usuario'
-				},
+				}
 				]
 			}]
 		})
-			.then(observacion => {
-				resolve(observacion)
+			.then(dato => {
+				var observacion = {
+					idObservacion: dato.idObservacion,
+					idInforme: dato.idInforme,
+					numero: dato.numero,
+					oficio: dato.log[0].oficio,
+					unidad: dato.log[0].unidad,
+					usuario: dato.log[0].usuario,
+					descripcion: dato.log[0].descripcion,
+					monto: dato.log[0].monto,
+					anexo: dato.log[0].anexo.split('/')[5],
+					estatus: dato.log[0].estatus,
+					comentarios: dato.log[0].comentarios,
+					esUltimo: dato.log[0].esUltimo,
+					created_at: dato.created_at,
+					updated_at: dato.updated_at,
+				}
+
+				db.observacionesLog.findAll({
+					where: {
+						idObservacion: dato.idObservacion
+					},
+					attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo', 'created_at', 'updated_at'],
+					include: [{
+						model: db.oficios,
+						attributes: ['idOficio', 'numero'],
+						as: 'oficio'
+					},
+					{
+						model: db.catUniAdm,
+						attributes: ['idUniAdm', 'nombre'],
+						as: 'unidad'
+					},
+					{
+						model: db.catUsuarios,
+						attributes: ['idUsuario', 'nombre'],
+						as: 'usuario'
+					}
+					]
+				})
+					.then(logObservaciones => {
+						observacion.log = logObservaciones
+						observacion.log.forEach(obj => {
+							obj.anexo = obj.anexo.split('/')[5]
+						})
+						resolve(observacion)
+					})
+					.catch((err) => reject(err))
 			})
+
 			.catch((err) => reject(err))
 	})
 }
