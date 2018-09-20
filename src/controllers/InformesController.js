@@ -4,8 +4,7 @@ const buscar = require('../customFunction/Buscar')
 //POST single
 exports.guardar = (req, res) => {
 	db.informes.create(req.informe).then(informe => {
-		buscar
-			.informe(informe.idInforme)
+		buscar.informe(informe.idInforme)
 			.then(datosInforme => {
 				res.status(201).json(datosInforme)
 			})
@@ -22,18 +21,7 @@ exports.guardar = (req, res) => {
 // GET all
 exports.informes = (req, res) => {
 	db.informes.findAll({
-		attributes: [
-			'idInforme',
-			'nombre',
-			'ejercicio',
-			'delMes',
-			'alMes',
-			'numero',
-			'numeroAuditoria',
-			'activo',
-			'created_at',
-			'updated_at'
-		],
+		attributes: ['idInforme', 'nombre', 'ejercicio', 'delMes', 'alMes', 'numero', 'numeroAuditoria', 'activo', 'created_at', 'updated_at'],
 		include: [{
 			model: db.catUsuarios,
 			attributes: ['nombre', 'idUsuario'],

@@ -174,18 +174,7 @@ const informe = id => {
 			where: {
 				idInforme: id
 			},
-			attributes: [
-				'idInforme',
-				'nombre',
-				'ejercicio',
-				'delMes',
-				'alMes',
-				'numero',
-				'numeroAuditoria',
-				'activo',
-				'created_at',
-				'updated_at'
-			],
+			attributes: ['idInforme', 'nombre', 'ejercicio', 'delMes', 'alMes', 'numero', 'numeroAuditoria', 'activo', 'created_at', 'updated_at'],
 			include: [{
 				model: db.catUsuarios,
 				attributes: ['nombre', 'idUsuario'],

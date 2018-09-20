@@ -11,7 +11,7 @@ const schema = {
 	idUnidad: Joi.string().required(),
 	idUsuario: Joi.string().required(),
 	descripcion: Joi.string().required(),
-	monto: Joi.number().positive().precision(2),
+	monto: Joi.number().precision(2),
 	estatus: Joi.number().integer(),
 	comentarios: Joi.string(),
 	esUltimo: Joi.string()
