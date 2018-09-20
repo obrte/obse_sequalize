@@ -207,6 +207,8 @@ const informe = id => {
 			]
 		})
 			.then(informe => {
+				console.log(informe.oficios[0].dataValues)
+				console.log(informe.observaciones[0].dataValues)
 				var datos = {
 					idInforme: informe.idInforme,
 					nombre: informe.nombre,
@@ -244,6 +246,14 @@ const informe = id => {
 				} else {
 					datos.fondo = null
 				}
+				informe.oficios.forEach(arr => {
+					if (arr.pathPdfFile) {
+						arr.pathPdfFile = arr.pathPdfFile.split('/')[5]
+					} else {
+						arr.pathPdfFile = null
+					}
+				})
+
 				datos.oficios = informe.oficios
 				if (informe.observaciones.length > 0) {
 					observaciones(informe.observaciones[0].idObservacion)
