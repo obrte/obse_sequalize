@@ -202,32 +202,63 @@ const informe = id => {
 			},
 			{
 				model: db.observaciones,
-				as: 'observaciones',
-				include: [{
-					model: db.observacionesLog,
-					as: 'log'
-				}]
+				as: 'observaciones'
 			}
 			]
 		})
 			.then(informe => {
-				if (informe.oficios) {
-					informe.oficios.forEach(obj => {
-						if (obj.pathPdfFile) obj.pathPdfFile = obj.pathPdfFile.split('/')[5]
-					})
+				var datos = {
+					idInforme: informe.idInforme,
+					nombre: informe.nombre,
+					ejercicio: informe.ejercicio,
+					delMes: informe.delMes,
+					alMes: informe.alMes,
+					activo: informe.activo,
+					created_at: informe.created_at,
+					updated_at: informe.updated_at,
+					usuarioCreacion: {
+						nombre: informe.usuarioCreacion.nombre,
+						idUsuario: informe.usuarioCreacion.idUsuario,
+					},
+					ente: {
+						nombre: informe.ente.nombre,
+						idFondo: informe.ente.idEnte,
+					},
+					usuarioCrinstanciaeacion: {
+						nombre: informe.instancia.nombre,
+						idInstancia: informe.instancia.idInstancia,
+					}
 				}
-				if (informe.observaciones) {
-					informe.observaciones.forEach(observacion => {
-						if (observacion.log) {
-							observacion.log.forEach(log => {
-								if (log.anexo) log.anexo = log.anexo.split('/')[5]
-							})
-						}
-					})
+				if (informe.numero) {
+					datos.numero = informe.numero
+				} else {
+					datos.numero = null
 				}
-				resolve(informe)
+				if (informe.numeroAuditoria) {
+					datos.numeroAuditoria = informe.numeroAuditoria
+				} else {
+					datos.numeroAuditoria = null
+				}
+				if (informe.fondo) {
+					datos.fondo = informe.fondo
+				} else {
+					datos.fondo = null
+				}
+				datos.oficios = informe.oficios
+				if (informe.observaciones.length > 0) {
+					observaciones(informe.observaciones[0].idObservacion)
+						.then(datosObservaciones => {
+							datos.observaciones = datosObservaciones
+							resolve(datos)
+						})
+						.catch(() => reject('Fallo en Buscar Observaciones'))
+
+				} else {
+					datos.observaciones = informe.observaciones
+					resolve(datos)
+				}
 			})
-			.catch(err => reject(err))
+			.catch(() => reject('Fallo en Buscar Informe'))
 	})
 }
 

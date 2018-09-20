@@ -20,69 +20,33 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.informes = (req, res) => {
-	db.informes.findAll({
-		attributes: ['idInforme', 'nombre', 'ejercicio', 'delMes', 'alMes', 'numero', 'numeroAuditoria', 'activo', 'created_at', 'updated_at'],
-		include: [{
-			model: db.catUsuarios,
-			attributes: ['nombre', 'idUsuario'],
-			as: 'usuarioCreacion'
-		},
-		{
-			model: db.catEntesFiscalizadores,
-			attributes: ['nombre', 'idEnte'],
-			as: 'ente'
-		},
-		{
-			model: db.catFondos,
-			attributes: ['nombre', 'idFondo'],
-			as: 'fondo'
-		},
-		{
-			model: db.catInstancias,
-			attributes: ['nombre', 'idInstancia'],
-			as: 'instancia'
-		},
-		{
-			model: db.oficios,
-			attributes: ['idOficio', 'numero', 'fecha', 'fechaRecepcion', 'fechaVencimiento', 'observaciones', 'pathPdfFile', 'notificaResultados', 'esUltimo', 'created_at', 'updated_at'],
-			as: 'oficios'
-		},
-		{
-			model: db.observaciones,
-			as: 'observaciones',
-			include: [{
-				model: db.observacionesLog,
-				as: 'log'
-			}]
-		}
-		]
-	})
-		.then(informes => {
-			informes.forEach(informe => {
-				if (informe.oficios) {
-					informe.oficios.forEach(obj => {
-						if (obj.pathPdfFile) obj.pathPdfFile = obj.pathPdfFile.split('/')[5]
+	var cont = 0
+	var listaInformes = []
+	db.informes.findAll()
+		.then(arr => {
+			arr.forEach(element => {
+				buscar.informe(element.idInforme)
+					.then(datosInforme => {
+						listaInformes.push(datosInforme)
+						cont++
+						if (cont == arr.length) res.status(200).json(listaInformes)
 					})
-				}
-				if (informe.observaciones) {
-					informe.observaciones.forEach(observacion => {
-						if (observacion.log) {
-							observacion.log.forEach(log => {
-								if (log.anexo) log.anexo = log.anexo.split('/')[5]
-							})
-						}
-					})
-				}
+					.catch(err =>
+						res.status(400).json({
+							status: 'Alerta',
+							msg: 'Fallo al ordenar Informes. 1',
+							error: err
+						})
+					)
 			})
-			res.status(200).json(informes)
 		})
-		.catch(err => {
+		.catch(err =>
 			res.status(400).json({
 				status: 'Alerta',
-				msg: 'Fallo al buscar',
+				msg: 'Fallo al buscar Informes. 2',
 				error: err
 			})
-		})
+		)
 }
 
 // GET one por id
