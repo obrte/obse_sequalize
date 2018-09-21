@@ -207,8 +207,6 @@ const informe = id => {
 			]
 		})
 			.then(informe => {
-				console.log(informe.oficios[0].dataValues)
-				console.log(informe.observaciones[0].dataValues)
 				var datos = {
 					idInforme: informe.idInforme,
 					nombre: informe.nombre,
@@ -253,18 +251,23 @@ const informe = id => {
 						arr.pathPdfFile = null
 					}
 				})
-
 				datos.oficios = informe.oficios
+				datos.observaciones = []
 				if (informe.observaciones.length > 0) {
-					observaciones(informe.observaciones[0].idObservacion)
-						.then(datosObservaciones => {
-							datos.observaciones = datosObservaciones
-							resolve(datos)
-						})
-						.catch(() => reject('Fallo en Buscar Observaciones'))
+					var obse = 0
+					informe.observaciones.forEach(obj => {
+						console.log(obj.idObservacion)
+						observaciones(obj.idObservacion)
+							.then(datosObservaciones => {
+								console.log(datosObservaciones)
+								datos.observaciones.push(datosObservaciones)
+								obse++
+								if (obse == informe.observaciones.length) resolve(datos)
+							})
+							.catch(() => reject('Fallo en Buscar Observaciones'))
+					})
 
 				} else {
-					datos.observaciones = informe.observaciones
 					resolve(datos)
 				}
 			})
