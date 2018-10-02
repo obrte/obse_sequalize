@@ -233,7 +233,7 @@ const informe = id => {
 					},
 					ente: {
 						nombre: informe.ente.nombre,
-						idFondo: informe.ente.idEnte,
+						idEnte: informe.ente.idEnte,
 					},
 					instancia: {
 						nombre: informe.instancia.nombre,
