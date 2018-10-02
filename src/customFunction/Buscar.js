@@ -174,7 +174,18 @@ const informe = id => {
 			where: {
 				idInforme: id
 			},
-			attributes: ['idInforme', 'nombre', 'ejercicio', 'delMes', 'alMes', 'numero', 'numeroAuditoria', 'activo', 'created_at', 'updated_at'],
+			attributes: [
+				'idInforme',
+				'nombre',
+				'ejercicio',
+				'delMes',
+				'alMes',
+				'numero',
+				'numeroAuditoria',
+				'activo',
+				'created_at',
+				'updated_at'
+			],
 			include: [{
 				model: db.catUsuarios,
 				attributes: ['nombre', 'idUsuario'],
@@ -224,7 +235,7 @@ const informe = id => {
 						nombre: informe.ente.nombre,
 						idFondo: informe.ente.idEnte,
 					},
-					usuarioCrinstanciaeacion: {
+					instancia: {
 						nombre: informe.instancia.nombre,
 						idInstancia: informe.instancia.idInstancia,
 					}
@@ -256,10 +267,8 @@ const informe = id => {
 				if (informe.observaciones.length > 0) {
 					var obse = 0
 					informe.observaciones.forEach(obj => {
-						console.log(obj.idObservacion)
 						observaciones(obj.idObservacion)
 							.then(datosObservaciones => {
-								console.log(datosObservaciones)
 								datos.observaciones.push(datosObservaciones)
 								obse++
 								if (obse == informe.observaciones.length) resolve(datos)
