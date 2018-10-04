@@ -270,7 +270,9 @@ exports.observacion = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	db.observaciones.update(req.observacion, {
+	db.observaciones.update({
+		numero: req.observacion.numero
+	}, {
 		where: {
 			idObservacion: req.params.id
 		}

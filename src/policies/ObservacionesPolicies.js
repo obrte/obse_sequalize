@@ -5,7 +5,7 @@ const Op = db.Sequelize.Op
 const mensajes = require('../customFunction/Mensajes')
 
 const schema = {
-	idInforme: Joi.string().required(),
+	idInforme: Joi.string(),
 	numero: Joi.string().required(),
 	idOficio: Joi.string().required(),
 	idUnidad: Joi.string().required(),
@@ -19,30 +19,25 @@ const schema = {
 
 const datosObservacionTodos = (req) => {
 	return {
-		idInforme: req.body.idInforme,
 		numero: req.body.numero.toUpperCase().trim(),
 		idOficio: req.body.idOficio,
 		idUnidad: req.body.idUnidad,
 		idUsuario: req.userData.data.idUsuario,
 		descripcion: req.body.descripcion.toUpperCase().trim(),
-		estatus: req.body.estatus,
-		esUltimo: req.body.esUltimo
-	}
-}
-
-const datosObservacion = (req) => {
-	return {
-		idInforme: req.body.idInforme,
-		numero: req.body.numero.toUpperCase().trim()
 	}
 }
 
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	var observacionTodos = datosObservacionTodos(req)
-	var observacion = datosObservacion(req)
+	var observacion = {}
+	observacion.idInforme = req.body.idInforme
+	observacion.numero = req.body.numero
 
+	observacionTodos.idInforme = req.body.idInforme
 	if (req.body.monto) observacionTodos.monto = req.body.monto
+	if (req.body.estatus) observacionTodos.estatus = req.body.estatus
+	if (req.body.esUltimo) observacionTodos.esUltimo = req.body.esUltimo
 	if (req.body.comentarios) observacionTodos.comentarios = req.body.comentarios.toUpperCase().trim()
 
 	const {
@@ -82,9 +77,12 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	var observacionTodos = datosObservacionTodos(req)
-	var observacion = datosObservacion(req)
+
+	req.observacion.numero = req.body.numero
 
 	if (req.body.monto) observacionTodos.monto = req.body.monto
+	if (req.body.estatus) observacionTodos.estatus = req.body.estatus
+	if (req.body.esUltimo) observacionTodos.esUltimo = req.body.esUltimo
 	if (req.body.comentarios) observacionTodos.comentarios = req.body.comentarios.toUpperCase().trim()
 
 	const {
@@ -97,15 +95,13 @@ exports.actualizar = (req, res, next) => {
 		mensajes.switchError(error, res)
 	} else {
 		req.observacionLog = observacionTodos
-		delete req.observacionLog['idInforme']
 		delete req.observacionLog['numero']
-		req.observacion = observacion
 		if (req.file) {
 			req.observacionLog.anexo = (req.file.destination + req.file.filename)
 		}
 		db.observaciones.find({
 			where: {
-				numero: observacion.numero,
+				numero: req.observacion.numero,
 				idObservacion: {
 					[Op.ne]: req.params.id
 				}
