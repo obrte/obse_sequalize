@@ -20,7 +20,6 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.informes = (req, res) => {
-	console.log('InformeSSS')
 	var cont = 0
 	var listaInformes = []
 	db.informes.findAll()
