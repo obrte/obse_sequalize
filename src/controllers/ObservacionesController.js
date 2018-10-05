@@ -84,78 +84,82 @@ exports.observaciones = (req, res) => {
 	})
 		.then(async dato => {
 			var cont = 0
-			dato.forEach(observacion => {
-				if (observacion.log) {
-					db.observacionesLog.findAll({
-						where: {
-							idObservacion: observacion.idObservacion
-						},
-						attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo', 'created_at', 'updated_at'],
-						include: [{
-							model: db.oficios,
-							attributes: ['idOficio', 'numero'],
-							as: 'oficio'
-						},
-						{
-							model: db.catUniAdm,
-							attributes: ['idUniAdm', 'nombre'],
-							as: 'unidad'
-						},
-						{
-							model: db.catUsuarios,
-							attributes: ['idUsuario', 'nombre'],
-							as: 'usuario'
-						}
-						]
-					})
-						.then(logObservaciones => {
-							logObservaciones.forEach(obj => {
-								if (obj.anexo) obj.anexo = obj.anexo.split('/')[5]
-							})
-							var cuerpo = {
-								idInforme: observacion.idInforme,
-								idObservacion: observacion.idObservacion,
-								numero: observacion.numero,
-								oficio: observacion.log[0].oficio,
-								unidad: observacion.log[0].unidad,
-								usuario: observacion.log[0].usuario,
-								descripcion: observacion.log[0].descripcion,
-								estatus: observacion.log[0].estatus,
-								esUltimo: observacion.log[0].esUltimo,
-								log: logObservaciones,
-								created_at: observacion.created_at,
-								updated_at: observacion.updated_at
+			if (dato.length > 0) {
+				dato.forEach(observacion => {
+					if (observacion.log) {
+						db.observacionesLog.findAll({
+							where: {
+								idObservacion: observacion.idObservacion
+							},
+							attributes: ['idObservacion', 'descripcion', 'monto', 'anexo', 'estatus', 'comentarios', 'esUltimo', 'created_at', 'updated_at'],
+							include: [{
+								model: db.oficios,
+								attributes: ['idOficio', 'numero'],
+								as: 'oficio'
+							},
+							{
+								model: db.catUniAdm,
+								attributes: ['idUniAdm', 'nombre'],
+								as: 'unidad'
+							},
+							{
+								model: db.catUsuarios,
+								attributes: ['idUsuario', 'nombre'],
+								as: 'usuario'
 							}
-							if (observacion.log[0].anexo) {
-								cuerpo.anexo = observacion.log[0].anexo.split('/')[5]
-							} else {
-								cuerpo.anexo = null
-							}
-							if (observacion.log[0].monto) {
-								cuerpo.monto = observacion.log[0].monto
-							} else {
-								cuerpo.monto = null
-							}
-							if (observacion.log[0].comentarios) {
-								cuerpo.comentarios = observacion.log[0].comentarios
-							} else {
-								cuerpo.comentarios = null
-							}
-
-							datosObservaciones.push(cuerpo)
-
-							cont++
-							if (cont == dato.length) res.status(200).json(datosObservaciones)
+							]
 						})
-						.catch(err => {
-							res.status(400).json({
-								status: 'Alerta',
-								msg: 'Fallo al buscar log',
-								error: err
+							.then(logObservaciones => {
+								logObservaciones.forEach(obj => {
+									if (obj.anexo) obj.anexo = obj.anexo.split('/')[5]
+								})
+								var cuerpo = {
+									idInforme: observacion.idInforme,
+									idObservacion: observacion.idObservacion,
+									numero: observacion.numero,
+									oficio: observacion.log[0].oficio,
+									unidad: observacion.log[0].unidad,
+									usuario: observacion.log[0].usuario,
+									descripcion: observacion.log[0].descripcion,
+									estatus: observacion.log[0].estatus,
+									esUltimo: observacion.log[0].esUltimo,
+									log: logObservaciones,
+									created_at: observacion.created_at,
+									updated_at: observacion.updated_at
+								}
+								if (observacion.log[0].anexo) {
+									cuerpo.anexo = observacion.log[0].anexo.split('/')[5]
+								} else {
+									cuerpo.anexo = null
+								}
+								if (observacion.log[0].monto) {
+									cuerpo.monto = observacion.log[0].monto
+								} else {
+									cuerpo.monto = null
+								}
+								if (observacion.log[0].comentarios) {
+									cuerpo.comentarios = observacion.log[0].comentarios
+								} else {
+									cuerpo.comentarios = null
+								}
+
+								datosObservaciones.push(cuerpo)
+
+								cont++
+								if (cont == dato.length) res.status(200).json(datosObservaciones)
 							})
-						})
-				}
-			})
+							.catch(err => {
+								res.status(400).json({
+									status: 'Alerta',
+									msg: 'Fallo al buscar log',
+									error: err
+								})
+							})
+					}
+				})
+			} else {
+				res.status(200).json(datosObservaciones)
+			}
 		})
 		.catch(err => {
 			res.status(400).json({

@@ -20,25 +20,30 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.informes = (req, res) => {
+	console.log('InformeSSS')
 	var cont = 0
 	var listaInformes = []
 	db.informes.findAll()
 		.then(arr => {
-			arr.forEach(element => {
-				buscar.informe(element.idInforme)
-					.then(datosInforme => {
-						listaInformes.push(datosInforme)
-						cont++
-						if (cont == arr.length) res.status(200).json(listaInformes)
-					})
-					.catch(err =>
-						res.status(400).json({
-							status: 'Alerta',
-							msg: 'Fallo al ordenar Informes. 1',
-							error: err
+			if (arr.length > 0) {
+				arr.forEach(element => {
+					buscar.informe(element.idInforme)
+						.then(datosInforme => {
+							listaInformes.push(datosInforme)
+							cont++
+							if (cont == arr.length) res.status(200).json(listaInformes)
 						})
-					)
-			})
+						.catch(err =>
+							res.status(400).json({
+								status: 'Alerta',
+								msg: 'Fallo al ordenar Informes. 1',
+								error: err
+							})
+						)
+				})
+			} else {
+				res.status(200).json(listaInformes)
+			}
 		})
 		.catch(err =>
 			res.status(400).json({
