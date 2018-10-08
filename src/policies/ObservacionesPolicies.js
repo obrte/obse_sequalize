@@ -76,9 +76,8 @@ exports.guardar = (req, res, next) => {
 
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
-	var observacionTodos = datosObservacionTodos(req)
 
-	req.observacion.numero = req.body.numero
+	var observacionTodos = datosObservacionTodos(req)
 
 	if (req.body.monto) observacionTodos.monto = req.body.monto
 	if (req.body.estatus) observacionTodos.estatus = req.body.estatus
@@ -101,7 +100,7 @@ exports.actualizar = (req, res, next) => {
 		}
 		db.observaciones.find({
 			where: {
-				numero: req.observacion.numero,
+				numero: req.body.numero,
 				idObservacion: {
 					[Op.ne]: req.params.id
 				}
