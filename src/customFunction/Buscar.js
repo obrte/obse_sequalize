@@ -99,7 +99,6 @@ const instancia = id => {
 
 const uniAdm = id => {
 	return new Promise((resolve, reject) => {
-		console.log(3)
 		db.catUniAdm
 			.find({
 				where: {
@@ -112,7 +111,6 @@ const uniAdm = id => {
 				}]
 			})
 			.then(uniAdm => {
-				console.log(4)
 				resolve(uniAdm)
 			})
 			.catch(err => reject(err))
