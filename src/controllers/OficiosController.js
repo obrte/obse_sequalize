@@ -2,13 +2,6 @@ const db = require('../config/db')
 const fs = require('fs')
 const buscar = require('../customFunction/Buscar')
 
-exports.test = (req, res) => {
-	eliminarArchivo('public/oficio-1.pdf')
-	res.json({
-		msgs: 'success'
-	})
-}
-
 //POST single
 exports.guardar = (req, res) => {
 	db.oficios.update({

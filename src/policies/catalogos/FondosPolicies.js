@@ -59,7 +59,6 @@ exports.actualizar = (req, res, next) => {
 	if (error) {
 		mensajes.switchError(error, res)
 	} else {
-		console.log(fondo)
 		db.catFondos.findOne({
 			where: {
 				idOrganizacion: fondo.idOrganizacion,

@@ -17,7 +17,6 @@ exports.guardar = (req, res) => {
 				})
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al crear',
@@ -56,7 +55,6 @@ exports.instancias = (req, res) => {
 			res.status(200).json(instancias)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'No encontrado',
@@ -72,7 +70,6 @@ exports.instancia = (req, res) => {
 			res.status(200).json(instancia)
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al buscar',
@@ -104,7 +101,6 @@ exports.actualizar = async (req, res) => {
 				})
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'error',
 				msg: 'Error al actualizar',

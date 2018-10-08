@@ -23,13 +23,11 @@ exports.guardar = (req, res) => {
 exports.uniAdms = (req, res) => {
 	db.catUniAdm
 		.findAll({
-			include: [
-				{
-					model: db.catInstancias,
-					attributes: ['nombre', 'idOrganizacion'],
-					as: 'instancia'
-				}
-			]
+			include: [{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idOrganizacion'],
+				as: 'instancia'
+			}]
 		})
 		.then(uniAdm => {
 			res.json(uniAdm)
@@ -54,7 +52,6 @@ exports.uniAdm = (req, res) => {
 			}
 		})
 		.catch(err => {
-			console.log(err)
 			res.status(400).json({
 				status: 'Alerta',
 				msg: 'Fallo al buscar',

@@ -18,7 +18,6 @@ const datosOrganizacion = (req) => {
 }
 
 exports.guardar = (req, res, next) => {
-	console.log(req.body.organizacion.nombre.toUpperCase())
 	const organizacion = datosOrganizacion(req)
 	req.organizacion = organizacion
 	const {
