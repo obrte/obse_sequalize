@@ -71,6 +71,16 @@ exports.guardar = (req, res, next) => {
 					next()
 				}
 			})
+			.catch((err) => {
+				if (req.file) {
+					eliminarArchivo(req.file.path)
+				}
+				res.status(400).json({
+					status: 'fallo',
+					msg: 'Conflicto con los datos en la BD',
+					error: err
+				})
+			})
 	}
 }
 
@@ -115,6 +125,16 @@ exports.actualizar = (req, res, next) => {
 				} else {
 					next()
 				}
+			})
+			.catch((err) => {
+				if (req.file) {
+					eliminarArchivo(req.file.path)
+				}
+				res.status(400).json({
+					status: 'fallo',
+					msg: 'Conflicto con los datos en la BD',
+					error: err
+				})
 			})
 	}
 }

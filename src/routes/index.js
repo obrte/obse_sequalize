@@ -8,9 +8,9 @@ const routes = [
 	require('./Auth'),
 	require('./Informes'),
 	require('./Oficios'),
-	require('./Observaciones')
+	require('./Observaciones'),
+	require('./OficiosInstancia')
 ]
-
 // Add access to the app and db objects to each route
 module.exports = function router(app) {
 	return routes.forEach(route => {

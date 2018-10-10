@@ -210,6 +210,11 @@ const informe = id => {
 				as: 'oficios'
 			},
 			{
+				model: db.oficiosInstancia,
+				attributes: ['idOficioInstancia', 'numero', 'fecha', 'fechaRecepcion', 'anexo', 'created_at', 'updated_at'],
+				as: 'oficiosInstancia'
+			},
+			{
 				model: db.observaciones,
 				as: 'observaciones'
 			}
@@ -298,6 +303,34 @@ const oficio = id => {
 				'pathPdfFile',
 				'notificaResultados',
 				'esUltimo',
+				'created_at',
+				'updated_at'
+			],
+			include: [{
+				model: db.informes,
+				attributes: ['idInforme', 'nombre'],
+				as: 'informe'
+			}]
+		})
+			.then(oficio => {
+				resolve(oficio)
+			})
+			.catch((err) => reject(err))
+	})
+}
+
+const oficioInstancia = id => {
+	return new Promise((resolve, reject) => {
+		db.oficiosInstancia.find({
+			where: {
+				idOficioInstancia: id
+			},
+			attributes: [
+				'idOficioInstancia',
+				'numero',
+				'fecha',
+				'fechaRecepcion',
+				'anexo',
 				'created_at',
 				'updated_at'
 			],
@@ -420,5 +453,6 @@ buscar.usuario = usuario
 buscar.informe = informe
 buscar.oficio = oficio
 buscar.observaciones = observaciones
+buscar.oficioInstancia = oficioInstancia
 
 module.exports = buscar

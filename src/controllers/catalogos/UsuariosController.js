@@ -1,4 +1,5 @@
 const db = require('../../config/db')
+const Op = db.Sequelize.Op
 const buscar = require('../../customFunction/Buscar')
 
 //POST single
@@ -22,6 +23,11 @@ exports.guardar = (req, res) => {
 // GET all
 exports.usuarios = (req, res) => {
 	db.catUsuarios.findAll({
+		where: {
+			tipo: {
+				[Op.ne]: 'superadmin'
+			}
+		},
 		attributes: ['idUsuario', 'tipo', 'nombre', 'email', 'activo', 'created_at', 'updated_at'],
 		include: [{
 			model: db.catOrganizaciones,

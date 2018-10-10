@@ -40,6 +40,7 @@ db.informes = require('../models/Informes')(conn, Sequelize)
 db.oficios = require('../models/Oficios')(conn, Sequelize)
 db.observaciones = require('../models/Observaciones')(conn, Sequelize)
 db.observacionesLog = require('../models/ObservacionesLog')(conn, Sequelize)
+db.oficiosInstancia = require('../models/OficiosInstancia')(conn, Sequelize)
 
 
 //! Asociaciones

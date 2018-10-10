@@ -4,28 +4,19 @@ const buscar = require('../customFunction/Buscar')
 
 //POST single
 exports.guardar = (req, res) => {
-	db.oficios.update({
-		esUltimo: 0
-	}, {
-		where: {
-			idInforme: req.oficio.idInforme
-		}
-	})
-		.then(() => {
-			db.oficios.create(req.oficio)
-				.then(oficio => {
-					buscar.oficio(oficio.idOficio)
-						.then(datosOficio => {
-							res.status(201).json(datosOficio)
-						})
-						.catch(err =>
-							res.status(400).json({
-								status: 'Alerta',
-								msg: 'Fallo al crear(buscar).',
-								error: err
-							})
-						)
+	db.oficiosInstancia.create(req.oficio)
+		.then(oficio => {
+			buscar.oficioInstancia(oficio.idOficioInstancia)
+				.then(datosOficio => {
+					res.status(201).json(datosOficio)
 				})
+				.catch(err =>
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'Fallo al crear(buscar).',
+						error: err
+					})
+				)
 		})
 }
 
@@ -33,15 +24,11 @@ exports.guardar = (req, res) => {
 exports.oficios = (req, res) => {
 	db.oficios.findAll({
 		attributes: [
-			'idOficio',
+			'idOficioInstancia',
 			'numero',
 			'fecha',
 			'fechaRecepcion',
-			'fechaVencimiento',
-			'observaciones',
-			'pathPdfFile',
-			'notificaResultados',
-			'esUltimo',
+			'anexo',
 			'created_at',
 			'updated_at'
 		],
@@ -65,7 +52,7 @@ exports.oficios = (req, res) => {
 
 // GET one por id
 exports.oficio = (req, res) => {
-	buscar.oficio(req.params.id)
+	buscar.oficioInstancia(req.params.id)
 		.then(datosOficio => {
 			res.status(200).json(datosOficio)
 		})
@@ -80,19 +67,19 @@ exports.oficio = (req, res) => {
 
 // PATCH single
 exports.actualizar = (req, res) => {
-	buscar.oficio(req.params.id)
+	buscar.oficioInstancia(req.params.id)
 		.then(oficio => {
-			if (oficio.pathPdfFile != null && req.file) {
-				eliminarArchivo(oficio.pathPdfFile)
+			if (oficio.anexo != null && req.file) {
+				eliminarArchivo(oficio.anexo)
 			}
-			db.oficios.update(req.oficio, {
+			db.oficiosInstancia.update(req.oficio, {
 				where: {
-					idOficio: req.params.id
+					idOficioInstancia: req.params.id
 				}
 			})
 				.then(oficioActualizado => {
 					if (oficioActualizado > 0) {
-						buscar.oficio(req.params.id)
+						buscar.oficioInstancia(req.params.id)
 							.then(oficio => {
 								res.status(200).json(oficio)
 							})
@@ -116,32 +103,18 @@ exports.actualizar = (req, res) => {
 
 // DELETE single
 exports.eliminar = (req, res) => {
-	buscar.oficio(req.params.id)
+	buscar.oficioInstancia(req.params.id)
 		.then(oficio => {
-			if (oficio.pathPdfFile != null) {
-				eliminarArchivo(oficio.pathPdfFile)
+			if (oficio.anexo != null) {
+				eliminarArchivo(oficio.anexo)
 			}
-			db.oficios.destroy({
+			db.oficiosInstancia.destroy({
 				where: {
-					idOficio: req.params.id
+					idOficioInstancia: req.params.id
 				}
 			})
 				.then(oficioEliminado => {
 					if (oficioEliminado == 1) {
-						db.oficios.max('idOficio', {
-							where: {
-								idInforme: oficio.informe.idInforme
-							}
-						})
-							.then(ultimoAnterior => {
-								db.oficios.update({
-									esUltimo: 1
-								}, {
-									where: {
-										idOficio: ultimoAnterior
-									}
-								})
-							})
 						res.status(200).json({
 							status: 'success',
 							msg: 'Eliminación exitosa'

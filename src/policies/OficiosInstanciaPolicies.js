@@ -1,7 +1,7 @@
 const BaseJoi = require('joi')
 const Extension = require('joi-date-extensions')
-const fs = require('fs')
 const Joi = BaseJoi.extend(Extension)
+const fs = require('fs')
 const db = require('../config/db')
 const Op = db.Sequelize.Op
 var moment = require('moment')
@@ -11,10 +11,7 @@ const schema = {
 	idInforme: Joi.string().required(),
 	numero: Joi.string().required(),
 	fecha: Joi.date().format('DD-MM-YYYY').required(),
-	fechaRecepcion: Joi.date().format('DD-MM-YYYY').required(),
-	fechaVencimiento: Joi.date().format('DD-MM-YYYY').required(),
-	observaciones: Joi.string(),
-	notificaResultados: BaseJoi.number().integer().required()
+	fechaRecepcion: Joi.date().format('DD-MM-YYYY').required()
 }
 
 const datosOficio = (req) => {
@@ -22,19 +19,13 @@ const datosOficio = (req) => {
 		idInforme: req.body.idInforme,
 		numero: req.body.numero.toUpperCase().trim(),
 		fecha: req.body.fecha.split('/').join('-'),
-		fechaRecepcion: req.body.fechaRecepcion.split('/').join('-'),
-		fechaVencimiento: req.body.fechaVencimiento.split('/').join('-'),
-		observaciones: req.body.observaciones.toUpperCase().trim(),
-		notificaResultados: req.body.notificaResultados
+		fechaRecepcion: req.body.fechaRecepcion.split('/').join('-')
 	}
 }
 
 //validar que los campos no esten vacios
 exports.guardar = (req, res, next) => {
 	const oficio = datosOficio(req)
-	if (oficio.observaciones == '' || oficio.observaciones == null) {
-		delete oficio['observaciones']
-	}
 	const {
 		error
 	} = Joi.validate(oficio, schema)
@@ -44,7 +35,7 @@ exports.guardar = (req, res, next) => {
 		}
 		mensajes.switchError(error, res)
 	} else {
-		db.oficios.findOne({
+		db.oficiosInstancia.findOne({
 			where: {
 				numero: oficio.numero
 			}
@@ -83,9 +74,6 @@ exports.guardar = (req, res, next) => {
 //validar que los campos no esten vacios
 exports.actualizar = (req, res, next) => {
 	const oficio = datosOficio(req)
-	if (oficio.observaciones == '' || oficio.observaciones == null) {
-		delete oficio['observaciones']
-	}
 	const {
 		error
 	} = Joi.validate(oficio, schema)
@@ -95,10 +83,10 @@ exports.actualizar = (req, res, next) => {
 		}
 		mensajes.switchError(error, res)
 	} else {
-		db.oficios.findOne({
+		db.oficiosInstancia.findOne({
 			where: {
 				numero: oficio.numero,
-				idOficio: {
+				idOficioInstancia: {
 					[Op.ne]: req.params.id
 				}
 			}
