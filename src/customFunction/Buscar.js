@@ -321,6 +321,7 @@ const oficio = id => {
 			}]
 		})
 			.then(oficio => {
+				if (oficio.pathPdfFile) oficio.pathPdfFile = oficio.pathPdfFile.split('/')[5]
 				resolve(oficio)
 			})
 			.catch((err) => reject(err))
@@ -349,6 +350,7 @@ const oficioInstancia = id => {
 			}]
 		})
 			.then(oficio => {
+				if (oficio.anexo) oficio.anexo = oficio.anexo.split('/')[5]
 				resolve(oficio)
 			})
 			.catch((err) => reject(err))

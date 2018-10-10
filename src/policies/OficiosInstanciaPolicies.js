@@ -53,7 +53,7 @@ exports.guardar = (req, res, next) => {
 				} else {
 					req.oficio = oficio
 					if (req.file) {
-						req.oficio.pathPdfFile = (req.file.destination + req.file.filename)
+						req.oficio.anexo = (req.file.destination + req.file.filename)
 					}
 					next()
 				}
@@ -104,7 +104,7 @@ exports.actualizar = (req, res, next) => {
 				} else {
 					req.oficio = oficio
 					if (req.file) {
-						req.oficio.pathPdfFile = (req.file.destination + req.file.filename).replace('src', '')
+						req.oficio.anexo = (req.file.destination + req.file.filename).replace('src', '')
 					}
 					next()
 				}

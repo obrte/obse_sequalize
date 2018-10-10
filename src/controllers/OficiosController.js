@@ -52,6 +52,13 @@ exports.oficios = (req, res) => {
 		}]
 	})
 		.then(oficios => {
+			oficios.forEach(arr => {
+				if (arr.pathPdfFile) {
+					arr.pathPdfFile = arr.pathPdfFile.split('/')[5]
+				} else {
+					arr.pathPdfFile = null
+				}
+			})
 			res.status(200).json(oficios)
 		})
 		.catch(err => {
