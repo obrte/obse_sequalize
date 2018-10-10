@@ -266,6 +266,14 @@ const informe = id => {
 					}
 				})
 				datos.oficios = informe.oficios
+				informe.oficiosInstancia.forEach(arr => {
+					if (arr.anexo) {
+						arr.anexo = arr.anexo.split('/')[5]
+					} else {
+						arr.anexo = null
+					}
+				})
+				datos.oficiosInstancia = informe.oficiosInstancia
 				datos.observaciones = []
 				if (informe.observaciones.length > 0) {
 					var obse = 0
