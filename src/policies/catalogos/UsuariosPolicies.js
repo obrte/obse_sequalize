@@ -11,9 +11,7 @@ const schema = {
 	idInstancia: Joi.string(),
 	idUniAdm: Joi.string(),
 	nombre: Joi.string().required(),
-	email: Joi.string()
-		.email()
-		.required(),
+	email: Joi.string().email().required(),
 	password: Joi.string().min(8),
 	rePassword: Joi.any().valid(Joi.ref('password')),
 	activo: Joi.number().integer(),
@@ -22,11 +20,9 @@ const schema = {
 
 const usuarioBody = req => {
 	return {
-		tipo: req.body.usuario.tipo.toLowerCase().trim(),
 		idOrganizacion: req.body.usuario.idOrganizacion,
 		idInstancia: req.body.usuario.idInstancia,
 		idUniAdm: req.body.usuario.idUniAdm,
-		nombre: req.body.usuario.nombre.toUpperCase().trim(),
 		email: req.body.usuario.email.trim(),
 		password: req.body.usuario.password,
 		rePassword: req.body.usuario.rePassword,
@@ -37,6 +33,9 @@ const usuarioBody = req => {
 
 exports.guardar = (req, res, next) => {
 	usuario = usuarioBody(req)
+	usuario.tipo = req.body.usuario.tipo.toLowerCase().trim()
+	usuario.nombre = req.body.usuario.nombre.toUpperCase().trim()
+	if (usuario.idUniAdm == undefined) usuario.idUniAdm = ''
 	if (usuario.tipo == 'superadmin') {
 		delete usuario['idOrganizacion']
 		delete usuario['idInstancia']
@@ -89,6 +88,8 @@ exports.guardar = (req, res, next) => {
 
 exports.actualizar = (req, res, next) => {
 	usuario = usuarioBody(req)
+	usuario.tipo = req.body.usuario.tipo.toLowerCase().trim()
+	usuario.nombre = req.body.usuario.nombre.toUpperCase().trim()
 	if (usuario.tipo == 'superadmin') {
 		delete usuario['idOrganizacion']
 		delete usuario['idInstancia']

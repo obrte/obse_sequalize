@@ -1,5 +1,6 @@
 const db = require('../../config/db')
 const buscar = require('../../customFunction/Buscar')
+var valido = false
 
 //POST single
 exports.guardar = (req, res) => {
@@ -21,43 +22,88 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.uniAdms = (req, res) => {
-	db.catUniAdm
-		.findAll({
+	switch (req.userData.data.roles) {
+	case 'superadmin':
+		db.catUniAdm.findAll({
 			include: [{
 				model: db.catInstancias,
-				attributes: ['nombre', 'idOrganizacion'],
+				attributes: ['nombre', 'idInstancia'],
 				as: 'instancia'
 			}]
 		})
-		.then(uniAdm => {
-			res.json(uniAdm)
+			.then(uniAdm => {
+				res.json(uniAdm)
+			})
+			.catch(err => {
+				res.json(err)
+			})
+		break
+	case 'administrador':
+		db.catUniAdm.findAll({
+			where: {
+				idInstancia: req.userData.data.instancia.idInstancia
+			},
+			include: [{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			}]
 		})
-		.catch(err => {
-			res.json(err)
+			.then(uniAdm => {
+				res.status(200).json(uniAdm)
+			})
+			.catch(err => {
+				res.status(400).json(err)
+			})
+		break
+	default:
+		db.catUniAdm.findAll({
+			where: {
+				idUniAdm: req.userData.data.uniAdm.idUniAdm
+			},
+			include: [{
+				model: db.catInstancias,
+				attributes: ['nombre', 'idInstancia'],
+				as: 'instancia'
+			}]
 		})
+			.then(uniAdm => {
+				res.status(200).json(uniAdm)
+			})
+			.catch(err => {
+				res.status(400).json(err)
+			})
+		break
+	}
 }
 
 // GET one por id
-exports.uniAdm = (req, res) => {
-	buscar
-		.uniAdm(req.params.id)
-		.then(uniAdm => {
-			if (uniAdm) {
-				res.status(200).json(uniAdm)
-			} else {
+exports.uniAdm = async (req, res) => {
+	valido = false
+	await validar(req, res)
+	if (valido) {
+		buscar.uniAdm(req.params.id)
+			.then(uniAdm => {
+				if (uniAdm) {
+					res.status(200).json(uniAdm)
+				} else {
+					res.status(400).json({
+						status: 'Alerta',
+						msg: 'No encontrado'
+					})
+				}
+			})
+			.catch(err => {
 				res.status(400).json({
 					status: 'Alerta',
-					msg: 'No encontrado'
+					msg: 'Fallo al buscar',
+					error: err
 				})
-			}
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'Alerta',
-				msg: 'Fallo al buscar',
-				error: err
 			})
-		})
+	} else {
+		res.status(200).json({})
+	}
+
 }
 
 // PATCH single
@@ -126,4 +172,41 @@ exports.eliminar = (req, res) => {
 				error: err
 			})
 		})
+}
+
+async function validar(req, res) {
+	switch (req.userData.data.roles) {
+	case 'superadmin':
+		valido = true
+		break
+	case 'administrador':
+		await db.catUniAdm.find({
+			where: {
+				idUniadm: req.params.id,
+				idInstancia: req.userData.data.instancia.idInstancia
+			}
+		})
+			.then(existe => {
+				if (existe) {
+					valido = true
+				} else {
+					valido = false
+				}
+			})
+			.catch(err => {
+				res.status(400).json({
+					status: 'Alerta',
+					msg: 'Fallo al buscar',
+					error: err
+				})
+			})
+		break
+	default:
+		if (req.userData.data.uniAdm.idUniAdm == req.params.id) {
+			valido = true
+		} else {
+			valido = false
+		}
+		break
+	}
 }

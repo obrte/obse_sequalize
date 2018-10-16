@@ -27,55 +27,102 @@ exports.guardar = (req, res) => {
 
 // GET all
 exports.instancias = (req, res) => {
-	db.catInstancias.findAll({
-		include: [{
-			model: db.catInstanciaEntes,
-			as: 'entes',
+	if (req.userData.data.roles == 'superadmin') {
+		db.catInstancias.findAll({
 			include: [{
-				model: db.catEntesFiscalizadores,
-				as: 'ente'
-			}]
-		},
-		{
-			model: db.catInstanciaFondos,
-			as: 'fondos',
-			include: [{
-				model: db.catFondos,
-				as: 'fondo'
-			}]
-		},
-		{
-			model: db.catOrganizaciones,
-			attributes: ['nombre'],
-			as: 'organizacion'
-		}
-		]
-	})
-		.then(instancias => {
-			res.status(200).json(instancias)
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			},
+			{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}
+			]
 		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: 'No encontrado',
-				error: err
+			.then(instancias => {
+				res.status(200).json(instancias)
 			})
+			.catch(err => {
+				res.status(400).json({
+					status: 'error',
+					msg: 'No encontrado',
+					error: err
+				})
+			})
+	} else {
+		db.catInstancias.findAll({
+			where: {
+				idInstancia: req.userData.data.instancia.idInstancia
+			},
+			include: [{
+				model: db.catInstanciaEntes,
+				as: 'entes',
+				include: [{
+					model: db.catEntesFiscalizadores,
+					as: 'ente'
+				}]
+			},
+			{
+				model: db.catInstanciaFondos,
+				as: 'fondos',
+				include: [{
+					model: db.catFondos,
+					as: 'fondo'
+				}]
+			},
+			{
+				model: db.catOrganizaciones,
+				attributes: ['nombre'],
+				as: 'organizacion'
+			}
+			]
 		})
+			.then(instancias => {
+				res.status(200).json(instancias)
+			})
+			.catch(err => {
+				res.status(400).json({
+					status: 'error',
+					msg: 'No encontrado',
+					error: err
+				})
+			})
+	}
 }
 
 // GET one por id
 exports.instancia = (req, res) => {
-	buscar.instancia(req.params.id)
-		.then(instancia => {
-			res.status(200).json(instancia)
-		})
-		.catch(err => {
-			res.status(400).json({
-				status: 'error',
-				msg: 'Error al buscar',
-				error: err
+	var valido = false
+	if (req.userData.data.roles == 'superadmin') valido = true
+	if (req.userData.data.instancia.idInstancia == req.params.id) valido = true
+	if (valido) {
+		buscar.instancia(req.params.id)
+			.then(instancia => {
+				res.status(200).json(instancia)
 			})
-		})
+			.catch(err => {
+				res.status(400).json({
+					status: 'error',
+					msg: 'Error al buscar',
+					error: err
+				})
+			})
+	} else {
+		res.status(200).json({})
+	}
 }
 
 // PATCH single
